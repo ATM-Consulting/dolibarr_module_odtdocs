@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - sous-blocs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+.border02 {
+	border: 2px solid #39C;
+}
+.border03 {
+	border: 2px solid #396;
+}
+
+-->
+</style>
+</head>
+<body>
+<h1>Exemple de sous-blocs</h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><span class="text-section2">Cet exemple montre comment r&eacute;aliser des sous-blocs de deux mani&egrave;res. La premi&egrave;re avec un  sous-blocs automatique. La seconde avec une requ&ecirc;te dynamique.</span></td>
+  </tr>
+</table>
+<br>
+<table width="400" align="center" cellpadding="5" cellspacing="0" style="border-collapse:collapse;">
+  <tr>
+    <td class="border03">Sous-bloc automatique : <span class="text-section2">Vous pouvez l'utiliser quand les donn&eacute;es du sous-bloc sont disponibles dans une colonne particuli&egrave;re  du bloc principal.</span></td>
+  </tr>
+  <tr>
+    <td class="border03"><strong>&Eacute;quipe :</strong> [asb.team;block=tr;sub1=matches] , 
+      <strong>Score total :</strong>[asb.total]<br>
+      <table border="1" align="center" cellpadding="2" cellspacing="0">
+        <tr bgcolor="#CACACA">
+          <td><u>Num&eacute;ro</u></td>
+          <td><u>Ville</u></td>
+          <td><u>Score</u></td>
+          <td><div align="center"><u>Date</u></div></td>
+        </tr>
+        <tr bgcolor="#F0F0F0">
+          <td width="30">[asb_sub1.#]</td>
+          <td width="150">[asb_sub1.town;block=tr]</td>
+          <td width="50"><div align="right">[asb_sub1.score]</div></td>
+          <td width="100"><div align="center">[asb_sub1.date;frm='mm-dd-yyyy']</div></td>
+        </tr>
+        <tr bgcolor="#E6E6E6">
+          <td>[asb_sub1.#]</td>
+          <td>[asb_sub1.town;block=tr]</td>
+          <td><div align="right">[asb_sub1.score]</div></td>
+          <td><div align="center">[asb_sub1.date;frm='mm-dd-yyyy']</div></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<br>
+<br>
+<table width="400" align="center" cellpadding="5" cellspacing="0" style="border-collapse:collapse;">
+  <tr>
+    <td class="border02">Sous-bloc avec requ&ecirc;te dynamique : <span class="text-section2">Les donn&eacute;es du sous-bloc sont appel&eacute;es pour chaque enregistrement du bloc principal. Il est important que le bloc principal  soit fusionn&eacute; avant le sous-bloc.</span></td>
+  </tr>
+  <tr>
+    <td class="border02"><strong>&Eacute;quipe :</strong> [mb.team;block=tr] , 
+      <strong>Score total :</strong>[mb.total]<br>
+      <table border="1" align="center" cellpadding="2" cellspacing="0">
+        <tr bgcolor="#CACACA">
+          <td><u>Num&eacute;ro</u></td>
+          <td><u>Ville</u></td>
+          <td><u>Score</u></td>
+          <td><div align="center"><u>Date</u></div></td>
+        </tr>
+        <tr bgcolor="#F0F0F0">
+          <td width="30">[sb.#]</td>
+          <td width="150">[sb.town;block=tr;p1=[mb.$]]</td>
+          <td width="50"><div align="right">[sb.score]</div></td>
+          <td width="100"><div align="center">[sb.date;frm='mm-dd-yyyy']</div></td>
+        </tr>
+        <tr bgcolor="#E6E6E6">
+          <td>[sb.#]</td>
+          <td>[sb.town;block=tr]</td>
+          <td><div align="right">[sb.score]</div></td>
+          <td><div align="center">[sb.date;frm='mm-dd-yyyy']</div></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

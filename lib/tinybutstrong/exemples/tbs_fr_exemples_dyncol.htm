@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - Colonnes dynamiques</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Exemple de colonnes dynamiques </h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td>La cr&eacute;ation de colonnes dynamiques avec TinyButStrong est simple mais un peu d&eacute;licate. Il n' a pas besoin de param&egrave;tres sp&eacute;cifiques. Mais il faut penser &agrave; &eacute;tendre les colonnes sur toutes les lignes du tableau de base en utilisant un bloc <u>diff&eacute;rent</u> pour <u>chaque</u> ligne. La fusion des colonnes doit se faire avant la fusion des lignes. </td>
+  </tr>
+</table>
+<br>
+<table width="500" border="0" align="center" cellpadding="4" cellspacing="2">
+  <tr>
+    <td class="text-section2">Dans cet exemple, le script cr&eacute;e une table de multiplication avec alternance de couleur de ligne. Vous pouvez faire varier le nombre de colonnes et de lignes.</td>
+  </tr>
+  <tr>
+    <td><form action="[onshow..script_name]" method="get" name="frm_nbr" id="frm_nbr">
+        <div align="center">Nombre de lignes :
+          <input name="nbr_row" type="text" id="nbr_row" value="[onshow.nbr_row]" size="2" maxlength="2" style="width:30px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nombre de colonnes :
+          <input name="nbr_col" type="text" id="nbr_col" value="[onshow.nbr_col]" size="2" maxlength="2" style="width:30px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input name="btn_ok" type="submit" id="btn_ok" value="  Ok  ">
+        </div>
+      </form></td>
+  </tr>
+  <tr>
+    <td><table border="1" align="center" cellpadding="0" cellspacing="0">
+        <tr bgcolor="#F0F0F0">
+          <td width="30" bgcolor="#FF9966"><div align="center">X</div></td>
+          <td width="30" bgcolor="#FFD8B0"><div align="center" class="title-section">
+              <div align="center">[c0.key;block=td] </div>
+            </div></td>
+        </tr>
+        <tr bgcolor="#F0F0F0">
+          <td bgcolor="#FFD8B0" class="title-section"><div align="center">[r.$;block=tr]</div></td>
+          <td bgcolor="#DBDBDB"><div align="center">[r.[c1.val;block=td]] </div></td>
+        </tr>
+        <tr bgcolor="#F0F0F0">
+          <td bgcolor="#FFD8B0" class="title-section"><div align="center">[r.$;block=tr]</div></td>
+          <td bgcolor="#FFFFFF"><div align="center">[r.[c2.val;block=td]] </div></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

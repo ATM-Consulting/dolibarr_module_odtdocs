@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - prm att</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_us_examples_0styles.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+.style1 {
+	font-weight: bold;
+	border: 1px solid #396;
+}
+.style2 {
+	color: #039;
+	background-color: #FFC;
+}
+-->
+</style>
+</head>
+<body>
+<h1>Exemple de param&egrave;tre att</h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p>La param&egrave;tre <span class="text-prm">att</span> permet de modifier &agrave; distance les attributs de balises Xml/Html.<br>
+      Cela peut &ecirc;tre tr&egrave;s pr&eacute;cieux quand il n'est pas facile d'attteindre le code source du mod&egrave;le (OpenOffice, Ms Office 2007, Dreamweaver, ...). Ou simplement si vous voulez coder un mod&egrave;le Html qui soit compatible W3C.<br>
+      <br>
+    </p></td>
+  </tr>
+</table>
+<br>
+<table border="0" align="center" cellpadding="2" cellspacing="2">
+  <tr valign="top">
+    <td class="title-section2">Sans att</td>
+    <td><span class="title-section2">Avec att</span></td>
+    <td class="title-section2">Commentaire</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td><div class="style1">Ce texte est dans une balise div.</div></td>
+    <td><div class="style1">Ce texte est dans une balise div.[onshow.x_style;att=div#class]</div></td>
+    <td>L'attribut  class est remplac&eacute; par <span class="style2">style2</span>.</td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td><div class="style1">Ce texte est dans une balise div.</div></td>
+    <td><div class="style1">Ce texte est dans une balise div.[onshow.x_style;att=div#class;attadd]</div></td>
+    <td>L'attribut class est compl&eacute;t&eacute; avec  <span class="style2">style2</span>.</td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td><div class="style1">Ce texte est dans une balise div.</div></td>
+    <td><div class="style1">Ce texte est dans une balise div.[onshow.x_nostyle;att=div#class]</div></td>
+    <td>L'attribut class est supprim&eacute;.</td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td>Ce texte est dans une balise td.</td>
+    <td height="20">Ce texte est dans une balise td. [onshow.x_color;att=td#bgcolor]</td>
+    <td>L'attribut bgcolor est cr&eacute;e.</td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<br><p style="text-align:center; ">
+    <a href="http://validator.w3.org/check?uri=referer" target="_top"><img
+        src="http://www.w3.org/Icons/valid-html401"
+        alt="Valid HTML 4.01 Transitional" height="31" width="88" border="0"></a>
+  </p>
+
+</body>
+</html>

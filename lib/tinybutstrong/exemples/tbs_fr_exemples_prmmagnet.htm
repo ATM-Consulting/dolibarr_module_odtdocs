@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - balises aimants</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+function m_Select(x) {
+	window.location = '[onshow..script_name]?empty=' + x ;
+}
+</script>
+</head>
+<body>
+<h1>Exemple de balises aimants </h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p>Une balise aimant est une balise Html attach&eacute;e &agrave; un champ TBS. La balise aimant est supprim&eacute;e quand le champ est supprim&eacute;, c'est &agrave; dire quand le champ a une valeur nulle ou cha&icirc;ne vide. Une balise aimant est d&eacute;finie gr&acirc;ce au param&egrave;tre <span class="text-prm">magnet</span>. Le type de balise (simple ou ouvrant-fermant) et sa position sont d&eacute;finies gr&acirc;ce au param&egrave;tre <span class="text-prm">mtype</span>. <br>
+      </p></td>
+  </tr>
+</table>
+<br>
+<table border="0" align="center" cellpadding="2" cellspacing="2">
+  <tr valign="top">
+    <td colspan="3"><form action="" method="post" name="frm_choice" id="frm_choice">
+        <input name="r_empty" type="radio" value="0" onClick="m_Select(0)">
+        <!--[onshow.empty;if [val]=0;then 'checked';else '';att=input#checked;magnet=#;comm] -->
+        Valeurs non vides
+        <input name="r_empty" type="radio" value="1" onClick="m_Select(1)">
+        <!--[onshow.empty;if [val]=1;then 'checked';else '';att=input#checked;magnet=#;comm] -->
+        Valeurs vides
+    </form></td>
+  </tr>
+  <tr valign="top">
+    <td width="90" class="title-section2">Param&egrave;tre</td>
+    <td width="270" class="title-section2">Valeur</td>
+    <td width="100"><span class="title-section2">Affichage</span></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td class="text-example2">magnet=a</td>
+    <td>$url = '[onshow.url]'</td>
+    <td bgcolor="#8FC2ED">Lien : <a href="http://[onshow.url;magnet=a]" target="_blank">Site TBS</a></td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td class="text-example2">magnet=a;mtype=m+m</td>
+    <td> $url = '[onshow.url]'</td>
+    <td bgcolor="#8FC2ED"> Lien : <a href="http://[onshow.url;magnet=a;mtype=m+m]" target="_blank">Site TBS</a></td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td class="text-example2">magnet=img;mtype=m*</td>
+    <td> $image = '[onshow.image]'</td>
+    <td height="20" bgcolor="#8FC2ED"> Image : <img src="[onshow.image;magnet=img;mtype=m*]" width="14" height="14"></td>
+  </tr>
+  <tr valign="top">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr valign="top">
+    <td class="text-example2">magnet=br; mtype=*m</td>
+    <td> $line2 = '[onshow.line2]'</td>
+    <td bgcolor="#8FC2ED"> Adresse :<br>
+      -------- <br>
+      [onshow.line1;magnet=br;mtype=*m]<br>
+      [onshow.line2;magnet=br;mtype=*m]<br>
+      --------</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - Condition</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+function m_Select() {
+	window.location = 'tbs_fr_exemples_cond.php?blk_id=' + window.document.frm_condition.lst_block.value
+}
+</script>
+</head>
+<body>
+<h1>Exemple de blocs conditionels</span></h1>
+<p align="center">Les bloc conditionnels permettent de d'afficher ou de masquer une zone selon un crit&egrave;re.</p>
+<table width="500" border="1" align="center" cellpadding="2" cellspacing="0" style="border-color:#006699; border-collapse:collapse; border-width:2;">
+  <tr>
+    <td align="left" valign="top" bgcolor="#99CC33"><strong>Bonjour, Vous avez s&eacute;lectionn&eacute; le bloc 1.[onload_1;block=tr;when [var.blk_id]=1]</strong></td>
+  </tr>
+  <tr>
+    <td align="left" valign="top" bgcolor="#FF9933"><em>Bravo, c'est mainteant le bloc 2 qui s'affiche.[onload_1;block=tr;when [var.blk_id]=2]</em></td>
+  </tr>
+  <tr>
+    <td align="left" valign="top" bgcolor="#66FFCC"><font color="#990000">Bon, finalement c'est facile les blocs conditionnels.[onload_1;block=tr;when [var.blk_id]=3]</font></td>
+  </tr>
+  <tr>
+    <td align="left" valign="top" bgcolor="#EBEBEB">Ce bloc s'affiche par d&eacute;faut.[onload_1;block=tr;default] </td>
+  </tr>
+</table>
+<br>
+<form action="[onshow..script_name]" method="post" name="frm_condition" id="frm_condition">
+  <div align="center">S&eacute;lectionnez un bloc &agrave; afficher :
+    <select name="lst_block" class="normal" id="lst_block" onChange="javascript:m_Select()">
+      <option value="0">&lt;faites un choix&gt;</option>
+      <option value="1">Bloc 1</option>
+      <option value="2">Bloc 2</option>
+      <option value="3">Bloc 3</option>
+      <option value="x">[onshow.blk_id;ope=html;select]</option>
+    </select>
+  </div>
+</form>
+</body>
+</html>

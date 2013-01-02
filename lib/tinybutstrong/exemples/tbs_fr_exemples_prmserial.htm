@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - prm serial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Exemple d'utilisation du param&egrave;tre <span class="text-prm">serial</span></h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p>Le param&egrave;tre <span class="text-prm">serial</span> permet d'afficher plusieurs enregistrements dans un bloc principal. Pour cela, on utilise des sous-blocks.<br>
+        <br>
+        <span class="text-section2">Exemple d'utilisation de <span class="text-prm">serial</span> pour un affichage multi-colonnes :</span><br>
+      </p></td>
+  </tr>
+</table>
+<br>
+<table border="1" align="center" cellpadding="2" cellspacing="0">
+  <tr bgcolor="#CACACA">
+    <td colspan="4"><div align="center"> Position / Titre</div></td>
+  </tr>
+  <tr bgcolor="#F0F0F0">
+    <td width="10">&gt;</td>
+    <td width="100"><div align="center"><strong>[bx_1.rank]</strong><br>
+        <span class="text-mini">[bx_1.title;block=td]</span><br>
+      </div></td>
+    <td width="100"><div align="center"><strong>[bx_2.rank]</strong> <br>
+        <span class="text-mini">[bx_2.title;block=td;.]</span><br>
+      </div></td>
+    <td width="100"><div align="center"><strong>[bx_3.rank]</strong><br>
+        <span class="text-mini">[bx_3.title;block=td;.]</span><br>
+        [bx;block=tr;serial]</div></td>
+  </tr>
+  <tr bgcolor="#F0F0F0">
+    <td valign="middle">&nbsp;</td>
+    <td colspan="2" valign="middle" class="text-mini"><font color="#666666">Cette ligne est optionnelle, elle<br>
+      premet de d&eacute;finir la case vide.</font></td>
+    <td valign="middle" bgcolor="#E4F1E4"><div align="center">
+        <p><span class="text-mini">[bx_0;block=td]</span> <br>
+          [bx;block=tr;serial]</p>
+      </div></td>
+  </tr>
+</table>
+<br>
+<br>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p class="text-section2"> Exemple d'utilisation de <span class="text-prm">serial</span> pour un affichage complexe :</p></td>
+  </tr>
+</table>
+<br>
+<table border="1" align="center" cellpadding="2" cellspacing="0">
+  <tr bgcolor="#CACACA">
+    <td colspan="2"><div align="center">Position / Titre</div></td>
+  </tr>
+  <tr bgcolor="#F0F0F0">
+    <td width="10">&gt;</td>
+    <td width="300"><div align="center">
+        <table width="100%" border="0" cellspacing="0" cellpadding="2">
+          <tr>
+            <td colspan="2"><div align="center">
+                <table width="130" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td bgcolor="#C5C5E2"><strong>[bz_1.rank]</strong> [bz_1.title;block=td]</td>
+                  </tr>
+                </table>
+              </div></td>
+            <td colspan="2"><div align="center">
+                <table width="130" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td bgcolor="#A9E2C6"><strong>[bz_3.rank]</strong> [bz_3.title;block=td;.]</td>
+                  </tr>
+                </table>
+              </div></td>
+          </tr>
+          <tr>
+            <td width="25%">&nbsp;</td>
+            <td colspan="2"><div align="center">
+                <table width="130" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td bgcolor="#FFD5AA"><strong>[bz_2.rank]</strong> [bz_2.title;block=td;.]</td>
+                  </tr>
+                </table>
+              </div></td>
+            <td width="25%">&nbsp;</td>
+          </tr>
+        </table>
+        [bz;block=tr;serial] </div></td>
+  </tr>
+</table>
+</body>
+</html>

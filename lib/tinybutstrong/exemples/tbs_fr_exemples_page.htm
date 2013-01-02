@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - Page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Exemple du plug-in Par-Page</h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p>Le plug-in Par-Page permet d'afficher seulement une partie des donn&eacute;es.<br>
+        Il existe aussi un plug-in qui permet d'afficher une barre de navigation.<br>
+        <br>
+        <span class="text-section2">Dans cet exemple, il y a [onshow.RecCnt] enregistrements affich&eacute;s par page de [onshow.PageSize].<br>
+        </span> </p></td>
+  </tr>
+</table>
+<br>
+<table border="1" align="center" cellpadding="2" cellspacing="0">
+  <tr bgcolor="#CACACA">
+    <td width="40" bgcolor="#CACACA"><strong>N&deg;</strong></td>
+    <td width="100"><strong>Produit</strong></td>
+    <td width="100"><strong>Prix</strong></td>
+  </tr>
+  <tr bgcolor="#F0F0F0">
+    <td><div align="center">&nbsp;[blk.#]<br>
+      </div></td>
+    <td> [blk.product;block=tr]&nbsp;&nbsp;<br>
+    </td>
+    <td><div align="right">[blk.price;frm='0,00']</div></td>
+  </tr>
+</table>
+<div align="center"><br>
+  Nombre de produits : [onshow.RecCnt]<br>
+  <br>
+</div>
+<table border="1" align="center" cellpadding="2" cellspacing="0">
+  <tr align="center">
+    <td width="16"><a href="[onshow..script_name]?PageNum=[nv.first;endpoint;magnet=a;mtype=m+m]">|&lt;</a></td>
+    <td width="16"><a href="[onshow..script_name]?PageNum=[nv.prev;endpoint;magnet=a;mtype=m+m]">&lt;</a></td>
+    <td width="16"><a href="[onshow..script_name]?PageNum=[nv.page;block=td;navsize=3;navpos=centred]">[nv.page]</a></td>
+    <td width="16" bgcolor="#C4E1E1"><strong>[nv.page;block=td;currpage]</strong></td>
+    <td width="16"><a href="[onshow..script_name]?PageNum=[nv.next;endpoint;magnet=a;mtype=m+m]">&gt;</a></td>
+    <td width="16"><a href="[onshow..script_name]?PageNum=[nv.last;endpoint;magnet=a;mtype=m+m]">&gt;|</a></td>
+  </tr>
+</table>
+</body>
+</html>

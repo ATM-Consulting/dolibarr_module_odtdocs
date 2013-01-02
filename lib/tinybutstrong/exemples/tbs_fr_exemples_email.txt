@@ -1,0 +1,17 @@
+[onload;tplvars;subject=Bonjour;comm=_]
+
+Cher [i.firstname] [i.lastname],
+
+Merci pour avoir choisi TBS Examples Copr pour la sélection de vos items.
+
+~~~~~~~~~~~~~~~ [a.#;block=begin;comm=_] ~~~~~~~~~~~~~~~
+Article n° [a.#]
+----------
+Étiquette     :    [a.caption]
+Quantité      : [a.qty]
+Prix unitaire : [a.uprice;frm=0,00] €
+
+~~~~~~~~~~~~~~~ [a.#;block=end;comm=_]   ~~~~~~~~~~~~~~~
+
+Passez une bonne journée,
+TBS Examples Corp

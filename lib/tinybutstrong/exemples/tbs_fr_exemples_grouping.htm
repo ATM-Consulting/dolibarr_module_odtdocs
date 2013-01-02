@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - Groupement</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Exemple de sections de regroupement</h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p>Les param&egrave;tres <span class="text-prm">headergrp</span>, <span class="text-prm">footergrp</span> et <span class="text-prm">splittergrp</span> permetent d'afficher des ent&ecirc;tes, pieds et diviseurs de groupe. Attention : leur emplacement dans le bloc agit sur l'affichage. </p></td>
+  </tr>
+</table>
+<br>
+<table width="300" border="1" align="center" cellpadding="4" cellspacing="0">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="0">
+        <tr>
+          <td width="20" bgcolor="#CFE7CF">&#8226;</td>
+          <td colspan="4" bgcolor="#CFE7CF" class="title-section"> [blk_res.country;block=tr;headergrp=country]</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td width="20" bgcolor="#FFF5D2">&#8226;</td>
+          <td colspan="3" bgcolor="#FFF5D2"><u>[blk_res.city;block=tr+tr;headergrp=city]</u></td>
+        </tr>
+        <tr class="text-mini">
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td bgcolor="#F0F0F0">&nbsp;</td>
+          <td bgcolor="#F0F0F0"><strong><em>Nom</em></strong></td>
+          <td bgcolor="#F0F0F0"><strong><em>Score</em></strong></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td width="20" bgcolor="#F0F0F0">&deg;</td>
+          <td width="100" bgcolor="#F0F0F0">[blk_res.winner;block=tr]</td>
+          <td bgcolor="#F0F0F0">[blk_res.score]</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td bgcolor="#FFFFDF">&rarr; </td>
+          <td colspan="3" bgcolor="#FFFFDF"><span class="text-mini">[blk_res.city;block=tr;footergrp=city]</span></td>
+        </tr>
+        <tr>
+          <td bgcolor="#DDEEDD">&rarr;</td>
+          <td colspan="4" bgcolor="#DDEEDD"><span class="text-mini">[blk_res.country;block=tr;footergrp=country]</span></td>
+        </tr>
+        <tr>
+          <td colspan="5">[blk_res;block=tr;splittergrp=country]
+            <hr noshade style="background-color:#FF0000;"></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

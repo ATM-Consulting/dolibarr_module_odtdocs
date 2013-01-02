@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>TinyButStrong - Exemples - prm sel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="tbs_fr_exemples_0styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Exemple de s&eacute;lection d'items</h1>
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
+  <tr>
+    <td><p> Le plug-in nomm&eacute; &quot;HTML&quot; vous permet entre autres de s&eacute;lectionner des items une liste , une s&eacute;rie de radio-boutons ou de cases-&agrave;-cocher.<br>
+        <br>
+        Pour remplire une liste, il suffit d'utiliser un bloc normale d&eacute;limit&eacute; par les balises <span class="text-example2">&lt;option&gt;</span>.<br>
+      </p></td>
+  </tr>
+</table>
+<form name="form1" method="post" action="">
+  <table width="500" border="0" align="center" cellpadding="2" cellspacing="0" class="back-special2">
+    <tr>
+      <td width="220" align="left" valign="top">&nbsp;</td>
+      <td width="140" class="title-section2"><div align="left">Liste avec valeur</div></td>
+      <td width="140" class="title-section2"><div align="left">Liste sans valeur</div></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" class="title-section2">Remplir une liste :</td>
+      <td width="140"><div align="left">
+          <select name="list_1v" size="5" multiple>
+            <option value="[lst1v.id]">[lst1v.name;block=option]</option>
+          </select>
+        </div></td>
+      <td width="140"><div align="left">
+          <select name="list_1" size="5" multiple>
+            <option>[lst1.name;block=option]</option>
+          </select>
+        </div></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">&nbsp;</td>
+      <td><div align="left"></div></td>
+      <td><div align="left"></div></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" class="title-section2">S&eacute;lection simple :</td>
+      <td><div align="left">
+          <select name="list_2v" size="5" multiple>
+            <option value="1">Rouge</option>
+            <option value="2">Vert</option>
+            <option value="3">Bleu</option>
+            <option value="4">Jaune</option>
+            <option value="5">Blanc</option>
+            <option>[onshow.sel1_id;ope=html;select]</option>
+          </select>
+        </div></td>
+      <td><div align="left">
+          <select name="list_2" size="5" multiple>
+            <option>Rouge</option>
+            <option>Vert</option>
+            <option>Bleu</option>
+            <option>Jaune</option>
+            <option>Blanc</option>
+            <option>[onshow.sel1_name;ope=html;select]</option>
+          </select>
+        </div></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" class="title-section2">S&eacute;lection multiple :</td>
+      <td><div align="left">
+          <select name="list_3v" size="5" multiple id="list_3v">
+            <option value="1">Rouge</option>
+            <option value="2">Vert</option>
+            <option value="3">Bleu</option>
+            <option value="4">Jaune</option>
+            <option value="5">Blanc</option>
+            <option>[onshow.sel2_id;ope=html;select]</option>
+          </select>
+        </div></td>
+      <td><div align="left">
+          <select name="list_3" size="5" multiple id="list_3">
+            <option>Rouge</option>
+            <option>Vert</option>
+            <option>Bleu</option>
+            <option>Jaune</option>
+            <option>Blanc</option>
+            <option>[onshow.sel2_name;ope=html;select]</option>
+          </select>
+        </div></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">&nbsp;</td>
+      <td><div align="left"></div></td>
+      <td><div align="left"></div></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" class="title-section2">Remplir et s&eacute;lectionner :</td>
+      <td><select name="list_4v" size="5" multiple id="list_4v">
+          <option value="[lst3v.id]">[lst3v.name;block=option]</option>
+          <option>[onshow.sel1_id;ope=html;select]</option>
+        </select>
+      </td>
+      <td><select name="list_4" size="5" multiple id="list_4">
+          <option>[lst3.name;block=option]</option>
+          <option>[onshow.sel1_name;ope=html;select]</option>
+        </select></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+  <br>
+  <table width="500" border="0" align="center" cellpadding="2" cellspacing="0" class="back-special2">
+    <tr>
+      <td align="left" valign="top" class="title-section2">S&eacute;lection de radio-bouton et case-&agrave;-cocher :</td>
+    </tr>
+    <tr>
+      <td>&nbsp;[onshow.sel1_name;ope=html;select=radio1]</td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <input type="radio" name="radio1" id="radio1" value="Rouge">
+        -&gt;Rouge
+        <input type="radio" name="radio1" id="radio2" value="Vert">
+        -&gt;Vert
+        <input type="radio" name="radio1" id="radio3" value="Bleu">
+        -&gt;Bleu
+        <input type="radio" name="radio1" id="radio4" value="Jaune">
+        -&gt;Jaune
+        <input type="radio" name="radio1" id="radio5" value="Blanc">
+        -&gt;Blanc </td>
+    </tr>
+    <tr>
+      <td>&nbsp;[onshow.sel2_name;ope=html;select=check1]</td>
+    </tr>
+    <tr>
+      <td>
+        <input name="check1" type="checkbox" id="check1" value="Rouge">
+        -&gt;Rouge
+        <input name="check1" type="checkbox" id="check2" value="Vert">
+        -&gt;Vert
+        <input name="check1" type="checkbox" id="check3" value="Bleu">
+        -&gt;Bleu
+        <input name="check1" type="checkbox" id="check4" value="Jaune">
+        -&gt;Jaune
+        <input name="check1" type="checkbox" id="check5" value="Blanc">
+        -&gt;Blanc </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">&nbsp;</td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>
