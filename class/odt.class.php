@@ -10,13 +10,16 @@ class TODTDocs {
 	/* Liste des modèles valides */
 		$Tab=array();
 		
-		if ($handle = opendir(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type)) {
-		    while (false !== ($entry = readdir($handle))) {
-		    	if($entry[0]!='.' && TODTDocs::validFile($entry))  $Tab[] = $entry;
-		    }
-		
-		    closedir($handle);
+		if(is_dir(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type)){
+			if ($handle = opendir(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type)) {
+			    while (false !== ($entry = readdir($handle))) {
+			    	if($entry[0]!='.' && TODTDocs::validFile($entry))  $Tab[] = $entry;
+			    }
+			
+			    closedir($handle);
+			}
 		}
+		
 		sort($Tab);
 		
 		return $Tab;

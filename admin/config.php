@@ -37,7 +37,7 @@
 //if (! defined("NOLOGIN"))        define("NOLOGIN",'1');		// If this page is public (can be called outside logged session)
 
 // Change this following line to use the correct relative path (../, ../../, etc)
-include '../../atm-core/inc-dolibarr.php';
+include '../config.php';
 // Change this following line to use the correct relative path from htdocs (do not remove DOL_DOCUMENT_ROOT)
 
 
@@ -100,12 +100,12 @@ if(isset($_REQUEST['action'])) {
 //$form=new Form($db);
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
-print_fiche_titre('Gestion des équipements',$linkback,'setup');
+print_fiche_titre('Gestion des modèles',$linkback,'setup');
 
-$form=new ATMForm;
+$form=new TFormCore;
 
-?>
-<!-- <form action="<?=$_SERVER['PHP_SELF'] ?>" name="livedocx-form" method="POST" enctype="multipart/form-data">
+
+/*<form action="<?=$_SERVER['PHP_SELF'] ?>" name="livedocx-form" method="POST" enctype="multipart/form-data">
 	<input type="hidden" name="action" value="LIVEDOCX" />
 <table width="100%" class="noborder">
 	<tr class="liste_titre">
@@ -114,9 +114,8 @@ $form=new ATMForm;
 		</tr>
 		<tr class="impair">
 			<td valign="top">Login / Mot de passe</td>
-			<td align="center"><?
+			<td align="center">
 				echo $form->combo('Utiliser le service <a href="http://www.livedocx.com/" target="_blank">LiveDocx</a>', 'livedocx_use', array(0=>'Non', 1=>'Oui'), $dTBS->livedocx_use);	
-			?>
 			<input type="text" name="livedocx_login" value="<?=$dTBS->livedocx_login ?>" />		
 			<input type="password" name="livedocx_password" value="<?=$dTBS->livedocx_password ?>" />
 			<input type="submit" name="btvalid" value="Valider" />	
@@ -126,8 +125,7 @@ $form=new ATMForm;
 	</tr>
 	
 </table>
-</form> -->
-<?
+</form>*/
 
 	showFormModel('propal',$conf->entity);
 	showFormModel('commande',$conf->entity);
@@ -203,25 +201,18 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 			<?
 			
 			foreach($TDocs as $fichier) {
-				
 				?><tr>
 					<td><a href="<?=DOL_URL_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier ?>" target="_blank" style="font-weight:normal;"><?=$fichier ?></a></td>
 					<td><a href="<?=$_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?=urlencode($fichier) ?>&type=<?=$typeDoc ?>">Supprimer</a></td>
 				</tr><?
-					
 			}
 		}
-		
 		?>
 		
 	</table>
 	</form>
 	<br /><br />
-	
-	
-	
 	<?
-	
 }
 ?>
 
@@ -242,11 +233,8 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 </table>
 <?
 
- 
-
 // Put here content of your page
 // ...
-
 
 /***************************************************
 * LINKED OBJECT BLOCK
