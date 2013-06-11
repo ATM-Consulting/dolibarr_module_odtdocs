@@ -129,9 +129,6 @@ class TODTDocs {
 		
 		@mkdir( dirname($outName), 0777, true );
 		
-		require_once(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/lib/tinybutstrong/tbs_class_php5.php');
-		require_once(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/lib/tinybutstrong/tbs_plugin_opentbs.php');
-		
 		$TBS = new clsTinyButStrong; // new instance of TBS
 		$TBS->NoErr = true;
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
@@ -237,7 +234,7 @@ class TODTDocs {
 	function asArray($object) {
 		$Tab=array();
 		
-		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation');
+		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement');
 		$TNoBR = array('address');
 		
 		foreach($object as $k=>$v) {

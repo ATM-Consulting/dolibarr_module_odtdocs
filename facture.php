@@ -35,7 +35,10 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php');
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
+require_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
+require_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
 
+global $db;
 $langs->load("bills");
 
 
@@ -88,10 +91,33 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($fac->lines as $ligne) {
+		$TTarifFacturedet = new TTarifFacturedet($db);
+		$TTarifFacturedet->fetch($ligne->rowid);
+		
+		$milestone = new DaoMilestone($db);
+		$milestone->fetch($ligne->rowid,"facture");
+		
 		$ligneArray = TODTDocs::asArray($ligne);
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
+		
+		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifFacturedet->tarif_poids;
+		if(empty($ligneArray['poids'])){
+			switch ($TTarifFacturedet->poids) {
+				case -6:
+					$ligneArray['poids'] = "mg";
+					break;
+				case -3:
+					$ligneArray['poids'] = "g";
+					break;
+				case 0:
+					$ligneArray['poids'] = "kg";
+					break;
+			}
+		}		
+		
 		$tableau[]=$ligneArray;
 	}
 	
@@ -116,7 +142,21 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	 * Mais cette valeur ne semble jamais remplie et mes recherches sont infructueuses.
 	 */
 	
+	//Condition de règlement
+	$resql = $db->query('SELECT libelle_facture FROM '.MAIN_DB_PREFIX."c_payment_term WHERE rowid = ".$fac->cond_reglement_id);
+	$res = $db->fetch_object($resql);
+	$contact['reglement'] = $res->libelle_facture;
 	
+	echo 'SELECT libelle FROM '.MAIN_DB_PREFIX."c_paiement WHERE rowid = ".$fac->mode_reglement_id;
+	
+	//Mode de règlement
+	$resql = $db->query('SELECT libelle FROM '.MAIN_DB_PREFIX."c_paiement WHERE id = ".$fac->mode_reglement_id);
+	$res = $db->fetch_object($resql);
+	$contact['mode_reglement'] = $res->libelle;
+	
+	/*echo '<pre>';
+	print_r($fac->linkedObjects);
+	echo '</pre>';*/
 	
 	//print_r($tableau); exit;
 @	TODTDocs::makeDocTBS(

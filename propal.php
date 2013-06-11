@@ -29,7 +29,10 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");;
+require_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
+require_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
 
+global $db;
 $langs->load('propal');
 $langs->load('compta');
 
@@ -85,11 +88,33 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligne->product_photo = $photo_urlAbs;
 		}
 		
+		$TTarifPropaldet = new TTarifPropaldet($db);
+		$TTarifPropaldet->fetch($ligne->rowid);
+		
+		$milestone = new DaoMilestone($db);
+		$milestone->fetch($ligne->rowid,"propal");
+		
 		$ligneArray = TODTDocs::asArray($ligne);
+		
 		if(empty($ligneArray['product_label'])) { // Les lignes libres n'ont pas de libellé mais seulement description
 			$ligneArray['product_label'] = $ligneArray['description'];
 			$ligneArray['description'] = '';
 		}
+		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifPropaldet->tarif_poids;
+		if(empty($ligneArray['poids'])){
+			switch ($TTarifPropaldet->poids) {
+				case -6:
+					$ligneArray['poids'] = "mg";
+					break;
+				case -3:
+					$ligneArray['poids'] = "g";
+					break;
+				case 0:
+					$ligneArray['poids'] = "kg";
+					break;
+			}
+		}		
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		$tableau[]=$ligneArray;
@@ -107,6 +132,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$societe->pays = $contact['CUSTOMER']['pays'];
 		}
 	}
+	
+	/*echo '<pre>';
+	print_r($tableau);
+	echo '</pre>';*/
 	
 	TODTDocs::makeDocTBS(
 		'propal'

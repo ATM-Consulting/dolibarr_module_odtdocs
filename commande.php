@@ -32,8 +32,10 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
+require_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
 
-
+global $db;
 $langs->load('orders');
 
 
@@ -64,12 +66,35 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($commande->lines as $ligne) {
+		$TTarifCommandedet = new TTarifCommandedet($db);
+		$TTarifCommandedet->fetch($ligne->rowid);
+		
+		$milestone = new DaoMilestone($db);
+		$milestone->fetch($ligne->rowid,"commande");
+		
+		//print_r($TTarifCommandedet);
+		
 		$ligneArray = TODTDocs::asArray($ligne);
+		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
 		/*print_r($ligneArray);*/
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['desc'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['subprice'])) $ligneArray['subprice'] = 0;
+		if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifCommandedet->tarif_poids;
+		if(empty($ligneArray['poids'])){
+			switch ($TTarifCommandedet->poids) {
+				case -6:
+					$ligneArray['poids'] = "mg";
+					break;
+				case -3:
+					$ligneArray['poids'] = "g";
+					break;
+				case 0:
+					$ligneArray['poids'] = "kg";
+					break;
+			}
+		}
 		
 		$tableau[]=$ligneArray;
 	}
@@ -84,6 +109,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$societe->pays = $contact['CUSTOMER']['pays'];
 		}
 	}
+	
+	/*echo '<pre>';
+	print_r($commande);
+	echo '</pre>';*/
+
 	
 	TODTDocs::makeDocTBS(
 		'commande'
