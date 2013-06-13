@@ -145,8 +145,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//Condition de règlement
 	$resql = $db->query('SELECT libelle_facture FROM '.MAIN_DB_PREFIX."c_payment_term WHERE rowid = ".$fac->cond_reglement_id);
 	$res = $db->fetch_object($resql);
-	$contact['reglement'] = $res->libelle_facture;
-	
+	$contact['reglement'] = $res->libelle_facture;	
 	//Mode de règlement
 	$resql = $db->query('SELECT libelle FROM '.MAIN_DB_PREFIX."c_paiement WHERE id = ".$fac->mode_reglement_id);
 	$res = $db->fetch_object($resql);

@@ -157,6 +157,8 @@ class TODTDocs {
 		
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
+		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
+		if(isset($object['autre']))$TBS->MergeField('autre',TODTDocs::asArray($object['autre']));
 		//print_r($object['tableau'][0]);
 		if(isset($object['tableau'])) $TBS->MergeBlock('tab,tab2',$object['tableau']);
 		if(isset($object['contact'])) {
