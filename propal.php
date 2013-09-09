@@ -42,10 +42,13 @@ $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'propale', $id, 'propal');
 
-
 /*
  *	View
  */
+ 
+/*echo '<pre>';
+print_r($db);
+echo '</pre>';*/
 
 llxHeader();
 
