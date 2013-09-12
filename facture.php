@@ -91,8 +91,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($fac->lines as $ligne) {
-		$TTarifFacturedet = new TTarifFacturedet($db);
-		$TTarifFacturedet->fetch($ligne->rowid);
+		$TTarifFacturedet = new TTarifFacturedet;
+		$TTarifFacturedet->load($ATMdb,$ligne->rowid);
 		
 		$milestone = new DaoMilestone($db);
 		$milestone->fetch($ligne->rowid,"facture");

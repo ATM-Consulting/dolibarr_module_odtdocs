@@ -44,7 +44,7 @@ $langs->load('orders');
  */
 
 llxHeader();
-
+$ATMdb = new Tdb;
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
 
 $commande = new commande($db);
@@ -66,8 +66,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($commande->lines as $ligne) {
-		$TTarifCommandedet = new TTarifCommandedet($db);
-		$TTarifCommandedet->fetch($ligne->rowid);
+		$TTarifCommandedet = new TTarifCommandedet;
+		$TTarifCommandedet->load($ATMdb,$ligne->rowid);
 		
 		$milestone = new DaoMilestone($db);
 		$milestone->fetch($ligne->rowid,"commande");

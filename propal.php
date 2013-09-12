@@ -52,6 +52,8 @@ echo '</pre>';*/
 
 llxHeader();
 
+$ATMdb = new Tdb;
+
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
 $propal->fetchObjectLinked();
@@ -91,8 +93,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligne->product_photo = $photo_urlAbs;
 		}
 		
-		$TTarifPropaldet = new TTarifPropaldet($db);
-		$TTarifPropaldet->fetch($ligne->rowid);
+		$TTarifPropaldet = new TTarifPropaldet;
+		$TTarifPropaldet->load($ATMdb,$ligne->rowid);
 		
 		$milestone = new DaoMilestone($db);
 		$milestone->fetch($ligne->rowid,"propal");
