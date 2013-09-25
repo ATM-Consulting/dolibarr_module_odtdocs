@@ -36,8 +36,7 @@ require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/dispatch/lib/dispatch.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/dispatch/class/dispatch.class.php");
+require_once(DOL_DOCUMENT_ROOT."/custom/dispatch/class/dispatchdetail.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/modules/expedition/modules_expedition.php");
 require_once(DOL_DOCUMENT_ROOT."/custom/asset/class/asset.class.php");
 if ($conf->product->enabled || $conf->service->enabled)  require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
@@ -71,6 +70,9 @@ llxHeader();
 
 function __poids_unite($unite){
 	switch ($unite) {
+		case -9:
+			return('μg');
+			break;
 		case -6:
 			return('mg');
 			break;
@@ -84,37 +86,47 @@ function __poids_unite($unite){
 
 }
 
-
 $ATMdb = new Tdb;
-$dispatch = new TDispatch;
-$dispatch->load($ATMdb,$_REQUEST["id"]);
+
+$expedition = new Expedition($db);
+$expedition->fetch($_REQUEST['id']);
+$expedition->fetch_lines();
+
+/*echo '<pre>';
+print_r($expedition);
+echo '</pre>';exit;*/
 
 $commande = new Commande($db);
-$commande->fetch($_REQUEST['fk_commande']);
+$commande->fetch($expedition->origin_id);
+$commande->fetch_lines();
 
 $societe = new Societe($db);
 $societe->fetch($commande->socid);
 
-$head = dispatch_prepare_head($commande,$dispatch);
-dol_fiche_head($head, 'delivery', $langs->trans("Sending"), 0, 'sending');
+$head = shipping_prepare_head($expedition);
+dol_fiche_head($head, 'tabEditions6', $langs->trans("Sending"), 0, 'sending');
 
 require('./class/odt.class.php');
 require('./class/atm.doctbs.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
-	$fOut =  $conf->expedition->dir_output . '/sending/'. dol_sanitizeFileName($dispatch->ref).'/'.dol_sanitizeFileName($dispatch->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
+	$fOut =  $conf->expedition->dir_output . '/sending/'. dol_sanitizeFileName($expedition->ref).'/'.dol_sanitizeFileName($expedition->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
 	
 	$tableau=array();
 	
 	//Parcours des lignes de la commande
-	foreach($commande->lines as $cligne) {
-		$dispatch = new TDispatch;
-		$dispatch->load($ATMdb,$id);
-		//Chargement des ligne d'équipement associé à la ligne de commande
-		$dispatch->loadLines($ATMdb,$cligne->rowid);
+	foreach($expedition->lines as $eligne) {
 		
-		foreach($dispatch->lines as $dligne){
+		$Tid_eligne = TRequeteCore::get_id_from_what_you_want($ATMdb,MAIN_DB_PREFIX."expeditiondet",array('fk_expedition'=>$expedition->id,'fk_origin_line'=>$eligne->origin_line_id),"rowid");
+		$id_eligne = (int)$Tid_eligne[0];
+		
+		$expeditiondet_asset = new TDispatchDetail;
+		$expeditiondet_asset->load($ATMdb,$id_eligne);
+		//Chargement des ligne d'équipement associé à la ligne de commande
+		$expeditiondet_asset->loadLines($ATMdb,$id_eligne);
+		
+		foreach($expeditiondet_asset->lines as $dligne){
 			$ligneArray = TODTDocs::asArray($dligne);
 			
 			//Chargement de l'équipement lié à la ligne d'expédition
@@ -123,7 +135,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			
 			//Chargement du produit lié à l'équipement
 			$product = new Product($db);
-			$product->fetch($TAsset->fk_product);
+			$product->fetch($eligne->fk_product);
 			
 			$ligneArray['product_ref'] = $product->ref;
 			$ligneArray['product_label'] = $product->label;
@@ -134,7 +146,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			
 			$tableau[]=$ligneArray;
 		}
+		
 	}
+	
+	/*echo '<pre>';
+	print_r($tableau);
+	echo '</pre>';exit;*/
 	
 	$contact = TODTDocs::getContact($db, $commande, $societe);
 	if(isset($contact['SHIPPING'])) {
@@ -148,17 +165,19 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	
 	$autre = array(
-		'date_jour' => date("d/m/Y H:i:s")
+		'ref' => $expedition->ref,
+		'date_jour' => date("d/m/Y H:i:s"),
+		'commande' => $commande->ref
 		);
 	
-	echo '<pre>';
+	/*echo '<pre>';
 	print_r($commande->linkedObjects);
-	echo '</pre>';
+	echo '</pre>';*/
 	
 	TODTDocs::makeDocTBS(
 		'expedition'
 		, $_REQUEST['modele']
-		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects, 'dispatch'=>$dispatch, 'autre'=>$autre)
+		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects, 'dispatch'=>$expedition, 'autre'=>$autre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
@@ -182,7 +201,7 @@ TODTDocs::combo('expedition', 'modele',GETPOST('modele'), $conf->entity);
 	<p><hr></p>
 	<?
 	
-TODTDocs::show_docs($db, $conf,$dispatch, $langs, 'expedition');
+TODTDocs::show_docs($db, $conf,$expedition, $langs, 'expedition');
 
 
 ?>
