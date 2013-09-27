@@ -102,7 +102,7 @@ class TODTDocs {
 			$(document).ready(function() { showButtonPDF_<?=$nom?>(); });
 			
 		</script>
-		<select name="<?=$nom?>" id="<?=$nom?>" onchange="showButtonPDF_<?=$nom?>()"><?
+		<select name="<?=$nom?>" id="<?=$nom?>" onchange="showButtonPDF_<?=$nom?>()" class="flat"><?
 			
 		foreach($TDocs as $fichier) {
 			
@@ -111,8 +111,26 @@ class TODTDocs {
 		}
 	
 		?></select><?
+		
 	}
-	function makeDocTBS($type, $modele, $object, $outName, $entity=1, $PDFconversion = false) {
+	function comboLang(&$db, $codelang='fr_FR') {
+		global $langs;
+		
+		dol_include_once('/core/class/html.formadmin.class.php');
+		
+		?>
+		- Langue : 
+		<?
+		
+		$formadmin=new FormAdmin($db);
+        $defaultlang=!empty($codelang) ? $codelang : $langs->getDefaultLang();
+        print $formadmin->select_language($defaultlang);
+		
+	}
+	function langs() {
+		
+	}
+	function makeDocTBS($type, $modele, $object, $outName, $entity=1, $PDFconversion = false, $newlang='fr_FR') {
 	/* Création du fichier à proprement parler
 	 * $objet aura la forme d'un tableau 
 	 * Array( 
@@ -123,7 +141,8 @@ class TODTDocs {
 	 * 		,'tableau'=>tableau de donnée/ligne du document   
 	 * )	
 	 *  */	
-	 
+		global $conf, $langs;
+	
 	 	if($type=='propal')$dir = 'propale/';
 		else $dir=$type.'/';
 		
@@ -154,7 +173,14 @@ class TODTDocs {
 			//${'mysoc_'.$k} = $v;
 			$TPdp[$k] = strtr($v,array("\n"," - ","\r"=>''));
 		}*/
+
+		$outputlangs = new Translate("",$conf);
+        $outputlangs->setDefaultLang($newlang);
+	 
+	 	$TBS->MergeField('langs', $outputlangs);
 		
+		
+				
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));

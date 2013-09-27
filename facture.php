@@ -35,8 +35,10 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php');
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
+
+
+dol_include_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");	
+dol_include_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
 
 global $db;
 $langs->load("bills");
@@ -91,32 +93,45 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($fac->lines as $ligne) {
-		$TTarifFacturedet = new TTarifFacturedet;
-		$TTarifFacturedet->load($ATMdb,$ligne->rowid);
+
+		if(class_exists('DaoMilestone')) {
+
+			$milestone = new DaoMilestone($db);
+			$milestone->fetch($ligne->rowid,"facture");
 		
-		$milestone = new DaoMilestone($db);
-		$milestone->fetch($ligne->rowid,"facture");
+		}
 		
-		$ligneArray = TODTDocs::asArray($ligne);
+		$ligneArray = TODTDocs::asArray($ligne);		
+
+		if(class_exists('TTarifFacturedet')) {
+			
+			$TTarifFacturedet = new TTarifFacturedet;
+			$TTarifFacturedet->load($ATMdb,$ligne->rowid);
+
+			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifFacturedet->tarif_poids;
+			if(empty($ligneArray['poids'])){
+				switch ($TTarifFacturedet->poids) {
+					case -6:
+						$ligneArray['poids'] = "mg";
+						break;
+					case -3:
+						$ligneArray['poids'] = "g";
+						break;
+					case 0:
+						$ligneArray['poids'] = "kg";
+						break;
+				}
+			}		
+			
+		}
+		
+		
+		
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
-		if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifFacturedet->tarif_poids;
-		if(empty($ligneArray['poids'])){
-			switch ($TTarifFacturedet->poids) {
-				case -6:
-					$ligneArray['poids'] = "mg";
-					break;
-				case -3:
-					$ligneArray['poids'] = "g";
-					break;
-				case 0:
-					$ligneArray['poids'] = "kg";
-					break;
-			}
-		}		
 		
 		$tableau[]=$ligneArray;
 	}
@@ -163,6 +178,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		, $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.dol_sanitizeFileName($fac->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
+		,$_REQUEST['lang_id']
 	);
 	
 
@@ -179,11 +195,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 ?>Modèle* à utiliser <?
 
 TODTDocs::combo('facture', 'modele',GETPOST('modele'), $conf->entity);
+//print_r($societe);
+TODTDocs::comboLang($db, $societe->default_lang);
 
 	if(!empty($TCompte)) {
 		
 		?>
-		Rib du compte à afficher <select name="account"><?
+		- Rib du compte à afficher <select name="account" class="flat"><?
 		
 			foreach($TCompte as $compte) {
 				
