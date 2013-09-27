@@ -36,9 +36,9 @@ require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/dispatch/class/dispatchdetail.class.php");
+dol_include_once(DOL_DOCUMENT_ROOT."/custom/dispatch/class/dispatchdetail.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/modules/expedition/modules_expedition.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/asset/class/asset.class.php");
+dol_include_once(DOL_DOCUMENT_ROOT."/custom/asset/class/asset.class.php");
 if ($conf->product->enabled || $conf->service->enabled)  require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
@@ -121,10 +121,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$Tid_eligne = TRequeteCore::get_id_from_what_you_want($ATMdb,MAIN_DB_PREFIX."expeditiondet",array('fk_expedition'=>$expedition->id,'fk_origin_line'=>$eligne->origin_line_id),"rowid");
 		$id_eligne = (int)$Tid_eligne[0];
 		
+		
 		$expeditiondet_asset = new TDispatchDetail;
 		$expeditiondet_asset->load($ATMdb,$id_eligne);
 		//Chargement des ligne d'équipement associé à la ligne de commande
 		$expeditiondet_asset->loadLines($ATMdb,$id_eligne);
+	
 		
 		foreach($expeditiondet_asset->lines as $dligne){
 			$ligneArray = TODTDocs::asArray($dligne);
@@ -181,6 +183,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
+		,$_REQUEST['lang_id']
 	);
 }
 
@@ -195,6 +198,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 ?>Modèle à utiliser* <?
 TODTDocs::combo('expedition', 'modele',GETPOST('modele'), $conf->entity);
+TODTDocs::comboLang($db, $societe->default_lang);
+
 ?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>

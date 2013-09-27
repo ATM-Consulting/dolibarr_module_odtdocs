@@ -32,8 +32,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
-require_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
+dol_include_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
+dol_include_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
 
 global $db;
 $langs->load('orders');
@@ -66,11 +66,31 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($commande->lines as $ligne) {
-		$TTarifCommandedet = new TTarifCommandedet;
-		$TTarifCommandedet->load($ATMdb,$ligne->rowid);
-		
-		$milestone = new DaoMilestone($db);
-		$milestone->fetch($ligne->rowid,"commande");
+		if(class_exists('DaoMilestone')) {	
+			$milestone = new DaoMilestone($db);
+			$milestone->fetch($ligne->rowid,"commande");
+		}
+
+		if(class_exists('TTarifCommandedet')) {	
+			$TTarifCommandedet = new TTarifCommandedet;
+			$TTarifCommandedet->load($ATMdb,$ligne->rowid);
+			
+			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifCommandedet->tarif_poids;
+			if(empty($ligneArray['poids'])){
+				switch ($TTarifCommandedet->poids) {
+					case -6:
+						$ligneArray['poids'] = "mg";
+						break;
+					case -3:
+						$ligneArray['poids'] = "g";
+						break;
+					case 0:
+						$ligneArray['poids'] = "kg";
+						break;
+				}
+			}
+			
+		}
 		
 		//print_r($TTarifCommandedet);
 		
@@ -81,20 +101,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['subprice'])) $ligneArray['subprice'] = 0;
-		if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifCommandedet->tarif_poids;
-		if(empty($ligneArray['poids'])){
-			switch ($TTarifCommandedet->poids) {
-				case -6:
-					$ligneArray['poids'] = "mg";
-					break;
-				case -3:
-					$ligneArray['poids'] = "g";
-					break;
-				case 0:
-					$ligneArray['poids'] = "kg";
-					break;
-			}
-		}
+		
 		
 		$tableau[]=$ligneArray;
 	}
@@ -122,6 +129,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		, $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
+		,$_REQUEST['lang_id']
 	);
 	
 
@@ -137,6 +145,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 ?>Modèle* à utiliser <?
 TODTDocs::combo('commande', 'modele',GETPOST('modele'), $conf->entity);
+TODTDocs::comboLang($db, $societe->default_lang);
+
 ?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" /><?
 ?>
 <br/><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>

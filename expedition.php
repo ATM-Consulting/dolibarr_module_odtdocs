@@ -117,6 +117,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
+		,$_REQUEST['lang_id']
 	);
 	
 	
@@ -131,7 +132,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 
 ?>Modèle à utiliser* <?
+
 TODTDocs::combo('expedition', 'modele',GETPOST('modele'), $conf->entity);
+TODTDocs::comboLang($db, $societe->default_lang);
+
 ?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
