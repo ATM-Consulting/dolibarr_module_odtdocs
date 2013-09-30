@@ -29,8 +29,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
-dol_include_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
-dol_include_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
+dol_include_once("/custom/tarif/class/tarif.class.php");
+dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
 global $db;
 $langs->load('propal');
@@ -73,6 +73,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($propal->lines as $ligne) {
+		
 		if(!empty($ligne->fk_product)) {
 			// Chargement du produit correspondant
 			$product = new Product($db);
@@ -93,6 +94,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligne->product_photo = $photo_urlAbs;
 		}
 		
+		
+		$ligneArray = TODTDocs::asArray($ligne);
+		
 		if(class_exists('TTarifPropaldet')) {
 			$TTarifPropaldet = new TTarifPropaldet;
 			$TTarifPropaldet->load($ATMdb,$ligne->rowid);
@@ -100,6 +104,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifPropaldet->tarif_poids;
 			if(empty($ligneArray['poids'])){
 				switch ($TTarifPropaldet->poids) {
+					case -9:
+						$ligneArray['poids'] = "ug";
+						break;
 					case -6:
 						$ligneArray['poids'] = "mg";
 						break;
@@ -119,8 +126,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$milestone->fetch($ligne->rowid,"propal");
 		}
 		
-		$ligneArray = TODTDocs::asArray($ligne);
-		
 		if(empty($ligneArray['product_label'])) { // Les lignes libres n'ont pas de libellé mais seulement description
 			$ligneArray['product_label'] = $ligneArray['description'];
 			$ligneArray['description'] = '';
@@ -129,6 +134,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
+		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
 		$tableau[]=$ligneArray;
 	}
 

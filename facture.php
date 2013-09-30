@@ -36,9 +36,8 @@ require_once(DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php');
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
-
-dol_include_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");	
-dol_include_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
+dol_include_once("/custom/tarif/class/tarif.class.php");	
+dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
 global $db;
 $langs->load("bills");
@@ -101,9 +100,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		}
 		
-		$ligneArray = TODTDocs::asArray($ligne);		
-
+		$ligneArray = TODTDocs::asArray($ligne);
+		
+		
 		if(class_exists('TTarifFacturedet')) {
+					
 			
 			$TTarifFacturedet = new TTarifFacturedet;
 			$TTarifFacturedet->load($ATMdb,$ligne->rowid);
@@ -111,6 +112,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifFacturedet->tarif_poids;
 			if(empty($ligneArray['poids'])){
 				switch ($TTarifFacturedet->poids) {
+					case -9:
+						$ligneArray['poids'] = "ug";
+						break;
 					case -6:
 						$ligneArray['poids'] = "mg";
 						break;
@@ -130,6 +134,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
+		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice']*(1-($ligneArray['remise_percent']/100));
 		
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
 		

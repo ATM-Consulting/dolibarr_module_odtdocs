@@ -32,8 +32,9 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
-dol_include_once(DOL_DOCUMENT_ROOT."/custom/tarif/class/tarif.class.php");
-dol_include_once(DOL_DOCUMENT_ROOT."/custom/milestone/class/dao_milestone.class.php");
+
+dol_include_once("/custom/tarif/class/tarif.class.php");
+dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
 global $db;
 $langs->load('orders');
@@ -66,11 +67,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($commande->lines as $ligne) {
+		$ligneArray = TODTDocs::asArray($ligne);	
+		
 		if(class_exists('DaoMilestone')) {	
 			$milestone = new DaoMilestone($db);
 			$milestone->fetch($ligne->rowid,"commande");
 		}
-
+	
 		if(class_exists('TTarifCommandedet')) {	
 			$TTarifCommandedet = new TTarifCommandedet;
 			$TTarifCommandedet->load($ATMdb,$ligne->rowid);
@@ -78,6 +81,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifCommandedet->tarif_poids;
 			if(empty($ligneArray['poids'])){
 				switch ($TTarifCommandedet->poids) {
+					case -9:
+						$ligneArray['poids'] = "ug";
+						break;
 					case -6:
 						$ligneArray['poids'] = "mg";
 						break;
@@ -93,14 +99,16 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		//print_r($TTarifCommandedet);
-		
-		$ligneArray = TODTDocs::asArray($ligne);
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
 		/*print_r($ligneArray);*/
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['desc'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['subprice'])) $ligneArray['subprice'] = 0;
+		
+		/*echo '<pre>';
+		print_r($ligneArray);
+		echo '</pre>';*/
 		
 		
 		$tableau[]=$ligneArray;
