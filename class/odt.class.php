@@ -130,7 +130,7 @@ class TODTDocs {
 	function langs() {
 		
 	}
-	function makeDocTBS($type, $modele, $object, $outName, $entity=1, $PDFconversion = false, $newlang='fr_FR') {
+	function makeDocTBS($type, $modele, $object, $outName, $entity=1, $PDFconversion = false, $newlang='fr_FR', $langsToLoad=array()) {
 	/* Création du fichier à proprement parler
 	 * $objet aura la forme d'un tableau 
 	 * Array( 
@@ -175,12 +175,16 @@ class TODTDocs {
 		}*/
 
 		$outputlangs = new Translate("",$conf);
+		//$outputlangs=$langs;
         $outputlangs->setDefaultLang($newlang);
-	 
-	 	$TBS->MergeField('langs', $outputlangs);
+		foreach ($langsToLoad as $domain) {
+			$outputlangs->load($domain);
+		}
+		
+		$TBS->MergeField('langs', $outputlangs);
 		
 		
-				
+		
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));

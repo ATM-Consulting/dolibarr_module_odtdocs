@@ -36,9 +36,19 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 dol_include_once("/custom/tarif/class/tarif.class.php");
 dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
-global $db;
+global $db, $langs;
 $langs->load('orders');
+$langs->load('sendings');
+$langs->load('bills');
+$langs->load('companies');
+$langs->load('propal');
+$langs->load('deliveries');
+$langs->load('products');
+$langs->load('odtdocs@odtdocs');
 
+echo '<pre>';
+print_r($langs);
+echo '</pre>';
 
 /*
  * View
@@ -138,8 +148,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']
+		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
-	
 
 }
 
