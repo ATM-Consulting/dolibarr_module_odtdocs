@@ -46,9 +46,9 @@ $langs->load('deliveries');
 $langs->load('products');
 $langs->load('odtdocs@odtdocs');
 
-echo '<pre>';
+/*echo '<pre>';
 print_r($langs);
-echo '</pre>';
+echo '</pre>';*/
 
 /*
  * View
