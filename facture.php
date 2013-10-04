@@ -70,8 +70,8 @@ $societe->fetch($fac->socid);
 	 * Liste des comptes bancaires disponible
 	 */
 require_once(DOL_DOCUMENT_ROOT."/societe/class/companybankaccount.class.php");
-$compte = new Account($db);	
 
+	
 $ATMdb=new Tdb;	
 $sql= "SELECT rowid FROM ".MAIN_DB_PREFIX."bank_account WHERE entity=".$conf->entity;
 $ATMdb->Execute($sql);
@@ -81,7 +81,10 @@ $TCompte = array();
 while($ATMdb->Get_line()) {
 	
 	$rowid = $ATMdb->Get_field('rowid');
+	
+	$compte = new Account($db);	
 	$compte->fetch($rowid);
+	
 	$TCompte[$rowid] = $compte;
 }
 
