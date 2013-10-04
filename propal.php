@@ -32,9 +32,15 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
 dol_include_once("/custom/tarif/class/tarif.class.php");
 dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
-global $db;
+global $db, $langs;
+$langs->load('orders');
+$langs->load('sendings');
+$langs->load('bills');
+$langs->load('companies');
 $langs->load('propal');
-$langs->load('compta');
+$langs->load('deliveries');
+$langs->load('products');
+$langs->load('odtdocs@odtdocs');
 
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
 
@@ -163,6 +169,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']
+		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
 	
 	//print_r(array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau));
@@ -184,6 +191,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,array('propal'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc)
 		, $conf->propale->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.dol_sanitizeFileName($propal->ref).'.odt'
 	);*/
+}
+
+function decode($FieldName, &$CurrVal)
+{
+    return $CurrVal = html_entity_decode($CurrVal);
 }
 
 ?>

@@ -45,14 +45,15 @@ if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/co
 if ($conf->stock->enabled)    require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
 
 
-$langs->load("sendings");
-$langs->load("companies");
-$langs->load("bills");
-$langs->load('deliveries');
+global $db, $langs;
 $langs->load('orders');
-$langs->load('stocks');
-$langs->load('other');
+$langs->load('sendings');
+$langs->load('bills');
+$langs->load('companies');
 $langs->load('propal');
+$langs->load('deliveries');
+$langs->load('products');
+$langs->load('odtdocs@odtdocs');
 
 global $db;
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
@@ -184,7 +185,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']
+		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
+}
+
+function decode($FieldName, &$CurrVal)
+{
+    return $CurrVal = html_entity_decode($CurrVal);
 }
 
 ?>

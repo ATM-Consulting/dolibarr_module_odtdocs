@@ -183,8 +183,6 @@ class TODTDocs {
 		
 		$TBS->MergeField('langs', $outputlangs);
 		
-		
-		
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));

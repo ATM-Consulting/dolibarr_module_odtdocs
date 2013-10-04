@@ -1,3 +1,22 @@
 CHARSET=UTF-8
 
 Asset=Equipement
+Unit=Unité
+PUHTRemise=Prix Unitaire HT Remisé
+Lot=Lot
+Tare=Tare
+Transporteur=Transporteur
+Lieu= A Valence, le
+Dear=Cher Client
+Thanks1=Nous avons le plaisir de vous adresser les articles ci-dessous relatifs à votre commande ci-dessus référencée.
+Thanks2=Nous vous remercions vivement de votre commande.
+Regards=Cordialement
+Signature=Harold de POMYERS
+DateBill=Date de Facturation
+DateTerm=Date échéance
+RefCmd=Réf. Commande
+PaymentTerm=Conditions de règlement
+PaymentMethod=Mode de règlement
+ValidityDate=Date de fin de validité
+Propal=Proposition Commerciale
+PropalDate=Date proposition

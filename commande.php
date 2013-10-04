@@ -153,6 +153,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 }
 
+
+function decode($FieldName, &$CurrVal)
+{
+    return $CurrVal = html_entity_decode($CurrVal);
+}
+
 ?>
 <form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
 	<input type="hidden" name="id" value="<?=$id ?>" />
