@@ -111,10 +111,33 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 	}
 	
+	if($conf->maccaferri->enabled){
+		$resql = $db->query("SELECT i.code, i.libelle, s.libelle as transporteur, p.ref, p.title
+							FROM ".MAIN_DB_PREFIX."expedition as e
+							LEFT JOIN ".MAIN_DB_PREFIX."element_element as ee ON (ee.fk_target = e.rowid)
+							LEFT JOIN ".MAIN_DB_PREFIX."commande  as c ON (c.rowid = ee.fk_source)
+							LEFT JOIN ".MAIN_DB_PREFIX."c_incoterms as i ON (i.rowid = c.fk_incoterms)
+							LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = c.fk_projet)
+							LEFT JOIN ".MAIN_DB_PREFIX."c_shipment_mode as s ON (s.rowid = e.fk_shipping_method)
+							WHERE e.rowid = ".$exp->id."
+							AND ee.sourcetype='commande' AND ee.targettype='shipping'");
+		
+		$res = $db->fetch_object($resql);
+		
+		$autre = array("incoterm"=>$res->code." - ".$res->libelle,
+					   "date_expedition_fr"=>date('d/m/Y'),
+					   "date_livraison"=>date('d/m/Y',$exp->date_delivery),
+					   "shipping_method"=>$res->transporteur,
+					   "projet"=>$res->ref." ".$res->title);
+	}
+	else{
+		$autre = array();
+	}
+
 	TODTDocs::makeDocTBS(
 		'expedition'
 		, $_REQUEST['modele']
-		,array('doc'=>$exp, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects)
+		,array('doc'=>$exp, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

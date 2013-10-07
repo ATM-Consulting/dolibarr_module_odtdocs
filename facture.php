@@ -170,6 +170,26 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	 * [fk_facture_source] => [origin] => [origin_id] => [linked_objects
 	 * Mais cette valeur ne semble jamais remplie et mes recherches sont infructueuses.
 	 */
+	if($conf->maccaferri->enabled){ 
+		$resql = $db->query("SELECT c.name as devise, i.code, i.libelle, p.ref, p.title
+							FROM ".MAIN_DB_PREFIX."currency as c
+							LEFT JOIN ".MAIN_DB_PREFIX."facture as f ON (f.devise_code = c.code)
+							LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = f.fk_projet)
+							LEFT JOIN ".MAIN_DB_PREFIX."c_incoterms as i ON (i.rowid = f.fk_incoterms)
+							WHERE f.rowid = ".$fac->id);
+		
+		$res = $db->fetch_object($resql);
+		
+		$autre = array("devise"=>$res->devise,
+					   "incoterm"=>$res->code." - ".$res->libelle,
+					   "date_facture_fr"=>date('d/m/Y'),
+					   "date_lim_reglement_fr"=>date('d/m/Y',$fac->date_lim_reglement),
+					   "projet"=>$res->ref." ".$res->title);
+	}
+	else{
+		$autre = array();
+	}
+	 
 	
 	//Condition de règlement
 	$resql = $db->query('SELECT libelle_facture FROM '.MAIN_DB_PREFIX."c_payment_term WHERE rowid = ".$fac->cond_reglement_id);
@@ -188,7 +208,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
-		,array('doc'=>$fac, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects )
+		,array('doc'=>$fac, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre)
 		, $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.dol_sanitizeFileName($fac->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

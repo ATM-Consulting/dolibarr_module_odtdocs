@@ -36,7 +36,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 dol_include_once("/custom/tarif/class/tarif.class.php");
 dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
-global $db, $langs;
+global $db, $langs, $user;
 $langs->load('orders');
 $langs->load('sendings');
 $langs->load('bills');
@@ -138,12 +138,30 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	/*echo '<pre>';
 	print_r($commande);
 	echo '</pre>';*/
-
+	if($conf->maccaferri->enabled){
+		$resql = $db->query("SELECT c.name as devise, i.code, i.libelle, p.ref, p.title
+						FROM ".MAIN_DB_PREFIX."currency as c
+						LEFT JOIN ".MAIN_DB_PREFIX."commande as cmd ON (cmd.devise_code = c.code)
+						LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = cmd.fk_projet)
+						LEFT JOIN ".MAIN_DB_PREFIX."c_incoterms as i ON (i.rowid = cmd.fk_incoterms)
+						WHERE cmd.rowid = ".$commande->id);
+		
+		$res = $db->fetch_object($resql);
+		
+		$autre = array("devise"=>$res->devise,
+					   "incoterm"=>$res->code." - ".$res->libelle,
+					   "date_commande_fr"=>date('d/m/Y'),
+					   "date_livraison"=>date('d/m/Y',$commande->date_livraison),
+					   "projet"=>$res->ref." ".$res->title);
+	}
+	else{
+		$autre = array();
+	}
 	
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
-		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects)
+		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre)
 		, $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

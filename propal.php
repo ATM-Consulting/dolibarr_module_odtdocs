@@ -161,10 +161,30 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	print_r($tableau);
 	echo '</pre>';*/
 	
+	if($conf->maccaferri->enabled){
+		$resql = $db->query("SELECT c.name as devise, i.code, i.libelle, p.ref, p.title
+						FROM ".MAIN_DB_PREFIX."currency as c
+						LEFT JOIN ".MAIN_DB_PREFIX."propal as pp ON (pp.devise_code = c.code)
+						LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = pp.fk_projet)
+						LEFT JOIN ".MAIN_DB_PREFIX."c_incoterms as i ON (i.rowid = pp.fk_incoterms)
+						WHERE pp.rowid = ".$propal->id);
+		
+		$res = $db->fetch_object($resql);
+		
+		$autre = array("devise"=>$res->devise,
+					   "incoterm"=>$res->code." - ".$res->libelle,
+					   "date_devis_fr"=>date('d/m/Y'),
+					   "fin_validite"=>date('d/m/Y',$propal->fin_validite),
+					   "projet"=>$res->ref." ".$res->title);
+	}
+	else{
+		$autre = array();
+	}
+	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects)
+		,array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
