@@ -20,3 +20,13 @@ PaymentMethod=Mode de règlement
 ValidityDate=Date de fin de validité
 Propal=Proposition Commerciale
 PropalDate=Date proposition
+RefProjet=Référence Projet
+Note1=Cette offre de prix est réalisée uniquement sur la base des éléments fournis par vos soins à date de rédaction.
+LabelDevise=Montants exprimés en
+LabelDispo=Disponibilités
+Dispo=Sauf mention(s) / Produit(s) disponible(s) sous 1 à 2 semaines à réception de commande
+DeliveryDate=Date de livraison
+Footer=POUR PASSER COMMANDE
+FooterLigne1=Nous retourner tamponné et signé TOUS LES VOLETS du présent devis avec votre bon de commande en nous précisant, le lieu de livraison, la date, et un téléphone 
+pour le transporteur.
+FooterLigne2=Ne pas oublier de joindre le(s) contrat(s) de location de(s) matériel(s) et/ou d'assistance(s) technique(s) le cas échéant.

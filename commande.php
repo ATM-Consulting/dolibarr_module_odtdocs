@@ -107,6 +107,19 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			}
 			
 		}
+
+		if($conf->maccaferri->enabled){
+			$resql = $db->query("SELECT cmdet.devise_pu as devise_pu, cmdet.devise_mt_ligne as devise_mt_ligne, p.product_unit
+							 FROM ".MAIN_DB_PREFIX."commandedet as cmdet
+							 LEFT JOIN ".MAIN_DB_PREFIX."product as p ON (p.rowid = cmdet.fk_product)
+							 WHERE cmdet.rowid = ".$ligne->id);
+		
+			$res = $db->fetch_object($resql);
+			
+			$ligneArray['devise_pu'] = (empty($res->devise_pu)) ? $ligneArray['subprice'] : $res->devise_pu;
+			$ligneArray['devise_mt_ligne'] = (empty($res->devise_mt_ligne)) ? $ligneArray['total_ht'] : $res->devise_pu;
+			$ligneArray['unite'] = (empty($res->product_unit)) ? '' : $res->product_unit;
+		}
 		
 		//print_r($TTarifCommandedet);
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));

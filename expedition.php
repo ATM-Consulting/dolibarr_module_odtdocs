@@ -97,6 +97,20 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
+		
+		if($conf->maccaferri->enabled && $ligne->fk_product){
+			$resql = $db->query("SELECT p.product_unit, p.weight
+								 FROM ".MAIN_DB_PREFIX."product as p
+								 WHERE p.rowid = ".$ligne->fk_product);
+		
+			$res = $db->fetch_object($resql);
+			
+			$ligneArray['unite'] = (empty($res->product_unit)) ? '' : $res->product_unit;
+			$ligneArray['poids_unit_brut'] = (empty($res->weight)) ? '' : $res->weight;
+			$ligneArray['poids_total_brut'] = (empty($res->weight)) ? '' : $res->weight * $ligneArray['qty_shipped'];
+			$PoidsTotal += $ligneArray['poids_total_brut'];
+		}
+		
 		$tableau[]=$ligneArray;
 	}
 	
@@ -128,7 +142,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					   "date_expedition_fr"=>date('d/m/Y'),
 					   "date_livraison"=>date('d/m/Y',$exp->date_delivery),
 					   "shipping_method"=>$res->transporteur,
-					   "projet"=>$res->ref." ".$res->title);
+					   "projet"=>$res->ref." ".$res->title,
+					   "poids_total"=>$PoidsTotal);
 	}
 	else{
 		$autre = array();
