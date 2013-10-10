@@ -236,13 +236,15 @@ class TODTDocs {
 		$TBS->Show(OPENTBS_FILE, $outName);
 
 		if($PDFconversion) {
-			$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
+			$this->convertToPDF($outName);
+			
+			/*$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
 			//print $urlSPDF.'<br>';
 			$fPDF = file_get_contents( $urlSPDF );
 			$outNamePDF = substr($outName,0, strrpos($outName,'/')).'/'.basename($fPDF);
 			
-			copy($fPDF, $outNamePDF);
-			print "Création du fichier $outNamePDF (module ATM/ODT-PDF)<br>";
+			copy($fPDF, $outNamePDF);*/
+			print "Création du fichier $outName (module ATM/ODT-PDF)<br>";
 		}
 
 	}
@@ -478,6 +480,19 @@ class TODTDocs {
 				
 		*/
 		
+	}
+
+	function convertToPDF($file) {
+		$infos = pathinfo($file);
+		$filepath = $infos['dirname'];
+		
+		// Transformation en PDF
+		$cmd = 'export HOME=/tmp'."\n";
+		$cmd.= 'libreoffice --invisible --norestore --headless --convert-to pdf --outdir "'.$filepath.'" "'.$file.'"';
+		ob_start();
+		system($cmd);
+		$res = ob_get_clean();
+		return $res;
 	}
 }
 ?>
