@@ -236,7 +236,7 @@ class TODTDocs {
 		$TBS->Show(OPENTBS_FILE, $outName);
 
 		if($PDFconversion) {
-			$this->convertToPDF($outName);
+			TODTDocs::convertToPDF($outName);
 			
 			/*$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
 			//print $urlSPDF.'<br>';
@@ -482,7 +482,7 @@ class TODTDocs {
 		
 	}
 
-	function convertToPDF($file) {
+	static function convertToPDF($file) {
 		$infos = pathinfo($file);
 		$filepath = $infos['dirname'];
 		
