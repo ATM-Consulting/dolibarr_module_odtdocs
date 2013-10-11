@@ -487,10 +487,8 @@ class TODTDocs {
 		$filepath = $infos['dirname'];
 		
 		// Transformation en PDF
-		$cmd = 'export HOME=/tmp'."\n";
-		$cmd.= 'libreoffice --invisible --norestore --headless --convert-to pdf --outdir "'.$filepath.'" "'.$file.'"';
 		ob_start();
-		system($cmd);
+		system(CMD_CONVERT_TO_PDF);
 		$res = ob_get_clean();
 		return $res;
 	}
