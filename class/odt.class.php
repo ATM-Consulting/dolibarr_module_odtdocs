@@ -488,7 +488,7 @@ class TODTDocs {
 		
 		// Transformation en PDF
 		ob_start();
-		system(CMD_CONVERT_TO_PDF);
+		system(CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"');
 		$res = ob_get_clean();
 		return $res;
 	}
