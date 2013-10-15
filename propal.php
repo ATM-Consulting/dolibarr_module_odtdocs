@@ -75,7 +75,7 @@ require('./class/atm.doctbs.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
-	
+	$Ttva = array();
 	$tableau=array();
 	
 	foreach($propal->lines as $ligne) {
@@ -155,6 +155,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
 		$tableau[]=$ligneArray;
+		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
 
 	$fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.dol_sanitizeFileName($propal->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
@@ -194,10 +195,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$autre = array();
 	}
 	
+	foreach ($Ttva as $cle=>$val){
+		$TVA[] = array("label"=>$cle,"montant"=>$val);
+	}
+	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre)
+		,array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

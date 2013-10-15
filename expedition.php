@@ -89,7 +89,7 @@ require('./class/atm.doctbs.class.php');
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 	$fOut =  $conf->expedition->dir_output . '/sending/'. dol_sanitizeFileName($exp->ref).'/'.dol_sanitizeFileName($exp->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
-
+	$Ttva = array();
 	$tableau=array();
 	
 	foreach($exp->lines as $ligne) {
@@ -112,6 +112,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		$tableau[]=$ligneArray;
+		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
 	
 	$contact = TODTDocs::getContact($db, $cde, $societe);
@@ -148,11 +149,15 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	else{
 		$autre = array();
 	}
-
+	
+	foreach ($Ttva as $cle=>$val){
+		$TVA[] = array("label"=>$cle,"montant"=>$val);
+	}
+	
 	TODTDocs::makeDocTBS(
 		'expedition'
 		, $_REQUEST['modele']
-		,array('doc'=>$exp, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre)
+		,array('doc'=>$exp, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

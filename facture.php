@@ -97,7 +97,7 @@ require('./class/odt.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
-	
+	$Ttva = array();
 	$tableau=array();
 	
 	foreach($fac->lines as $ligne) {
@@ -159,6 +159,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
 		
 		$tableau[]=$ligneArray;
+		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
 	
 	$contact = TODTDocs::getContact($db, $fac, $societe);
@@ -200,7 +201,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	else{
 		$autre = array();
 	}
-	 
+	
+	foreach ($Ttva as $cle=>$val){
+		$TVA[] = array("label"=>$cle,"montant"=>$val);
+	}
 	
 	//Condition de règlement
 	$resql = $db->query('SELECT libelle_facture FROM '.MAIN_DB_PREFIX."c_payment_term WHERE rowid = ".$fac->cond_reglement_id);
@@ -219,7 +223,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
-		,array('doc'=>$fac, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre)
+		,array('doc'=>$fac, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.dol_sanitizeFileName($fac->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

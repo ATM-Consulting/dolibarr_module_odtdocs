@@ -73,7 +73,7 @@ require('./class/odt.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
-	
+	$Ttva = array();
 	$tableau=array();
 	
 	foreach($commande->lines as $ligne) {
@@ -135,6 +135,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		
 		$tableau[]=$ligneArray;
+		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
 	
 	$contact = TODTDocs::getContact($db, $commande, $societe);
@@ -165,16 +166,21 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					   "incoterm"=>$res->code." - ".$res->libelle,
 					   "date_commande_fr"=>date('d/m/Y'),
 					   "date_livraison"=>date('d/m/Y',$commande->date_livraison),
-					   "projet"=>$res->ref." ".$res->title);
+					   "projet"=>$res->ref." ".$res->title,
+					   "TVA"=>$Ttva);
 	}
 	else{
 		$autre = array();
 	}
 	
+	foreach ($Ttva as $cle=>$val){
+		$TVA[] = array("label"=>$cle,"montant"=>$val);
+	}
+
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
-		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre)
+		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
