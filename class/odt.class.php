@@ -237,13 +237,15 @@ class TODTDocs {
 		$TBS->Show(OPENTBS_FILE, $outName);
 
 		if($PDFconversion) {
-			$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
+			TODTDocs::convertToPDF($outName);
+			
+			/*$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
 			//print $urlSPDF.'<br>';
 			$fPDF = file_get_contents( $urlSPDF );
 			$outNamePDF = substr($outName,0, strrpos($outName,'/')).'/'.basename($fPDF);
 			
-			copy($fPDF, $outNamePDF);
-			print "Création du fichier $outNamePDF (module ATM/ODT-PDF)<br>";
+			copy($fPDF, $outNamePDF);*/
+			print "Création du fichier $outName (module ATM/ODT-PDF)<br>";
 		}
 
 	}
@@ -479,6 +481,17 @@ class TODTDocs {
 				
 		*/
 		
+	}
+
+	static function convertToPDF($file) {
+		$infos = pathinfo($file);
+		$filepath = $infos['dirname'];
+		
+		// Transformation en PDF
+		ob_start();
+		system(CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"');
+		$res = ob_get_clean();
+		return $res;
 	}
 }
 ?>
