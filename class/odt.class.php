@@ -506,7 +506,7 @@ class TODTDocs {
 			);
 			
 			$context  = stream_context_create($opts);
-			
+			//print USE_ONLINE_SERVICE;
 			$result = file_get_contents(USE_ONLINE_SERVICE, false, $context);
 			//exit($result);
 			$filePDF = $filepath.'/'.basename($result);
