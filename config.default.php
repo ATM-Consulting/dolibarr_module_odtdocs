@@ -28,6 +28,8 @@ require(COREROOT.'inc.core.php');
 
 define('DOL_ADMIN_USER','admin');
 
+//define('USE_ONLINE_SERVICE','http://pdfservice.atm-consulting.fr/pdf.php');
+
 define('PATH_TO_LIBREOFFICE', 'libreoffice');
 //define('PATH_TO_LIBREOFFICE', '"C:\Program Files (x86)\LibreOffice 4.0\program\soffice.exe"');
 

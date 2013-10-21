@@ -237,7 +237,7 @@ class TODTDocs {
 		$TBS->Show(OPENTBS_FILE, $outName);
 
 		if($PDFconversion) {
-			TODTDocs::convertToPDF($outName);
+			$outName = TODTDocs::convertToPDF($outName);
 			
 			/*$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
 			//print $urlSPDF.'<br>';
@@ -486,12 +486,45 @@ class TODTDocs {
 	static function convertToPDF($file) {
 		$infos = pathinfo($file);
 		$filepath = $infos['dirname'];
-		
-		// Transformation en PDF
-		ob_start();
-		system(CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"');
-		$res = ob_get_clean();
-		return $res;
+			
+		if(defined('USE_ONLINE_SERVICE')) {
+			
+			//print USE_ONLINE_SERVICE;				
+			$postdata = http_build_query(
+			    array(
+			        'f1Data' => file_get_contents($file)
+					,'f1'=>basename($file)
+			    )
+			);
+			
+			$opts = array('http' =>
+			    array(
+			        'method'  => 'POST',
+			        'header'  => 'Content-type: application/x-www-form-urlencoded',
+			        'content' => $postdata
+			    )
+			);
+			
+			$context  = stream_context_create($opts);
+			
+			$result = file_get_contents(USE_ONLINE_SERVICE, false, $context);
+			//exit($result);
+			$filePDF = $filepath.'/'.basename($result);
+			
+			copy($result, $filePDF); 
+			//exit($result.', '.$filePDF);
+			return $filePDF;
+		}	
+		else {
+	
+	//		print "Conversion locale en PDF";
+			// Transformation en PDF
+			ob_start();
+			system(CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"');
+			$res = ob_get_clean();
+			return $res;
+
+		}	
 	}
 }
 ?>
