@@ -184,6 +184,10 @@ class TODTDocs {
 		
 		$TBS->MergeField('langs', $outputlangs);
 		
+		// Traduction de certains éléments du doc
+		$object['doc']->cond_reglement = $outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code)!=('PaymentCondition'.$object['doc']->cond_reglement_code)?$outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code):$outputlangs->convToOutputCharset($object['doc']->cond_reglement_doc);
+		$object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);
+		
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
@@ -221,9 +225,6 @@ class TODTDocs {
 		/*echo '<pre>';
 		print_r($object);
 		echo '</pre>';*/
-		// Traduction de certains éléments du doc
-		$object['doc']->cond_reglement = $outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code)!=('PaymentCondition'.$object['doc']->cond_reglement_code)?$outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code):$outputlangs->convToOutputCharset($object['doc']->cond_reglement_doc);
-		$object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);
 		
 		$TBS->LoadTemplate('#styles.xml');
 		$TBS->MergeField('doc_linked',$TLinkedObjects);
