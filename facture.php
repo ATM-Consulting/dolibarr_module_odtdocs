@@ -187,7 +187,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				
-				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && empty($ligne->desc)) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && $ligne->desc == $prod->multilangs[$langs->defaultlang]["description"]) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
 			}
 		}
 		

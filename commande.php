@@ -79,6 +79,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	foreach($commande->lines as $ligne) {
 		$ligneArray = TODTDocs::asArray($ligne);	
 		
+		/*echo '<pre>';
+		print_r($ligne);
+		echo '</pre>';exit;*/
+		
 		if(class_exists('DaoMilestone')) {	
 			$milestone = new DaoMilestone($db);
 			$milestone->fetch($ligne->rowid,"commande");
@@ -122,7 +126,28 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		//print_r($TTarifCommandedet);
-		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		if(empty($ligneArray['desc']) && $ligne->product_type == 9){
+			$ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		}
+		elseif($ligne->fk_product != 0){
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			{
+				$outputlangs = $langs;
+				$newlang='';
+				if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+				if (empty($newlang)) $newlang=$fac->client->default_lang;
+				if (! empty($newlang))
+				{
+					$outputlangs = new Translate("",$conf);
+					$outputlangs->setDefaultLang($newlang);
+				}
+				
+				$prod = new Product($db);
+				$prod->fetch($ligne->fk_product);
+				
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && $ligne->desc == $prod->multilangs[$langs->defaultlang]["description"]) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
+			}
+		}
 		/*print_r($ligneArray);*/
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['desc'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
@@ -176,7 +201,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	foreach ($Ttva as $cle=>$val){
 		$TVA[] = array("label"=>$cle,"montant"=>$val);
 	}
-
+	
+	/*echo '<pre>';
+	print_r($langs);
+	echo '</pre>';exit;*/
+	
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
