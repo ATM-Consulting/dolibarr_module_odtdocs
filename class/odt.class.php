@@ -153,7 +153,7 @@ class TODTDocs {
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 		
 		$TBS->LoadTemplate(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele);
-	
+		//$TBS->LoadTemplate(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele.'#styles.xml;content.xml;settings.xml');
 		
 		//$TBS->MergeBlock('societe',array(0=> TODTDocs::asArray($object['societe'])));
 		global $mysocPDP;
@@ -168,7 +168,7 @@ class TODTDocs {
 		$mysoc->logo_path = DOL_DATA_ROOT.'/'.(($entity>1)?$entity.'/':'').'mycompany/logos/'.$mysoc->logo;
 		//$mysoc->logo_path = DOL_DATA_ROOT.'/mycompany/logos/'.$mysoc->logo;
 		
-		$TBS->MergeField('mysoc',$mysoc);
+		$TBS->MergeField('mysoc',TODTDocs::asArray($object['mysoc']));
 		/*foreach(TODTDocs::asArray($mysoc) as $k=>$v) {
 			//${'mysoc_'.$k} = $v;
 			$TPdp[$k] = strtr($v,array("\n"," - ","\r"=>''));
@@ -221,6 +221,10 @@ class TODTDocs {
 		print_r($object);
 		echo '</pre>';*/
 		
+		$TBS->LoadTemplate('#styles.xml');
+		$TBS->MergeField('doc_linked',$TLinkedObjects);
+		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
+		$TBS->MergeField('langs', $outputlangs);
 		
 		$ext = TODTDocs::_ext($modele);
 		
@@ -275,7 +279,7 @@ class TODTDocs {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
 			if(!is_object($v) && !is_array($v)) {
 				$Tab[$k] = utf8_decode( $v );
-//				$Tab[$k] = $v;
+				//$Tab[$k] = "!".$v;
 				
 				if(in_array($k, $TToDate)) {
 					$Tab[$k.'_fr'] = date('d/m/Y', (int)$v);
