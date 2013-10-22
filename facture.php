@@ -40,7 +40,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 dol_include_once("/custom/tarif/class/tarif.class.php");	
 dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
-global $db, $langs;
+global $db, $langs, $conf;
 $langs->load('orders');
 $langs->load('sendings');
 $langs->load('bills');
@@ -106,7 +106,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
 	
 	foreach($fac->lines as $ligne) {
-
+		
 		if(class_exists('DaoMilestone')) {
 
 			$milestone = new DaoMilestone($db);
@@ -155,7 +155,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 							 FROM ".MAIN_DB_PREFIX."facturedet as fdet
 							 LEFT JOIN ".MAIN_DB_PREFIX."product as p ON (p.rowid = fdet.fk_product)
 							 WHERE fdet.rowid = ".$ligne->rowid);
-		
+
 			$res = $db->fetch_object($resql);
 			
 			$ligneArray['devise_pu'] = (empty($res->devise_pu)) ? $ligneArray['subprice'] : $res->devise_pu;
@@ -168,7 +168,28 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice']*(1-($ligneArray['remise_percent']/100));
 		
-		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		if(empty($ligneArray['desc']) && $ligne->product_type == 9){
+			$ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		}
+		elseif($ligne->fk_product != 0){
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			{
+				$outputlangs = $langs;
+				$newlang='';
+				if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+				if (empty($newlang)) $newlang=$fac->client->default_lang;
+				if (! empty($newlang))
+				{
+					$outputlangs = new Translate("",$conf);
+					$outputlangs->setDefaultLang($newlang);
+				}
+				
+				$prod = new Product($db);
+				$prod->fetch($ligne->fk_product);
+				
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && empty($ligne->desc)) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
+			}
+		}
 		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
@@ -225,7 +246,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	
 	/*echo '<pre>';
-	print_r($langs);
+	print_r($societe);
 	echo '</pre>';exit;*/
 	
 	//print_r($tableau); exit;
