@@ -188,7 +188,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				
-				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? strtr($ligne->desc,$prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"]) : $ligne->desc;
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
 				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
 			}
 		}
