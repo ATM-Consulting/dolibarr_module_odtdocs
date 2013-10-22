@@ -177,6 +177,7 @@ class TODTDocs {
 		$outputlangs = new Translate("",$conf);
 		//$outputlangs=$langs;
         $outputlangs->setDefaultLang($newlang);
+		$outputlangs->load('dict');
 		foreach ($langsToLoad as $domain) {
 			$outputlangs->load($domain);
 		}
