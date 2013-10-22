@@ -128,7 +128,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			if(!empty($TTarifFacturedet->poids)){
 				switch ($TTarifFacturedet->poids) {
 					case -9:
-						$ligneArray['poids'] = "ug";
+						$ligneArray['poids'] = "µg";
 						break;
 					case -6:
 						$ligneArray['poids'] = "mg";
@@ -147,7 +147,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			else {
 				$ligneArray['poids'] = "";
 			}		
-			
+			$ligneArray['poids'] = utf8_decode($ligneArray['poids']);
 		}
 		
 		if($conf->maccaferri->enabled){

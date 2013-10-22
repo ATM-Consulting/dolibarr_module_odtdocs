@@ -72,7 +72,7 @@ llxHeader();
 function __poids_unite($unite){
 	switch ($unite) {
 		case -9:
-			return('ug');
+			return('µg');
 			break;
 		case -6:
 			return('mg');
@@ -143,9 +143,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligneArray['product_ref'] = $product->ref;
 			$ligneArray['product_label'] = $product->label;
 			$ligneArray['asset_lot'] = $TAsset->lot_number;
-			$ligneArray['weight_unit'] = __poids_unite($ligneArray['weight_unit']);
-			$ligneArray['tare_unit'] = __poids_unite($ligneArray['tare_unit']);
-			$ligneArray['weight_reel_unit'] = __poids_unite($ligneArray['weight_reel_unit']);
+			$ligneArray['weight_unit'] = utf8_decode(__poids_unite($ligneArray['weight_unit']));
+			$ligneArray['tare_unit'] = utf8_decode(__poids_unite($ligneArray['tare_unit']));
+			$ligneArray['weight_reel_unit'] = utf8_decode(__poids_unite($ligneArray['weight_reel_unit']));
 			
 			$tableau[]=$ligneArray;
 		}

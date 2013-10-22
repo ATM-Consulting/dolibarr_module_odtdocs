@@ -97,7 +97,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			if(!empty($TTarifCommandedet->poids)){
 				switch ($TTarifCommandedet->poids) {
 					case -9:
-						$ligneArray['poids'] = "ug";
+						$ligneArray['poids'] = "µg";
 						break;
 					case -6:
 						$ligneArray['poids'] = "mg";
@@ -116,7 +116,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			else {
 				$ligneArray['poids'] = "";
 			}
-			
+			$ligneArray['poids'] = utf8_decode($ligneArray['poids']);
 		}
 
 		if($conf->maccaferri->enabled){
@@ -152,7 +152,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				
-				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && $ligne->desc == $prod->multilangs[$langs->defaultlang]["description"]) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
+				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
+				$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
 			}
 		}
 		/*print_r($ligneArray);*/
