@@ -246,6 +246,7 @@ class TODTDocs {
 			
 			copy($fPDF, $outNamePDF);*/
 			print "Création du fichier $outName (module ATM/ODT-PDF)<br>";
+			unlink($outName.'.odt');
 		}
 
 	}
