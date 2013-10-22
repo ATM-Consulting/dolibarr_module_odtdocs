@@ -163,7 +163,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligneArray['unite'] = (empty($res->product_unit)) ? '' : $res->product_unit;
 		}
 		
-		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
+		//if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
+		
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice']*(1-($ligneArray['remise_percent']/100));
@@ -187,7 +188,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				
-				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && $ligne->desc == $prod->multilangs[$langs->defaultlang]["description"]) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? strtr($ligne->desc,$prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"]) : $ligne->desc;
+				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
 			}
 		}
 		
