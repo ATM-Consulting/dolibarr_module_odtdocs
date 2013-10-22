@@ -190,6 +190,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				
 				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
 				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
+				$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
 			}
 		}
 		
