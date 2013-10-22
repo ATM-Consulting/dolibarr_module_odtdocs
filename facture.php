@@ -33,6 +33,7 @@ require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/class/discount.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php');
+require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
@@ -122,8 +123,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$TTarifFacturedet = new TTarifFacturedet;
 			$TTarifFacturedet->load($ATMdb,$ligne->rowid);
 
-			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifFacturedet->tarif_poids;
-			if(empty($ligneArray['poids'])){
+			if(!empty($TTarifFacturedet->tarif_poids)) $ligneArray['tarif_poids'] = $TTarifFacturedet->tarif_poids;
+			else $ligneArray['tarif_poids'] = "";
+			if(!empty($TTarifFacturedet->poids)){
 				switch ($TTarifFacturedet->poids) {
 					case -9:
 						$ligneArray['poids'] = "ug";
@@ -137,7 +139,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					case 0:
 						$ligneArray['poids'] = "kg";
 						break;
+					default:
+						$ligneArray['poids'] = "";
+						break;
 				}
+			}
+			else {
+				$ligneArray['poids'] = "";
 			}		
 			
 		}
@@ -176,10 +184,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$societe->pays = $contact['BILLING']['pays'];
 		}
 	}
-	/*echo '<pre>';
-	print_r($societe);
-	print_r($contact);
-	echo '</pre>';*/
 	
 	/*
 	 * Ajout des objets lié :
@@ -218,6 +222,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$resql = $db->query('SELECT libelle FROM '.MAIN_DB_PREFIX."c_paiement WHERE id = ".$fac->mode_reglement_id);
 	$res = $db->fetch_object($resql);
 	$contact['mode_reglement'] = $res->libelle;
+	
+	
+	/*echo '<pre>';
+	print_r($langs);
+	echo '</pre>';exit;*/
 	
 	//print_r($tableau); exit;
 @	TODTDocs::makeDocTBS(
