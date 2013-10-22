@@ -49,6 +49,10 @@ $langs->load('deliveries');
 $langs->load('products');
 $langs->load('odtdocs@odtdocs');
 
+/*echo '<pre>';
+print_r($langs);
+echo '</pre>';exit;*/
+
 /*
  * View
  */
@@ -214,10 +218,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$resql = $db->query('SELECT libelle FROM '.MAIN_DB_PREFIX."c_paiement WHERE id = ".$fac->mode_reglement_id);
 	$res = $db->fetch_object($resql);
 	$contact['mode_reglement'] = $res->libelle;
-	
-	/*echo '<pre>';
-	print_r($fac->linkedObjects);
-	echo '</pre>';*/
 	
 	//print_r($tableau); exit;
 @	TODTDocs::makeDocTBS(
