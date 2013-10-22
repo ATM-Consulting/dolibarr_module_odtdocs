@@ -107,8 +107,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$TTarifPropaldet = new TTarifPropaldet;
 			$TTarifPropaldet->load($ATMdb,$ligne->rowid);
 			
-			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifPropaldet->tarif_poids;
-			if(empty($ligneArray['poids'])){
+			if(!empty($TTarifPropaldet->tarif_poids)) $ligneArray['tarif_poids'] = $TTarifPropaldet->tarif_poids;
+			else $ligneArray['tarif_poids'] = "";
+			if(!empty($TTarifPropaldet->poids)){
 				switch ($TTarifPropaldet->poids) {
 					case -9:
 						$ligneArray['poids'] = "ug";
@@ -122,7 +123,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					case 0:
 						$ligneArray['poids'] = "kg";
 						break;
+					default:
+						$ligneArray['poids'] = "";
+						break;
 				}
+			}
+			else {
+				$ligneArray['poids'] = "";
 			}		
 			
 		}
@@ -149,7 +156,28 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligneArray['product_label'] = $ligneArray['description'];
 			$ligneArray['description'] = '';
 		}
-		if(empty($ligneArray['desc']) && $ligne->product_type == 9) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		if(empty($ligneArray['desc']) && $ligne->product_type == 9){
+			$ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+		}
+		elseif($ligne->fk_product != 0){
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			{
+				$outputlangs = $langs;
+				$newlang='';
+				if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+				if (empty($newlang)) $newlang=$fac->client->default_lang;
+				if (! empty($newlang))
+				{
+					$outputlangs = new Translate("",$conf);
+					$outputlangs->setDefaultLang($newlang);
+				}
+				
+				$prod = new Product($db);
+				$prod->fetch($ligne->fk_product);
+				
+				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"]) && $ligne->desc == $prod->multilangs[$langs->defaultlang]["description"]) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $ligne->desc;
+			}
+		}
 		
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';

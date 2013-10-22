@@ -92,8 +92,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$TTarifCommandedet = new TTarifCommandedet;
 			$TTarifCommandedet->load($ATMdb,$ligne->rowid);
 			
-			if(empty($ligneArray['tarif_poids'])) $ligneArray['tarif_poids'] = $TTarifCommandedet->tarif_poids;
-			if(empty($ligneArray['poids'])){
+			if(!empty($TTarifCommandedet->tarif_poids)) $ligneArray['tarif_poids'] = $TTarifCommandedet->tarif_poids;
+			else $ligneArray['tarif_poids'] = "";
+			if(!empty($TTarifCommandedet->poids)){
 				switch ($TTarifCommandedet->poids) {
 					case -9:
 						$ligneArray['poids'] = "ug";
@@ -107,7 +108,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					case 0:
 						$ligneArray['poids'] = "kg";
 						break;
+					default:
+						$ligneArray['poids'] = "";
+						break;
 				}
+			}
+			else {
+				$ligneArray['poids'] = "";
 			}
 			
 		}
