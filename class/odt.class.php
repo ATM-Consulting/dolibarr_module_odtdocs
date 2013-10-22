@@ -237,7 +237,7 @@ class TODTDocs {
 		$TBS->Show(OPENTBS_FILE, $outName);
 
 		if($PDFconversion) {
-			$outName = TODTDocs::convertToPDF($outName);
+			$pdfName = TODTDocs::convertToPDF($outName);
 			
 			/*$urlSPDF = 'http://127.0.0.1/PDF/service/odt-pdf.php?doc='.urlencode($outName);
 			//print $urlSPDF.'<br>';
@@ -245,8 +245,8 @@ class TODTDocs {
 			$outNamePDF = substr($outName,0, strrpos($outName,'/')).'/'.basename($fPDF);
 			
 			copy($fPDF, $outNamePDF);*/
-			print "Création du fichier $outName (module ATM/ODT-PDF)<br>";
-			unlink($outName.'.odt');
+			print "Création du fichier $pdfName (module ATM/ODT-PDF)<br>";
+			if(is_file($outName)) unlink($outName);
 		}
 
 	}
