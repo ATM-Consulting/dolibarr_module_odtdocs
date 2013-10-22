@@ -197,12 +197,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	$contact = TODTDocs::getContact($db, $fac, $societe);
 	if(isset($contact['BILLING'])) {
-		$societe->nom = $contact['BILLING']['societe'];
+		$societe->name = $contact['BILLING']['societe'];
 		if($contact['BILLING']['address'] != '') {
 			$societe->address = $contact['BILLING']['address'];
-			$societe->cp = $contact['BILLING']['cp'];
-			$societe->ville = $contact['BILLING']['ville'];
-			$societe->pays = $contact['BILLING']['pays'];
+			$societe->zip = $contact['BILLING']['cp'];
+			$societe->town = $contact['BILLING']['ville'];
+			$societe->country = $contact['BILLING']['pays'];
 		}
 	}
 	
