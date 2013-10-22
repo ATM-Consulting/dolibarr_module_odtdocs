@@ -316,7 +316,7 @@ class TODTDocs {
 				'lastname' => $c->lastname,
 				'address' => $c->address,
 				'cp' => $c->zip,
-				'ville' => $c->city,
+				'ville' => $c->town,
 				'pays' => $c->country,
 				'email' => $c->email,
 				'phone' => $c->phone_pro,
