@@ -212,7 +212,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					   "TVA"=>$Ttva);
 	}
 	else{
-		$autre = array();
+		$autre = array(
+				'date_jour' => date("d/m/Y H:i:s"),
+				'ref' => $commande->ref
+			);
 	}
 	
 	foreach ($Ttva as $cle=>$val){
@@ -220,7 +223,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	
 	/*echo '<pre>';
-	print_r($langs);
+	print_r($contact);
 	echo '</pre>';exit;*/
 	
 	TODTDocs::makeDocTBS(
