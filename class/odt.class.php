@@ -522,7 +522,7 @@ class TODTDocs {
 			//exit($result);
 			$filePDF = $filepath.'/'.basename($result);
 			
-			copy($result, $filePDF); 
+			copy(strtr($result, array(' '=>'%20')), $filePDF); 
 			//exit($result.', '.$filePDF);
 			return $filePDF;
 		}	
