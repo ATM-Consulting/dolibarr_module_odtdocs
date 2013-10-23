@@ -130,6 +130,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 		
 		foreach($expeditiondet_asset->lines as $dligne){
+			/*echo '<pre>';
+			print_r($dligne);
+			echo '</pre>';exit;*/
+			
 			$ligneArray = TODTDocs::asArray($dligne);
 			
 			//Chargement de l'équipement lié à la ligne d'expédition
@@ -142,6 +146,34 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			
 			$ligneArray['product_ref'] = $product->ref;
 			$ligneArray['product_label'] = $product->label;
+			
+			if($eligne->fk_product != 0){
+				if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+				{
+					$outputlangs = $langs;
+					$newlang='';
+					if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+					if (empty($newlang)) $newlang=$fac->client->default_lang;
+					if (! empty($newlang))
+					{
+						$outputlangs = new Translate("",$conf);
+						$outputlangs->setDefaultLang($newlang);
+					}
+					
+					$prod = new Product($db);
+					$prod->fetch($eligne->fk_product);
+					
+					//echo $prod->multilangs[$outputlangs->defaultlang]["label"];exit;
+					
+					$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$eligne->product_desc) : $eligne->product_desc;
+					if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
+					if(!empty($prod->multilangs[$outputlangs->defaultlang]["label"]))
+						$ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
+					$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
+					$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
+				}
+			}
+			
 			$ligneArray['asset_lot'] = $TAsset->lot_number;
 			$ligneArray['weight_unit'] = utf8_decode(__poids_unite($ligneArray['weight_unit']));
 			$ligneArray['tare_unit'] = utf8_decode(__poids_unite($ligneArray['tare_unit']));
