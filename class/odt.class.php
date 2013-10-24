@@ -284,7 +284,7 @@ class TODTDocs {
 		foreach($object as $k=>$v) {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
 			if(!is_object($v) && !is_array($v)) {
-				$Tab[$k] = utf8_decode( $v );
+				$Tab[$k] = utf8_decode( strtr($v, array('<br />'=>"\n")));
 				//$Tab[$k] = "!".$v;
 				
 				if(in_array($k, $TToDate)) {
