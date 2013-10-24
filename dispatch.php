@@ -199,14 +199,28 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 	}
 	
+	$sql = "SELECT f.facnumber 
+			FROM ".MAIN_DB_PREFIX."facture as f
+			LEFT JOIN ".MAIN_DB_PREFIX."element_element as ee ON (ee.fk_target = f.rowid)
+			WHERE ee.targettype = 'facture' AND sourcetype = 'shipping'
+			AND ee.source = ".$expedition->id."
+			LIMIT 1";
+			
+	$ATMdb->Execute($sql);
+	if($ATMdb->Get_line()){
+		$ref_facture = $ATMdb->Get_field('facnumber');
+	}
+	
+	
 	$autre = array(
 		'ref' => $expedition->ref,
 		'date_jour' => date("d/m/Y H:i:s"),
-		'commande' => $commande->ref
+		'commande' => $commande->ref,
+		'facture' => $ref_facture
 		);
 	
 	/*echo '<pre>';
-	print_r($commande->linkedObjects);
+	print_r($expedition);
 	echo '</pre>';*/
 	
 	TODTDocs::makeDocTBS(
