@@ -178,6 +178,7 @@ class TODTDocs {
 		//$outputlangs=$langs;
         $outputlangs->setDefaultLang($newlang);
 		$outputlangs->load('dict');
+		$outputlangs->load('suppliers');
 		foreach ($langsToLoad as $domain) {
 			$outputlangs->load($domain);
 		}
