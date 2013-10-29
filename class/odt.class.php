@@ -289,7 +289,7 @@ class TODTDocs {
 				//$Tab[$k] = "!".$v;
 				
 				if(in_array($k, $TToDate)) {
-					$Tab[$k.'_fr'] = date('d/m/Y', (int)$v);
+					$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
 				}
 				if(in_array($k, $TNoBR)) {
 					$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
