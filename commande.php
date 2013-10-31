@@ -34,6 +34,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 
 dol_include_once("/custom/tarif/class/tarif.class.php");
+dol_include_once("/custom/asset/class/asset.class.php");
 dol_include_once("/custom/milestone/class/dao_milestone.class.php");
 
 global $db, $langs, $user;
@@ -117,6 +118,19 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$ligneArray['poids'] = "";
 			}
 			$ligneArray['poids'] = utf8_decode($ligneArray['poids']);
+		}
+		
+		if(class_exists('TAsset')) {
+			$resql = $db->query("SELECT asset_lot
+							 FROM ".MAIN_DB_PREFIX."commandedet as cmdet
+							 WHERE cmdet.rowid = ".$ligne->id);
+		
+			$res = $db->fetch_object($resql);
+			if(!empty($res->asset_lot)) {
+				$asset = new TAsset;
+				$asset->load($ATMdb,$res->asset_lot);
+				$ligneArray['asset'] = $asset;
+			}
 		}
 
 		if($conf->maccaferri->enabled){
