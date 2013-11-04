@@ -55,7 +55,6 @@ $langs->load('deliveries');
 $langs->load('products');
 $langs->load('odtdocs@odtdocs');
 
-global $db;
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
 
 // Security check
@@ -218,6 +217,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		'commande' => $commande->ref,
 		'facture' => $ref_facture
 		);
+		
+	$code = $langs->getLabelFromKey($db,$expedition->shipping_method_id,'c_shipment_mode','rowid','code');
+	$expedition->shipping_method_label = $langs->trans("SendingMethod".strtoupper($code));
 	
 	/*echo '<pre>';
 	print_r($expedition);
