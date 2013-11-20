@@ -148,7 +148,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$res = $db->fetch_object($resql);
 			
 			$ligneArray['devise_pu'] = (empty($res->devise_pu)) ? $ligneArray['subprice'] : $res->devise_pu;
-			$ligneArray['devise_mt_ligne'] = (empty($res->devise_mt_ligne)) ? $ligneArray['total_ht'] : $res->devise_pu;
+			$ligneArray['devise_mt_ligne'] = (empty($res->devise_mt_ligne)) ? $ligneArray['total_ht'] : $res->devise_mt_ligne;
 			$ligneArray['unite'] = (empty($res->product_unit)) ? '' : $res->product_unit;
 		}
 		
