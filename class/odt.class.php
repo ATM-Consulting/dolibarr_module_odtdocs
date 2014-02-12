@@ -10,8 +10,8 @@ class TODTDocs {
 	/* Liste des modèles valides */
 		$Tab=array();
 		
-		if(is_dir(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type)){
-			if ($handle = opendir(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type)) {
+		if(is_dir(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type))){
+			if ($handle = opendir(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type))) {
 			    while (false !== ($entry = readdir($handle))) {
 			    	if($entry[0]!='.' && TODTDocs::validFile($entry))  $Tab[] = $entry;
 			    }
@@ -40,14 +40,14 @@ class TODTDocs {
 	
 	function addFile($type, $source, $name, $entity=1) {
 	/* Ajout d'un modèle // la validation devra être prévalente */	
-		@mkdir(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/', 0777, true);
-		copy($source, DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/'.strtolower(strtr(mb_convert_encoding($name, 'ascii'), array('?'=>'')  )) );
+		@mkdir(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'), 0777, true);
+		copy($source, dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.strtolower(strtr(mb_convert_encoding($name, 'ascii'), array('?'=>'')  )) ));
 		
 		
 	}
 	function delFile($type, $fichier, $entity=1) {
 	/* suppression d'un modèle*/
-		unlink(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier);
+		unlink(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier));
 		
 	}
 	function show_docs(&$db,&$conf, &$object,&$langs, $type='propal') {
@@ -152,8 +152,8 @@ class TODTDocs {
 		$TBS->NoErr = true;
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 		
-		$TBS->LoadTemplate(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele);
-		//$TBS->LoadTemplate(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele.'#styles.xml;content.xml;settings.xml');
+		$TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele));
+		//$TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele.'#styles.xml;content.xml;settings.xml');
 		
 		//$TBS->MergeBlock('societe',array(0=> TODTDocs::asArray($object['societe'])));
 		global $mysocPDP;
@@ -378,9 +378,9 @@ class TODTDocs {
 			if($type=='propal')$dir = 'propale/';
 			else $dir=$type.'/';
 		
-			require_once(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/lib/odt/library/odf.php');
+			require_once(dol_buildpath('/odtdocs/lib/odt/library/odf.php'));
 
-			$odf = new odf(DOL_DOCUMENT_ROOT_ALT.'/odtdocs/modele/'.$type.'/'.$modele);
+			$odf = new odf(dol_buildpath('/odtdocs/modele/'.$type.'/'.$modele));
 			
 			TODTDocs::_md_setVar($odf, $object);
 			
