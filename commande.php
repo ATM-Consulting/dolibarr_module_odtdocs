@@ -67,6 +67,11 @@ $commande->fetchObjectLinked();
 $societe = new Societe($db, $commande->socid);
 $societe->fetch($commande->socid);
 
+$hookmanager->initHooks(array('ordercard'));
+$parameters=array('socid'=>$commande->socid);
+$reshook=$hookmanager->executeHooks('doActions',$commande,$object,'builddoc');    // Note that $action and $object may have been modified by some hooks
+
+
 $head = commande_prepare_head($commande);
 dol_fiche_head($head, 'tabEditions3', $langs->trans("CustomerOrder"), 0, 'order');
 

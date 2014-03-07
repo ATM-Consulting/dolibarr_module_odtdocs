@@ -70,6 +70,11 @@ $societe->fetch($propal->socid);
 $head = propal_prepare_head($propal);
 dol_fiche_head($head, 'tabEditions1', $langs->trans('Proposal'), 0, 'propal');
 
+$hookmanager->initHooks(array('propalcard'));
+$parameters=array('socid'=>$propal->socid);
+$reshook=$hookmanager->executeHooks('doActions',$propal,$object,'builddoc');    // Note that $action and $object may have been modified by some hooks
+
+
 require('./class/odt.class.php');
 require('./class/atm.doctbs.class.php');
 

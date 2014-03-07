@@ -95,6 +95,11 @@ while($ATMdb->Get_line()) {
 
 $fac->fetchObjectLinked();
 
+$hookmanager->initHooks(array('invoicecard'));
+$parameters=array('socid'=>$fac->socid);
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$fac,'builddoc');    // Note that $action and $object may have been modified by some hooks
+
+
 $head = facture_prepare_head($fac);
 dol_fiche_head($head, 'tabEditions2', $langs->trans("InvoiceCustomer"), 0, 'bill');
 
