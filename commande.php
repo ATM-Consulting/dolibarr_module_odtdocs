@@ -70,7 +70,7 @@ $societe->fetch($commande->socid);
 $action='builddoc';
 $hookmanager->initHooks(array('ordercard'));
 $parameters=array('socid'=>$commande->socid);
-$reshook=$hookmanager->executeHooks('doActions',$commande,$object,$action);    // Note that $action and $object may have been modified by some hooks
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 
 
 $head = commande_prepare_head($commande);
