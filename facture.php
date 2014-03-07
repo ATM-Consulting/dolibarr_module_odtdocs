@@ -97,7 +97,8 @@ $fac->fetchObjectLinked();
 
 $hookmanager->initHooks(array('invoicecard'));
 $parameters=array('socid'=>$fac->socid);
-$reshook=$hookmanager->executeHooks('doActions',$parameters,$fac,'builddoc');    // Note that $action and $object may have been modified by some hooks
+$action='builddoc';
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$fac,$action);    // Note that $action and $object may have been modified by some hooks
 
 
 $head = facture_prepare_head($fac);
