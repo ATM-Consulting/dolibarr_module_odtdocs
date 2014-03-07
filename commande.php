@@ -70,8 +70,7 @@ $societe->fetch($commande->socid);
 $action='builddoc';
 $hookmanager->initHooks(array('ordercard'));
 $parameters=array('socid'=>$commande->socid);
-$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
-
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$commande,$action);
 
 $head = commande_prepare_head($commande);
 dol_fiche_head($head, 'tabEditions3', $langs->trans("CustomerOrder"), 0, 'order');
