@@ -153,11 +153,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		//print_r($TTarifCommandedet);
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9){
+			
 			$ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
 		}
 		elseif($ligne->fk_product != 0){
+			
 			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
 			{
+				
 				$outputlangs = $langs;
 				$newlang='';
 				if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
@@ -194,6 +197,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		print_r($ligneArray);
 		echo '</pre>';*/
 		
+		if(empty($ligneArray['fk_product'])){
+			$ligneArray['product_label'] = $ligneArray['desc'];
+		}
+		else{
+			$ligneArray['product_label'] .= "\n";
+			$ligneArray['product_label'] .= $ligneArray['desc'];
+		}
 		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
