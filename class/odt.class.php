@@ -282,6 +282,9 @@ class TODTDocs {
 		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement');
 		$TNoBR = array('address');
 		
+		if(isset($object->zip))$object->cp=$object->zip;
+		if(isset($object->town))$object->ville=$object->town;
+				
 		foreach($object as $k=>$v) {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
 			if(!is_object($v) && !is_array($v)) {
