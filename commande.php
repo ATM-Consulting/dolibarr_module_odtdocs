@@ -189,7 +189,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		//echo $prod->multilangs[$outputlangs->defaultlang]["label"]; exit;
 		
 		/*print_r($ligneArray);*/
-		//if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['desc'];
+		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['desc'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['subprice'])) $ligneArray['subprice'] = 0;
