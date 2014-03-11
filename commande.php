@@ -129,12 +129,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$resql = $db->query("SELECT asset_lot
 							 FROM ".MAIN_DB_PREFIX."commandedet as cmdet
 							 WHERE cmdet.rowid = ".$ligne->id);
-		
-			$res = $db->fetch_object($resql);
-			if(!empty($res->asset_lot)) {
-				$asset = new TAsset;
-				$asset->load($ATMdb,$res->asset_lot);
-				$ligneArray['asset'] = $asset;
+			if($resql){	
+				$res = $db->fetch_object($resql);
+				if(!empty($res->asset_lot)) {
+					$asset = new TAsset;
+					$asset->load($ATMdb,$res->asset_lot);
+					$ligneArray['asset'] = $asset;
+				}
 			}
 		}
 
@@ -196,14 +197,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		/*echo '<pre>';
 		print_r($ligneArray);
 		echo '</pre>';*/
-		
-		if(empty($ligneArray['fk_product'])){
-			$ligneArray['product_label'] = $ligneArray['desc'];
-		}
-		else{
-			$ligneArray['product_label'] .= "\n";
-			$ligneArray['product_label'] .= $ligneArray['desc'];
-		}
 		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
