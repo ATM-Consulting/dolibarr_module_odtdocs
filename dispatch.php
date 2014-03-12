@@ -121,11 +121,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$Tid_eligne = TRequeteCore::get_id_from_what_you_want($ATMdb,MAIN_DB_PREFIX."expeditiondet",array('fk_expedition'=>$expedition->id,'fk_origin_line'=>$eligne->origin_line_id),"rowid");
 		$id_eligne = (int)$Tid_eligne[0];
 		
-		
-		$expeditiondet_asset = new TDispatchDetail;
-		$expeditiondet_asset->load($ATMdb,$id_eligne);
-		//Chargement des ligne d'équipement associé à la ligne de commande
-		$expeditiondet_asset->loadLines($ATMdb,$id_eligne);
+		$expeditiondet_asset=null;
+		if($conf->dispatch->enabled) {
+			$expeditiondet_asset = new TDispatchDetail;
+			$expeditiondet_asset->load($ATMdb,$id_eligne);
+			//Chargement des ligne d'équipement associé à la ligne de commande
+			$expeditiondet_asset->loadLines($ATMdb,$id_eligne);
+		}
 	
 		
 		foreach($expeditiondet_asset->lines as $dligne){
