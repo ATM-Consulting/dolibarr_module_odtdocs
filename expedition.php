@@ -94,6 +94,20 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	foreach($exp->lines as $ligne) {
 		$ligneArray = TODTDocs::asArray($ligne);
+		
+		
+		/* Récupération du jalon présent sur la commande via l'id de ligne */
+	    $originLine = new OrderLine($db);
+        $originLine->fetch($ligne->fk_origin_line);
+        if($originLine->product_type == 9 && $conf->subtotal->enabled) {
+                     $ligneArray['product_label'] = $originLine->label;
+                     $ligneArray['description'] = $originLine->desc;
+                     $ligneArray['product_type'] = 9;
+					 
+					/* $subtotal=new 
+                     if($originLine->qty > 90) $ligneArray['subtotal'] = $subtotal->getTotalLineFromObject($exp, $originLine);*/
+        }
+		
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
