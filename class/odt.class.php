@@ -285,6 +285,7 @@ class TODTDocs {
 		
 		if(isset($object->zip))$object->cp=$object->zip;
 		if(isset($object->town))$object->ville=$object->town;
+		if(isset($object->product_type) && $object->product_type == 9) $object->product_label = $object->label;		
 				
 		foreach($object as $k=>$v) {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
