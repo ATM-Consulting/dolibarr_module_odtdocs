@@ -39,9 +39,10 @@ class TODTDocs {
 	}
 	
 	function addFile($type, $source, $name, $entity=1) {
-	/* Ajout d'un modèle // la validation devra être prévalente */	
-		@mkdir(dol_buildpath('/custom/odtdocs/modele/'.$entity.'/'.$type.'/'), 0777, true);
-		copy($source, dol_buildpath('/custom/odtdocs/modele/'.$entity.'/'.$type.'/'.strtolower(strtr(mb_convert_encoding($name, 'ascii'), array('?'=>'')  )) ));
+	/* Ajout d'un modèle // la validation devra être prévalente */
+	
+		if(!is_dir(dol_buildpath('/odtdocs/modele/').$entity.'/'.$type.'/')) mkdir(dol_buildpath('/odtdocs/modele/').$entity.'/'.$type.'/', 0777, true);
+		copy($source, dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/' ).strtolower(strtr(mb_convert_encoding($name, 'ascii'), array('?'=>'')  )));
 		
 		
 	}
@@ -284,8 +285,7 @@ class TODTDocs {
 		
 		if(isset($object->zip))$object->cp=$object->zip;
 		if(isset($object->town))$object->ville=$object->town;
-		if(isset($object->product_type) && $object->product_type == 9) $object->product_label = $object->label;
-		
+				
 		foreach($object as $k=>$v) {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
 			if(!is_object($v) && !is_array($v)) {
