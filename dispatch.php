@@ -44,6 +44,10 @@ if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class
 if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
 if ($conf->stock->enabled)    require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
 
+if(!$conf->dispatch->enabled) {
+	header('location:expedition.php?id='.GETPOST('id'));
+}
+
 
 global $db, $langs;
 $langs->load('orders');
@@ -56,6 +60,8 @@ $langs->load('products');
 $langs->load('odtdocs@odtdocs');
 
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
+
+
 
 // Security check
 if ($user->societe_id) $socid=$user->societe_id;
@@ -127,61 +133,68 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$expeditiondet_asset->load($ATMdb,$id_eligne);
 			//Chargement des ligne d'équipement associé à la ligne de commande
 			$expeditiondet_asset->loadLines($ATMdb,$id_eligne);
-		}
-	
-		
-		foreach($expeditiondet_asset->lines as $dligne){
-			/*echo '<pre>';
-			print_r($dligne);
-			echo '</pre>';exit;*/
 			
-			$ligneArray = TODTDocs::asArray($dligne);
 			
-			//Chargement de l'équipement lié à la ligne d'expédition
-			$TAsset = new TAsset;
-			$TAsset->load($ATMdb,$dligne->fk_asset);
-			
-			//Chargement du produit lié à l'équipement
-			$product = new Product($db);
-			$product->fetch($eligne->fk_product);
-			
-			$ligneArray['product_ref'] = $product->ref;
-			$ligneArray['product_label'] = $product->label;
-			
-			if($eligne->fk_product != 0){
-				if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
-				{
-					$outputlangs = $langs;
-					$newlang='';
-					if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
-					if (empty($newlang)) $newlang=$fac->client->default_lang;
-					if (! empty($newlang))
+			foreach($expeditiondet_asset->lines as $dligne){
+				/*echo '<pre>';
+				print_r($dligne);
+				echo '</pre>';exit;*/
+				
+				$ligneArray = TODTDocs::asArray($dligne);
+				
+				//Chargement de l'équipement lié à la ligne d'expédition
+				$TAsset = new TAsset;
+				$TAsset->load($ATMdb,$dligne->fk_asset);
+				
+				//Chargement du produit lié à l'équipement
+				$product = new Product($db);
+				$product->fetch($eligne->fk_product);
+				
+				$ligneArray['product_ref'] = $product->ref;
+				$ligneArray['product_label'] = $product->label;
+				
+				if($eligne->fk_product != 0){
+					if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
 					{
-						$outputlangs = new Translate("",$conf);
-						$outputlangs->setDefaultLang($newlang);
+						$outputlangs = $langs;
+						$newlang='';
+						if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+						if (empty($newlang)) $newlang=$fac->client->default_lang;
+						if (! empty($newlang))
+						{
+							$outputlangs = new Translate("",$conf);
+							$outputlangs->setDefaultLang($newlang);
+						}
+						
+						$prod = new Product($db);
+						$prod->fetch($eligne->fk_product);
+						
+						//echo $prod->multilangs[$outputlangs->defaultlang]["label"];exit;
+						
+						$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$eligne->product_desc) : $eligne->product_desc;
+						if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
+						if(!empty($prod->multilangs[$outputlangs->defaultlang]["label"]))
+							$ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
+						$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
+						$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
 					}
-					
-					$prod = new Product($db);
-					$prod->fetch($eligne->fk_product);
-					
-					//echo $prod->multilangs[$outputlangs->defaultlang]["label"];exit;
-					
-					$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$eligne->product_desc) : $eligne->product_desc;
-					if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
-					if(!empty($prod->multilangs[$outputlangs->defaultlang]["label"]))
-						$ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
-					$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
-					$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
 				}
+				
+				$ligneArray['asset_lot'] = $TAsset->lot_number;
+				$ligneArray['weight_unit'] = utf8_decode(__poids_unite($ligneArray['weight_unit']));
+				$ligneArray['tare_unit'] = utf8_decode(__poids_unite($ligneArray['tare_unit']));
+				$ligneArray['weight_reel_unit'] = utf8_decode(__poids_unite($ligneArray['weight_reel_unit']));
+				
+				$tableau[]=$ligneArray;
 			}
 			
-			$ligneArray['asset_lot'] = $TAsset->lot_number;
-			$ligneArray['weight_unit'] = utf8_decode(__poids_unite($ligneArray['weight_unit']));
-			$ligneArray['tare_unit'] = utf8_decode(__poids_unite($ligneArray['tare_unit']));
-			$ligneArray['weight_reel_unit'] = utf8_decode(__poids_unite($ligneArray['weight_reel_unit']));
-			
-			$tableau[]=$ligneArray;
 		}
+		else {
+			
+			
+		}
+		
+		
 		
 	}
 	
