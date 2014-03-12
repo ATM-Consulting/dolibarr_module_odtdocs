@@ -258,7 +258,7 @@ class TODTDocs {
 			
 			copy($fPDF, $outNamePDF);*/
 			print "Création du fichier $pdfName (module ATM/ODT-PDF)<br>";
-			if(is_file($outName)) unlink($outName);
+			if(is_file($outName) && !$conf->global->ODTDOCS_NO_DELETE_ODT_FILE ) unlink($outName);
 		}
 
 	}
