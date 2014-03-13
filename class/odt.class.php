@@ -283,10 +283,22 @@ class TODTDocs {
 		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement');
 		$TNoBR = array('address');
 		
-		if(isset($object->zip))$object->cp=$object->zip;
-		if(isset($object->town))$object->ville=$object->town;
-		if(isset($object->product_type) && $object->product_type == 9) $object->product_label = $object->label;		
-				
+		if(is_array($object)) {
+			if(isset($object['zip']))$object['cp']=$object['zip'];
+                        if(isset($object['town']))$object['ville']=$object['town'];
+                        if(!empty($object['label']) && empty($object['product_label'])) $object['product_label'] = $object['label'];
+                        if(!empty($object['desc']) && !empty($object['product_label']) && $object['desc']==$object['product_label'])  $object['desc']='';
+
+	
+		}
+		else {
+			if(isset($object->zip))$object->cp=$object->zip;
+	                if(isset($object->town))$object->ville=$object->town;
+	                if(!empty($object->label) && empty($object->product_label)) $object->product_label = $object->label;
+	                if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
+                }
+
+
 		foreach($object as $k=>$v) {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
 			if(!is_object($v) && !is_array($v)) {

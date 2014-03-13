@@ -125,6 +125,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$PoidsTotal += $ligneArray['poids_total_brut'];
 		}
 		
+		if($ligneArray['product_label'] == $ligneArray['desc']) {
+//		exit('la');
+			$ligneArray['desc']='';
+		}
+
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
