@@ -210,6 +210,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if(isset($contact['BILLING'])) {
 		if ($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT) {
 			$societe->name = $contact['BILLING']['societe'];	
+			$societe->nom = $societe->name;
 		}
 		
 		if($contact['BILLING']['address'] != '') {
