@@ -108,7 +108,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
                      if($originLine->qty > 90) $ligneArray['subtotal'] = $subtotal->getTotalLineFromObject($exp, $originLine);*/
         }
 		
-		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
+		if(empty($ligneArray['product_label'])) { $ligneArray['product_label'] = $ligneArray['description']; $ligneArray['description']=''; }
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		
@@ -129,6 +129,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 //		exit('la');
 			$ligneArray['desc']='';
 		}
+
+		$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
 
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
