@@ -280,8 +280,19 @@ class TODTDocs {
 	
 	function checkTableau($Tab) {
 		
+		$trans=array(
+			'&#039;'=>"'"
+		);
+		
 		foreach($Tab as &$row) {
-			 if(!empty($row['desc']) && !empty($row['product_label']) && $row['desc']==$row['product_label']) $row['desc']='';
+			 if(!empty($row['desc']) && !empty($row['product_label'])) {
+			 	$row['desc']=strtr($row['desc'],$trans);
+				$row['product_label']=strtr($row['product_label'],$trans);
+				
+			 	if($row['desc']==$row['product_label']) {
+			 		$row['desc']='';	
+			 	}
+			 } 
 		}
 		
 		return $Tab;
