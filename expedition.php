@@ -100,8 +100,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	    $originLine = new OrderLine($db);
         $originLine->fetch($ligne->fk_origin_line);
         if($originLine->product_type == 9 && $conf->subtotal->enabled) {
-                     $ligneArray['product_label'] = $originLine->label;
-                     $ligneArray['description'] = $originLine->desc;
+                     $ligneArray['product_label'] = utf8_decode($originLine->label);
+                     $ligneArray['description'] = ($originLine->label!=$originLine->desc) ? $originLine->desc : '';
                      $ligneArray['product_type'] = 9;
 					 
 					/* $subtotal=new 
@@ -130,7 +130,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligneArray['desc']='';
 		}
 
-		$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
+		$ligneArray['product_label'] = $ligneArray['product_label'];
 
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
