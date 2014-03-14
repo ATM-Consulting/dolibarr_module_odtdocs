@@ -196,7 +196,7 @@ class TODTDocs {
 		if(isset($object['autre']))$TBS->MergeField('autre',TODTDocs::asArray($object['autre']));
 		if(isset($object['tva']))$TBS->MergeBlock('tva',$object['tva']);
 		//print_r($object['tableau'][0]);
-		if(isset($object['tableau'])) $TBS->MergeBlock('tab,tab2',$object['tableau']);
+		if(isset($object['tableau'])) $TBS->MergeBlock('tab,tab2',TODTDocs::checkTableau($object['tableau']));
 		if(isset($object['contact'])) {
 			//print_r(TODTDocs::asArray($object['contact']));
 			
@@ -277,6 +277,16 @@ class TODTDocs {
 		
 		
 	}
+	
+	function checkTableau($Tab) {
+		
+		foreach($Tab as &$row) {
+			 if(!empty($row['desc']) && !empty($row['product_label']) && $row['desc']==$row['product_label']) $row['desc']='';
+		}
+		
+		return $Tab;
+	}
+	
 	function asArray($object) {
 		$Tab=array();
 		
@@ -285,18 +295,18 @@ class TODTDocs {
 		
 		if(is_array($object)) {
 			if(isset($object['zip']))$object['cp']=$object['zip'];
-                        if(isset($object['town']))$object['ville']=$object['town'];
-                        if(!empty($object['label']) && empty($object['product_label'])) $object['product_label'] = $object['label'];
-                        if(!empty($object['desc']) && !empty($object['product_label']) && $object['desc']==$object['product_label'])  $object['desc']='';
+            if(isset($object['town']))$object['ville']=$object['town'];
+            if(!empty($object['label']) && empty($object['product_label'])) $object['product_label'] = $object['label'];
+            if(!empty($object['desc']) && !empty($object['product_label']) && $object['desc']==$object['product_label'])  $object['desc']='';
 
 	
 		}
 		else {
 			if(isset($object->zip))$object->cp=$object->zip;
-	                if(isset($object->town))$object->ville=$object->town;
-	                if(!empty($object->label) && empty($object->product_label)) $object->product_label = $object->label;
-	                if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
-                }
+            if(isset($object->town))$object->ville=$object->town;
+            if(!empty($object->label) && empty($object->product_label)) $object->product_label = $object->label;
+            if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
+        }
 
 
 		foreach($object as $k=>$v) {
