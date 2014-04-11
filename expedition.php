@@ -139,7 +139,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$contact = TODTDocs::getContact($db, $cde, $societe);
 	
 	if(isset($contact['SHIPPING'])) {
-		$societe->nom = $contact['SHIPPING']['societe'];
+		$societe->name = $contact['SHIPPING']['societe'];
 		if($contact['SHIPPING']['address'] != '') {
 			$societe->address = $contact['SHIPPING']['address'];
 			$societe->zip = $contact['SHIPPING']['cp'];
