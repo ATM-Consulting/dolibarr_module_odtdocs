@@ -162,6 +162,7 @@ class TODTDocs {
 		$mysoc = &$object['mysoc'];
 		$mysoc->address_nobr = strtr($mysoc->address,array("\n"=>' - ', "\r"=>''));
 		$mysoc->forme_juridique = getFormeJuridiqueLabel($conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE);
+		$mysoc->logo = DOL_DATA_ROOT.'/mycompany/logos/'.$mysoc->logo;
 		
 		$conf = &$object['conf'];
 		$entity = $conf->entity;
