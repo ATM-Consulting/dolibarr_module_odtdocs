@@ -306,6 +306,7 @@ class TODTDocs {
 		
 		if(is_array($object)) {
 			if(isset($object['zip']))$object['cp']=$object['zip'];
+			if(isset($object['name']))$object['nom']=$object['name'];
             if(isset($object['town']))$object['ville']=$object['town'];
             if(!empty($object['label']) && empty($object['product_label'])) $object['product_label'] = $object['label'];
             if(!empty($object['desc']) && !empty($object['product_label']) && $object['desc']==$object['product_label'])  $object['desc']='';
@@ -313,7 +314,8 @@ class TODTDocs {
 	
 		}
 		else {
-			if(isset($object->zip))$object->cp=$object->zip;
+			if(isset($object->name))$object->nom=$object->name;
+    		if(isset($object->zip))$object->cp=$object->zip;
             if(isset($object->town))$object->ville=$object->town;
             if(!empty($object->label) && empty($object->product_label)) $object->product_label = $object->label;
             if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
