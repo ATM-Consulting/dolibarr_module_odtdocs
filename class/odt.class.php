@@ -163,7 +163,7 @@ class TODTDocs {
 		$mysoc->address_nobr = strtr($mysoc->address,array("\n"=>' - ', "\r"=>''));
 		
 		require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-		$mysoc->forme_juridique = getFormeJuridiqueLabel($conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE);
+		$mysoc->forme_juridique = utf8_decode(getFormeJuridiqueLabel($conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE));
 		$mysoc->logo = DOL_DATA_ROOT.'/mycompany/logos/'.$mysoc->logo;
 		
 		$conf = &$object['conf'];
