@@ -107,24 +107,18 @@ dol_fiche_head($head, 'tabEditions2', $langs->trans("InvoiceCustomer"), 0, 'bill
 require('./class/odt.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
-	//print_r($propal);
-	$Ttva = array();
 	$tableau=array();
 	
 	foreach($fac->lines as $ligne) {
 		
 		if(class_exists('DaoMilestone')) {
-
 			$milestone = new DaoMilestone($db);
 			$milestone->fetch($ligne->rowid,"facture");
-		
 		}
 		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
-		
 		if(class_exists('TTarifFacturedet')) {
-					
 			
 			$TTarifFacturedet = new TTarifFacturedet;
 			$TTarifFacturedet->load($ATMdb,$ligne->rowid);
@@ -210,9 +204,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		$tableau[]=$ligneArray;
-		if(empty($Ttva[$ligneArray['tva_tx']])) $Ttva[$ligneArray['tva_tx']] = array('baseht'=>0,'total_tva'=>0);
-		$Ttva[$ligneArray['tva_tx']]['baseht'] += $ligneArray['total_ht'];
-		$Ttva[$ligneArray['tva_tx']]['total_tva'] += $ligneArray['total_tva'];
 	}
 	
 	$contact = TODTDocs::getContact($db, $fac, $societe);
@@ -255,9 +246,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$autre = array();
 	}
 	
-	foreach ($Ttva as $tx=>$infos){
-		$TVA[] = array("label"=>$tx,"baseht"=>$infos['baseht'],"montant"=>$infos['total_tva']);
-	}
+	$TVA = TODTDocs::getTVA($object);
 	
 	//Condition de règlement
 	$resql = $db->query('SELECT libelle_facture FROM '.MAIN_DB_PREFIX."c_payment_term WHERE rowid = ".$fac->cond_reglement_id);
