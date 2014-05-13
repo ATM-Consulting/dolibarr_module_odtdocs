@@ -200,6 +200,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
 				$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
 			}
+
+			if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
+				$prod = new Product($db);
+				$prod->fetch($ligne->fk_product);
+				$prod->fetch_optionals($ligne->fk_product);
+				$ligneArray['product'] = $prod;
+			}
 		}
 		
 		$tableau[]=$ligneArray;
