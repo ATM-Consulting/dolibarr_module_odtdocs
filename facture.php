@@ -246,7 +246,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$autre = array();
 	}
 	
-	$TVA = TODTDocs::getTVA($object);
+	$TVA = TODTDocs::getTVA($fac);
 	
 	//Condition de règlement
 	$resql = $db->query('SELECT libelle_facture FROM '.MAIN_DB_PREFIX."c_payment_term WHERE rowid = ".$fac->cond_reglement_id);
