@@ -210,7 +210,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		$tableau[]=$ligneArray;
-		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
+		if(empty($Ttva[$ligneArray['tva_tx']])) $Ttva[$ligneArray['tva_tx']] = array('baseht'=>0,'total_tva'=>0);
+		$Ttva[$ligneArray['tva_tx']]['baseht'] += $ligneArray['total_ht'];
+		$Ttva[$ligneArray['tva_tx']]['total_tva'] += $ligneArray['total_tva'];
 	}
 	
 	$contact = TODTDocs::getContact($db, $fac, $societe);
@@ -253,8 +255,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$autre = array();
 	}
 	
-	foreach ($Ttva as $cle=>$val){
-		$TVA[] = array("label"=>$cle,"montant"=>$val);
+	foreach ($Ttva as $tx=>$infos){
+		$TVA[] = array("label"=>$tx,"baseht"=>$infos['baseht'],"montant"=>$infos['total_tva']);
 	}
 	
 	//Condition de règlement
