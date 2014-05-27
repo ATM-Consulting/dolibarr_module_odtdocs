@@ -192,6 +192,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
+		
+		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
+			$prod = new Product($db);
+			$prod->fetch($ligne->fk_product);
+			$prod->fetch_optionals($ligne->fk_product);
+			$ligneArray['product'] = $prod;
+		}
+		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
@@ -233,9 +241,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$autre = array();
 	}
 	
-	foreach ($Ttva as $cle=>$val){
-		$TVA[] = array("label"=>$cle,"montant"=>$val);
-	}
+	$TVA = TODTDocs::getTVA($propal);
 	
 	TODTDocs::makeDocTBS(
 		'propal'

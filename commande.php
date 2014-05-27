@@ -197,6 +197,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		print_r($ligneArray);
 		echo '</pre>';*/
 		
+		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
+			$prod = new Product($db);
+			$prod->fetch($ligne->fk_product);
+			$prod->fetch_optionals($ligne->fk_product);
+			$ligneArray['product'] = $prod;
+		}
+		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 	}
@@ -239,9 +246,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			);
 	}
 	
-	foreach ($Ttva as $cle=>$val){
-		$TVA[] = array("label"=>$cle,"montant"=>$val);
-	}
+	$TVA = TODTDocs::getTVA($commande);
 	
 	/*echo '<pre>';
 	print_r($contact);
