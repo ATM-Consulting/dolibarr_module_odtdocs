@@ -202,9 +202,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
-	}
-
-	$fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.dol_sanitizeFileName($propal->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
+		}
 
 	$contact = TODTDocs::getContact($db, $propal, $societe);
 	if(isset($contact['CUSTOMER'])) {
@@ -242,6 +240,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	
 	$TVA = TODTDocs::getTVA($propal);
+	
+	$generatedfilename = dol_sanitizeFileName($fac->ref).'-'.$_REQUEST['modele'];
+	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
+		$generatedfilename = dol_sanitizeFileName($fac->ref);
+	}
+	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 	
 	TODTDocs::makeDocTBS(
 		'propal'

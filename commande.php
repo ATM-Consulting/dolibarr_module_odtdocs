@@ -248,15 +248,17 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	$TVA = TODTDocs::getTVA($commande);
 	
-	/*echo '<pre>';
-	print_r($contact);
-	echo '</pre>';exit;*/
+	$generatedfilename = dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele'];
+	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
+		$generatedfilename = dol_sanitizeFileName($commande->ref);
+	}
+	$fOut = $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.$generatedfilename;
 	
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
 		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
-		, $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
+		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']

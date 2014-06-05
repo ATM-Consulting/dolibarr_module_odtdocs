@@ -261,13 +261,18 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	/*echo '<pre>';
 	print_r($societe);
 	echo '</pre>';exit;*/
+	$generatedfilename = dol_sanitizeFileName($fac->ref).'-'.$_REQUEST['modele'];
+	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
+		$generatedfilename = dol_sanitizeFileName($fac->ref);
+	}
+	$fOut = $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.$generatedfilename;
 	
 	//print_r($tableau); exit;
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
 		,array('doc'=>$fac, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
-		, $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.dol_sanitizeFileName($fac->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
+		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']

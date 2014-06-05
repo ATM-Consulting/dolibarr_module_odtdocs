@@ -88,7 +88,6 @@ require('./class/atm.doctbs.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
-	$fOut =  $conf->expedition->dir_output . '/sending/'. dol_sanitizeFileName($exp->ref).'/'.dol_sanitizeFileName($exp->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
 	$Ttva = array();
 	$tableau=array();
 	
@@ -180,6 +179,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	
 	$TVA = TODTDocs::getTVA($exp);
+	$generatedfilename = dol_sanitizeFileName($exp->ref).'-'.$_REQUEST['modele'];
+	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
+		$generatedfilename = dol_sanitizeFileName($exp->ref);
+	}
+	$fOut = $conf->expedition->dir_output . '/sending/'. dol_sanitizeFileName($exp->ref).'/'.$generatedfilename;
 	
 	TODTDocs::makeDocTBS(
 		'expedition'
