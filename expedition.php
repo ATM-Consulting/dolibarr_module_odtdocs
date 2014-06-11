@@ -180,8 +180,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	$TVA = TODTDocs::getTVA($exp);
 	
-	$code = $langs->getLabelFromKey($db,$exp->shipping_method_id,'c_shipment_mode','rowid','code');
-	$exp->shipping_method_label = $langs->trans("SendingMethod".strtoupper($code));
+	if($exp->shipping_method_id > 0) {
+		$code = $langs->getLabelFromKey($db,$exp->shipping_method_id,'c_shipment_mode','rowid','code');
+		$exp->shipping_method_label = $langs->trans("SendingMethod".strtoupper($code));
+	} else {
+		$exp->shipping_method_label = '';
+	}
 	
 	$generatedfilename = dol_sanitizeFileName($exp->ref).'-'.$_REQUEST['modele'];
 	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
