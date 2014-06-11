@@ -304,7 +304,7 @@ class TODTDocs {
 	function asArray($object) {
 		$Tab=array();
 		
-		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement');
+		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement', 'date_creation', 'date_delivery');
 		$TNoBR = array('address');
 		
 		if(is_array($object)) {
