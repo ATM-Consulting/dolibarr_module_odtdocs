@@ -58,7 +58,7 @@ echo '</pre>';*/
 
 llxHeader();
 
-$ATMdb = new Tdb;
+$ATMdb = new TPDOdb;
 
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);

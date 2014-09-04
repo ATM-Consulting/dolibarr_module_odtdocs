@@ -576,7 +576,11 @@ class TODTDocs {
 	//		print "Conversion locale en PDF";
 			// Transformation en PDF
 			ob_start();
-			system(CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"');
+
+			 $cmd = 'export HOME=/tmp'."\n";
+			$cmd.=CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"';
+
+			system($cmd);
 			$res = ob_get_clean();
 			return $res;
 

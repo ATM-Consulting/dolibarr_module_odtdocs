@@ -60,7 +60,7 @@ if ($user->societe_id > 0)
 
 
 
-llxHeader('','Gestion des équipements, à propos','');
+llxHeader('','Gestion des editions, à propos','');
 
 require('../class/odt.class.php');
 
