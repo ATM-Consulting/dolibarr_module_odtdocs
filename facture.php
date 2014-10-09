@@ -68,8 +68,6 @@ $fac->fetch($_REQUEST["id"]);
 $fac->info($_REQUEST["id"]);
 $fac->fetchObjectLinked();
 
-$fac->note_public = htmlToUTFAndPreOdf($fac->note_public); // TODO AA uniformiser dans le traitement objet de la génération  
-
 $societe = new Societe($db, $fac->socid);
 $societe->fetch($fac->socid);
 
@@ -269,6 +267,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$generatedfilename = dol_sanitizeFileName($fac->ref);
 	}
 	$fOut = $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.$generatedfilename;
+
+	$fac->note_public = TODTDocs::htmlToUTFAndPreOdf($fac->note_public);
 	
 	//print_r($tableau); exit;
 @	TODTDocs::makeDocTBS(
