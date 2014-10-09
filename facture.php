@@ -39,6 +39,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 dol_include_once("/custom/tarif/class/tarif.class.php");	
 dol_include_once("/custom/milestone/class/dao_milestone.class.php");
+dol_include_once('/includes/odtphp/odf.php');
 
 global $db, $langs, $conf;
 $langs->load('orders');
@@ -66,6 +67,8 @@ $fac = new Facture($db);
 $fac->fetch($_REQUEST["id"]);
 $fac->info($_REQUEST["id"]);
 $fac->fetchObjectLinked();
+
+$fac->note_public = htmlToUTFAndPreOdf($fac->note_public); // TODO AA uniformiser dans le traitement objet de la génération  
 
 $societe = new Societe($db, $fac->socid);
 $societe->fetch($fac->socid);
