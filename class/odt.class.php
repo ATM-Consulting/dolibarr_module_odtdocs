@@ -600,5 +600,33 @@ class TODTDocs {
 
 		return $TTVA;
 	}
+	
+	public function htmlToUTFAndPreOdf($value)
+	{
+		// We decode into utf8, entities
+		$value=dol_html_entity_decode($value, ENT_QUOTES);
+
+		// We convert html tags
+		$ishtml=dol_textishtml($value);
+		if ($ishtml)
+		{
+	        // If string is "MYPODUCT - Desc <strong>bold</strong> with &eacute; accent<br />\n<br />\nUn texto en espa&ntilde;ol ?"
+    	    // Result after clean must be "MYPODUCT - Desc bold with é accent\n\nUn texto en espa&ntilde;ol ?"
+
+			// We want to ignore \n and we want all <br> to be \n
+			$value=preg_replace('/(\r\n|\r|\n)/i','',$value);
+			$value=preg_replace('/<br>/i',"\n",$value);
+			$value=preg_replace('/<br\s+[^<>\/]*>/i',"\n",$value);
+			$value=preg_replace('/<br\s+[^<>\/]*\/>/i',"\n",$value);
+
+			//$value=preg_replace('/<strong>/','__lt__text:p text:style-name=__quot__bold__quot____gt__',$value);
+			//$value=preg_replace('/<\/strong>/','__lt__/text:p__gt__',$value);
+
+			$value=dol_string_nohtmltag($value, 0);
+		}
+
+		return $value;
+	}
+	
 }
 ?>
