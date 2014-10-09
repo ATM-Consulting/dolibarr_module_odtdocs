@@ -77,7 +77,7 @@ $societe->fetch($fac->socid);
 require_once(DOL_DOCUMENT_ROOT."/societe/class/companybankaccount.class.php");
 
 	
-$ATMdb=new Tdb;	
+$ATMdb=new TPDOdb;	
 $sql= "SELECT rowid FROM ".MAIN_DB_PREFIX."bank_account WHERE entity=".$conf->entity;
 $ATMdb->Execute($sql);
 

@@ -56,7 +56,7 @@ echo '</pre>';*/
  */
 
 llxHeader();
-$ATMdb = new Tdb;
+$ATMdb = new TPDOdb;
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
 
 $commande = new commande($db);
