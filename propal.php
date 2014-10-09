@@ -258,25 +258,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
 	
-	//print_r(array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau));
 	
-	/*
-	$dbATM=new Tdb;
-	$dTBS = new TAtmDocTBS($dbATM);
-	$dTBS->load_by_entity($dbATM, $conf->entity);
-	
-	if($dTBS->livedocx_use==1) {
-		
-		?><a href="<?=$fOut ?>">Télécharger au format PDF</a><?
-		
-	}*/
-	
-/*	TODTDocs::makeDocTBS(
-		'propal'
-		, $_REQUEST['modele']
-		,array('propal'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc)
-		, $conf->propale->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.dol_sanitizeFileName($propal->ref).'.odt'
-	);*/
 }
 
 function decode($FieldName, &$CurrVal)

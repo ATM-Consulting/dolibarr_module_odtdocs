@@ -92,7 +92,7 @@ function __poids_unite($unite){
 
 }
 
-$ATMdb = new Tdb;
+$ATMdb = new TPDOdb;
 
 $expedition = new Expedition($db);
 $expedition->fetch($_REQUEST['id']);

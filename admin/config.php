@@ -74,13 +74,6 @@ if(isset($_FILES['fichier'])) {
 }
 
 
-//include '../class/atm.doctbs.class.php';
-
-/*
-$dbATM=new Tdb;
-$dTBS = new TAtmDocTBS($dbATM);
-$dTBS->load_by_entity($dbATM, $conf->entity);
-*/
 if(isset($_REQUEST['action'])) {
 	switch ($_REQUEST['action']) {
 		case 'DELETE':
