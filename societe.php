@@ -24,7 +24,7 @@
 		\version    $Id: info.php,v 1.34 2011/08/03 00:46:34 eldy Exp $
 */
 
-require("../atm-core/inc-dolibarr.php");
+require('config.php');
 
 require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
