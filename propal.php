@@ -237,17 +237,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	elseif($conf->clisynovo->enabled){
 		dol_include_once('/clisynovo/lib/clisynovo.lib.php');
-		getDataPropalForODTDoc($propal);
-		$autre = array("devise"=>$res->devise,
-					   "incoterm"=>$res->code." - ".$res->libelle,
-					   "date_devis_fr"=>date('d/m/Y'),
-					   "fin_validite"=>date('d/m/Y',$propal->fin_validite),
-					   "projet"=>$res->ref." ".$res->title);
+		$autre = getDataPropalForODTDoc($propal);
 	}
 	else{
 		$autre = array();
 	}
-	
+
 	$TVA = TODTDocs::getTVA($propal);
 	
 	$generatedfilename = dol_sanitizeFileName($propal->ref).'-'.$_REQUEST['modele'];
