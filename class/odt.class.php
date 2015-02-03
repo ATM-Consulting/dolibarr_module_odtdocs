@@ -40,17 +40,18 @@ class TODTDocs {
 	
 	function addFile($type, $source, $name, $entity=1) {
 	/* Ajout d'un modèle // la validation devra être prévalente */
-	
+		
 		if(!is_dir(dol_buildpath('/odtdocs/modele/').$entity.'/'.$type.'/')) mkdir(dol_buildpath('/odtdocs/modele/').$entity.'/'.$type.'/', 0777, true);
 		copy($source, dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/' ).strtolower(strtr(mb_convert_encoding($name, 'ascii'), array('?'=>'')  )));
 		
 		
 	}
 	function delFile($type, $fichier, $entity=1) {
-	/* suppression d'un modèle*/
-		unlink(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier));
-		
+		/* suppression d'un modèle*/
+		if (file_exists(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier)))
+			unlink(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier));
 	}
+	
 	function show_docs(&$db,&$conf, &$object,&$langs, $type='propal') {
 	/*
 	 * Récupération des docs généré pour un objet grâce au fonction DOL 
