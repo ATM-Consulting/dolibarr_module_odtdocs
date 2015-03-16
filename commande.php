@@ -239,12 +239,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					   "projet"=>$res->ref." ".$res->title,
 					   "TVA"=>$Ttva);
 	}
-	elseif($conf->cliepoxy->enabled){
-		dol_include_once('/cliepoxy/lib/cliepoxy.lib.php');
-		$autre = getDataCommandeForODTDoc($commande);
-	}
 	else{
 		$autre = array(
+				'date_commande' => date("d/m/Y", $commande->date),
 				'date_jour' => date("d/m/Y H:i:s"),
 				'ref' => $commande->ref
 			);
