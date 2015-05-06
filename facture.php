@@ -249,6 +249,25 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$res = $db->fetch_object($resql);
 	$contact['mode_reglement'] = $res->libelle;
 	
+	if($conf->incoterm->enabled){
+		//Ajout des Incoterms dans la note public
+		$resl = $db->query('SELECT ci.code, te.location_incoterms
+				FROM '.MAIN_DB_PREFIX.'c_incoterms as ci
+					LEFT JOIN '.MAIN_DB_PREFIX.$fac->table_element.' as te ON (te.fk_incoterms = ci.rowid)
+				WHERE te.rowid = '.$fac->id);
+		if($resl) 
+			$res = $db->fetch_object($resl);
+		
+		$txt = '';
+		if($res && strpos($fac->note_public, 'Incoterm') === FALSE){
+			$txt .= "\nIncoterm : ".$res->code;
+			if(!empty($res->location_incoterms)) $txt .= ' - '.$res->location_incoterms;
+		}
+		
+		// Gestion des sauts de lignes si la note était en HTML de base
+		if(dol_textishtml($fac->note_public)) $fac->note_public .= dol_nl2br($txt);
+		else $fac->note_public .= $txt;
+	}
 	
 	/*echo '<pre>';
 	print_r($societe);

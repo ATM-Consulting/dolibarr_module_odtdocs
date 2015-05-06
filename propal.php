@@ -231,6 +231,26 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$TVA[] = array("label"=>$cle,"montant"=>$val);
 	}
 	
+	if($conf->incoterm->enabled){
+		//Ajout des Incoterms dans la note public
+		$resl = $db->query('SELECT ci.code, te.location_incoterms
+				FROM '.MAIN_DB_PREFIX.'c_incoterms as ci
+					LEFT JOIN '.MAIN_DB_PREFIX.$propal->table_element.' as te ON (te.fk_incoterms = ci.rowid)
+				WHERE te.rowid = '.$propal->id);
+		if($resl) 
+			$res = $db->fetch_object($resl);
+		
+		$txt = '';
+		if($res && strpos($propal->note_public, 'Incoterm') === FALSE){
+			$txt .= "\nIncoterm : ".$res->code;
+			if(!empty($res->location_incoterms)) $txt .= ' - '.$res->location_incoterms;
+		}
+		
+		// Gestion des sauts de lignes si la note était en HTML de base
+		if(dol_textishtml($propal->note_public)) $propal->note_public .= dol_nl2br($txt);
+		else $propal->note_public .= $txt;
+	}
+	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
