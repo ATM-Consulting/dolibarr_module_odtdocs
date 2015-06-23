@@ -370,7 +370,8 @@ class TODTDocs {
 				'email' => $c->email,
 				'phone' => $c->phone_pro,
 				'fax' => $c->fax,
-				'societe' => $c->societe->nom
+				'societe' => $c->societe->nom,
+				'phone_mobile'=>$c->phone_mobile
 			);
 		}
 		
