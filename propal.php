@@ -29,8 +29,9 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
-dol_include_once("/custom/tarif/class/tarif.class.php");
-dol_include_once("/custom/milestone/class/dao_milestone.class.php");
+dol_include_once("/tarif/class/tarif.class.php");
+dol_include_once("/milestone/class/dao_milestone.class.php");
+dol_include_once('/projet/class/project.class.php');
 
 global $db, $langs;
 $langs->load('orders');
@@ -63,6 +64,9 @@ $ATMdb = new TPDOdb;
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
 $propal->fetchObjectLinked();
+
+$propal->projet = new Project($db);
+if($propal->fk_projet) $propal->projet->fetch($propal->fk_projet);
 
 $societe = new Societe($db);
 $societe->fetch($propal->socid);
