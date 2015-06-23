@@ -84,8 +84,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
 	$Ttva = array();
 	$tableau=array();
-$propal->projet = new Project($db);
-if($propal->fk_project) $propal->projet->fetch($propal->fk_project);
+	$projet = new Project($db);
+	if($propal->fk_project) $projet->fetch($propal->fk_project);
 	
 	foreach($propal->lines as $ligne) {
 		
@@ -258,7 +258,7 @@ if($propal->fk_project) $propal->projet->fetch($propal->fk_project);
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$propal, 'projet'=>$projet, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

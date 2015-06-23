@@ -340,7 +340,8 @@ class TODTDocs {
 					$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
 				}
 				
-			}	
+			}
+			
 		}
 		//print_r($Tab);
 		return $Tab;
