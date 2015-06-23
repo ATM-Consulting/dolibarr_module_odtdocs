@@ -235,6 +235,7 @@ class TODTDocs {
 		$TBS->LoadTemplate('#styles.xml');
 		$TBS->MergeField('doc_linked',$TLinkedObjects);
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
+		if(isset($object['projet']))$TBS->MergeField('doc',TODTDocs::asArray($object['projet']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
 		$TBS->MergeField('langs', $outputlangs);
 		
