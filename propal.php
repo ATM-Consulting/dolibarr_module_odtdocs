@@ -65,9 +65,6 @@ $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
 $propal->fetchObjectLinked();
 
-$propal->projet = new Project($db);
-if($propal->fk_projet) $propal->projet->fetch($propal->fk_projet);
-
 $societe = new Societe($db);
 $societe->fetch($propal->socid);
 
@@ -87,6 +84,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
 	$Ttva = array();
 	$tableau=array();
+$propal->projet = new Project($db);
+if($propal->fk_project) $propal->projet->fetch($propal->fk_project);
 	
 	foreach($propal->lines as $ligne) {
 		
@@ -254,6 +253,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$generatedfilename = dol_sanitizeFileName($propal->ref);
 	}
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
+//var_dump($propal->projet->ref,$propal->projet);
 	
 	TODTDocs::makeDocTBS(
 		'propal'
