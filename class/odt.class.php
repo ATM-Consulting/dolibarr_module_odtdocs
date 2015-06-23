@@ -336,6 +336,8 @@ class TODTDocs {
 				
 				if(in_array($k, $TToDate)) {
 					$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
+					$Tab[$k.'_ns'] = (!empty($v))?date('W', (int)$v):'';
+					
 				}
 				if(in_array($k, $TNoBR)) {
 					$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
@@ -392,6 +394,7 @@ class TODTDocs {
 				'email' => $u->email,
 				'phone' => $u->phone_pro,
 				'fax' => $u->fax
+				,'phone_mobile'=>$u->user_mobile
 			);
 		}
 		
