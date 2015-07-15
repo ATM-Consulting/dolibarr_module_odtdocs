@@ -40,17 +40,18 @@ class TODTDocs {
 	
 	function addFile($type, $source, $name, $entity=1) {
 	/* Ajout d'un modèle // la validation devra être prévalente */
-	
+		
 		if(!is_dir(dol_buildpath('/odtdocs/modele/').$entity.'/'.$type.'/')) mkdir(dol_buildpath('/odtdocs/modele/').$entity.'/'.$type.'/', 0777, true);
 		copy($source, dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/' ).strtolower(strtr(mb_convert_encoding($name, 'ascii'), array('?'=>'')  )));
 		
 		
 	}
 	function delFile($type, $fichier, $entity=1) {
-	/* suppression d'un modèle*/
-		unlink(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier));
-		
+		/* suppression d'un modèle*/
+		if (file_exists(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier)))
+			unlink(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$fichier));
 	}
+	
 	function show_docs(&$db,&$conf, &$object,&$langs, $type='propal') {
 	/*
 	 * Récupération des docs généré pour un objet grâce au fonction DOL 
@@ -234,6 +235,7 @@ class TODTDocs {
 		$TBS->LoadTemplate('#styles.xml');
 		$TBS->MergeField('doc_linked',$TLinkedObjects);
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
+		if(isset($object['projet']))$TBS->MergeField('doc',TODTDocs::asArray($object['projet']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
 		$TBS->MergeField('langs', $outputlangs);
 		
@@ -334,12 +336,15 @@ class TODTDocs {
 				
 				if(in_array($k, $TToDate)) {
 					$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
+					$Tab[$k.'_ns'] = (!empty($v))?date('W', (int)$v):'';
+					
 				}
 				if(in_array($k, $TNoBR)) {
 					$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
 				}
 				
-			}	
+			}
+			
 		}
 		//print_r($Tab);
 		return $Tab;
@@ -367,7 +372,8 @@ class TODTDocs {
 				'email' => $c->email,
 				'phone' => $c->phone_pro,
 				'fax' => $c->fax,
-				'societe' => $c->societe->nom
+				'societe' => $c->societe->nom,
+				'phone_mobile'=>$c->phone_mobile
 			);
 		}
 		
@@ -388,6 +394,7 @@ class TODTDocs {
 				'email' => $u->email,
 				'phone' => $u->phone_pro,
 				'fax' => $u->fax
+				,'phone_mobile'=>$u->user_mobile
 			);
 		}
 		

@@ -241,6 +241,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	else{
 		$autre = array(
+				'date_commande' => date("d/m/Y", $commande->date),
 				'date_jour' => date("d/m/Y H:i:s"),
 				'ref' => $commande->ref
 			);

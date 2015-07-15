@@ -29,8 +29,9 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
-dol_include_once("/custom/tarif/class/tarif.class.php");
-dol_include_once("/custom/milestone/class/dao_milestone.class.php");
+dol_include_once("/tarif/class/tarif.class.php");
+dol_include_once("/milestone/class/dao_milestone.class.php");
+dol_include_once('/projet/class/project.class.php');
 
 global $db, $langs;
 $langs->load('orders');
@@ -83,6 +84,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
 	$Ttva = array();
 	$tableau=array();
+	$projet = new Project($db);
+	if($propal->fk_project) $projet->fetch($propal->fk_project);
 	
 	foreach($propal->lines as $ligne) {
 		
@@ -235,10 +238,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					   "fin_validite"=>date('d/m/Y',$propal->fin_validite),
 					   "projet"=>$res->ref." ".$res->title);
 	}
+	elseif($conf->clisynovo->enabled){
+		dol_include_once('/clisynovo/lib/clisynovo.lib.php');
+		$autre = getDataPropalForODTDoc($propal);
+	}
 	else{
 		$autre = array();
 	}
-	
+
 	$TVA = TODTDocs::getTVA($propal);
 	
 	$generatedfilename = dol_sanitizeFileName($propal->ref).'-'.$_REQUEST['modele'];
@@ -246,11 +253,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$generatedfilename = dol_sanitizeFileName($propal->ref);
 	}
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
+//var_dump($propal->projet->ref,$propal->projet);
 	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$propal, 'projet'=>$projet, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
