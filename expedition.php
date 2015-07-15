@@ -192,7 +192,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$generatedfilename = dol_sanitizeFileName($exp->ref);
 	}
 	$fOut = $conf->expedition->dir_output . '/sending/'. dol_sanitizeFileName($exp->ref).'/'.$generatedfilename;
-	
+	$societe->country = strtr($societe->country, array("'"=>' '));
 	TODTDocs::makeDocTBS(
 		'expedition'
 		, $_REQUEST['modele']
