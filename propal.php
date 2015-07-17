@@ -254,7 +254,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
-	
+	$societe->country = strtr($societe->country, array("'"=>' '));
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']

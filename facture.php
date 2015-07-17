@@ -273,7 +273,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if(is_array($fac->linkedObjects['commande'])){
 		$fac->linkedObjects['commande']['0']->date_commande = date("d/m/Y",$fac->linkedObjects['commande']['0']->date_commande);
 	}
-
+	$societe->country = strtr($societe->country, array("'"=>' '));
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
