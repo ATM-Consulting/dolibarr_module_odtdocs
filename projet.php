@@ -107,38 +107,31 @@ function getMoreInfoContacts($contacts) {
 }
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
-	//print_r($propal);
-	$Ttva = array();
+
 	$tableau=array();
 	
 	$TProjectTasks = $taskstatic->getTasksArray(0, 0, $projet->id);
 	
-	foreach($TProjectTasks as $ligne) {
+	foreach($TProjectTasks as $ligneArray) {
 		
-		$tableau[]=$ligneArray;
+		$tableau[]=TODTDocs::asArray($ligneArray);
 	
 	}
-
+	
 	$contact = array_merge($projet->liste_contact(-1,'internal'), $projet->liste_contact(-1));
 	$contact = getMoreInfoContacts($contact);
-	var_dump($contact);
-	/*echo '<pre>';
-	print_r($tableau);
-	echo '</pre>';*/
-	
-	$autre = array();
-
-	//$TVA = TODTDocs::getTVA($projet);
 	
 	$generatedfilename = dol_sanitizeFileName($projet->ref).'-'.$_REQUEST['modele'];
 	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
 		$generatedfilename = dol_sanitizeFileName($projet->ref);
 	}
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($projet->ref).'/'.$generatedfilename;
-//var_dump($propal->projet->ref,$propal->projet);
+	
+	$projet->date_start = date('d/m/Y', $projet->date_start);
+	$projet->date_end = date('d/m/Y', $projet->date_end);
 
 	$societe->country = strtr($societe->country, array("'"=>' '));
-
+	
 	TODTDocs::makeDocTBS(
 		'projet'
 		, $_REQUEST['modele']
