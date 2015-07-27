@@ -91,7 +91,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if($propal->fk_project) $projet->fetch($propal->fk_project);
 	
 	if(!empty($propal->array_options)) {
-		$TExtrafields = get_tab_extrafields($propal->array_options);
+		$TExtrafields = get_tab_extrafields($propal->array_options, 'propal');
 	}
 	
 	foreach($propal->lines as $ligne) {

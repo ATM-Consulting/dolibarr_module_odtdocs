@@ -10,7 +10,7 @@
  * Pour les dates, elles sont formattées au format français.
  * @return $TExtrafields 
  */ 
-function get_tab_extrafields($array_options) {
+function get_tab_extrafields($array_options, $element_type) {
 	
 	dol_include_once('/core/class/extrafields.class.php');
 	
@@ -21,7 +21,7 @@ function get_tab_extrafields($array_options) {
 		
 		$e = new ExtraFields($db);
 		
-		$array_name_label = $e->fetch_name_optionals_label('propal');
+		$array_name_label = $e->fetch_name_optionals_label($element_type);
 		$array_attribute_params = $e->attribute_param;
 		$array_attribute_type = $e->attribute_type;
 		

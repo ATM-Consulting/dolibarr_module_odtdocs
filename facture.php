@@ -40,6 +40,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 dol_include_once("/tarif/class/tarif.class.php");	
 dol_include_once("/milestone/class/dao_milestone.class.php");
 dol_include_once("/projet/class/project.class.php");
+dol_include_once("/odtdocs/lib/odtdocs.lib.php");
 dol_include_once('/includes/odtphp/odf.php');
 
 global $db, $langs, $conf;
@@ -68,6 +69,7 @@ $fac = new Facture($db);
 $fac->fetch($_REQUEST["id"]);
 $fac->info($_REQUEST["id"]);
 $fac->fetchObjectLinked();
+$fac->fetch_optionals();
 
 $societe = new Societe($db, $fac->socid);
 $societe->fetch($fac->socid);
@@ -114,6 +116,11 @@ require('./class/odt.class.php');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$tableau=array();
+	$TExtrafields = array();
+	
+	if(!empty($fac->array_options)) {
+		$TExtrafields = get_tab_extrafields($fac->array_options, 'facture');
+	}
 	
 	foreach($fac->lines as $ligne) {
 		
@@ -282,7 +289,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
-		,array('doc'=>$fac, 'societe'=>$societe, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$fac, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
