@@ -36,6 +36,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 dol_include_once("/tarif/class/tarif.class.php");
 dol_include_once("/asset/class/asset.class.php");
 dol_include_once("/projet/class/project.class.php");
+dol_include_once("/odtdocs/lib/odtdocs.lib.php");
 dol_include_once("/milestone/class/dao_milestone.class.php");
 
 global $db, $langs, $user;
@@ -87,6 +88,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
 	$Ttva = array();
 	$tableau=array();
+	$TExtrafields = array();
+	
+	if(!empty($commande->array_options)) {
+		$TExtrafields = get_tab_extrafields($commande->array_options, 'commande');
+	}
 	
 	foreach($commande->lines as $ligne) {
 		$ligneArray = TODTDocs::asArray($ligne);	
@@ -264,7 +270,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
-		,array('doc'=>$commande, 'societe'=>$societe, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$commande, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
