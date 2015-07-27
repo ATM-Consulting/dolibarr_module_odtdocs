@@ -30,6 +30,7 @@ require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
 dol_include_once("/tarif/class/tarif.class.php");
+dol_include_once('/odtdocs/lib/odtdocs.lib.php');
 dol_include_once("/milestone/class/dao_milestone.class.php");
 dol_include_once('/projet/class/project.class.php');
 
@@ -63,6 +64,7 @@ $ATMdb = new TPDOdb;
 
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
+$propal->fetch_optionals();
 $propal->fetchObjectLinked();
 
 $societe = new Societe($db);
@@ -84,8 +86,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);
 	$Ttva = array();
 	$tableau=array();
+	$TExtrafields = array();
 	$projet = new Project($db);
 	if($propal->fk_project) $projet->fetch($propal->fk_project);
+	
+	if(!empty($propal->array_options)) {
+		$TExtrafields = get_tab_extrafields($propal->array_options);
+	}
 	
 	foreach($propal->lines as $ligne) {
 		
@@ -258,7 +265,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'projet'=>$projet, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
