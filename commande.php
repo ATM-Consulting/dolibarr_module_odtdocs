@@ -33,9 +33,10 @@ require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 
-dol_include_once("/custom/tarif/class/tarif.class.php");
-dol_include_once("/custom/asset/class/asset.class.php");
-dol_include_once("/custom/milestone/class/dao_milestone.class.php");
+dol_include_once("/tarif/class/tarif.class.php");
+dol_include_once("/asset/class/asset.class.php");
+dol_include_once("/projet/class/project.class.php");
+dol_include_once("/milestone/class/dao_milestone.class.php");
 
 global $db, $langs, $user;
 $langs->load('orders');
@@ -63,6 +64,11 @@ $commande = new commande($db);
 $commande->fetch($_REQUEST["id"]);
 $commande->info($_REQUEST["id"]);
 $commande->fetchObjectLinked();
+
+if($commande->fk_project) {
+	$projet = new Project($db);
+	$projet->fetch($commande->fk_project);
+}
 
 $societe = new Societe($db, $commande->socid);
 $societe->fetch($commande->socid);
@@ -258,7 +264,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
-		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$commande, 'societe'=>$societe, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$commande->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
