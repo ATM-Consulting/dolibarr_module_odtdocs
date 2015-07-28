@@ -207,9 +207,10 @@ class TODTDocs {
 			//print_r(TODTDocs::asArray($object['contact']));
 			
 			TODTDocs::arrayDecode($object['contact'] );
-			if(is_array($object['contact'])) $TBS->MergeBlock('contact', $object['contact']);
-			else $TBS->MergeField('contact', $object['contact']);
-		} 
+			$TBS->MergeField('contact', $object['contact']);
+		}
+		
+		if(isset($object['contact_block'])) $TBS->MergeBlock('contact_block',TODTDocs::checkTableau($object['contact_block'])); 
 		
 		if(isset($object['compte'])) {
 			$TBS->MergeField('compte',TODTDocs::asArray($object['compte']));

@@ -135,7 +135,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	TODTDocs::makeDocTBS(
 		'projet'
 		, $_REQUEST['modele']
-		,array('doc'=>$projet, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'autre'=>$autre)
+		,array('doc'=>$projet, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact_block'=>$contact,'autre'=>$autre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
