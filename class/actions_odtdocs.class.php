@@ -36,6 +36,8 @@ class ActionsOdtdocs
                 || $objectPDF->element == 'commande') {
                     @unlink($parameters['file']);   
                     
+                    
+                    dol_include_once('/core/lib/files.lib.php');
                     $fileparams = dol_most_recent_file($conf->{$objectPDF->element}->dir_output . '/' . $objectPDF->ref);
                     $file = $fileparams['fullname'];
                      
