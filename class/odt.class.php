@@ -75,6 +75,11 @@ class TODTDocs {
 			$upload_dir = $conf->expedition->dir_output . '/sending/'.dol_sanitizeFileName($object->ref);
 		}
 		
+        global $conf;
+        if(!empty($conf->global->ODTDOCS_REPLACE_BY_THE_LAST)) {
+            @unlink($upload_dir.'/'.$object->ref.'.pdf');
+        }
+        
 		//print $upload_dir;
 		$sortfield = GETPOST("sortfield",'alpha');
 		$sortorder = GETPOST("sortorder",'alpha');

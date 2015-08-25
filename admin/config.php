@@ -39,7 +39,8 @@
 // Change this following line to use the correct relative path (../, ../../, etc)
 include '../config.php';
 // Change this following line to use the correct relative path from htdocs (do not remove DOL_DOCUMENT_ROOT)
-
+dol_include_once('/core/lib/admin.lib.php');
+dol_include_once('/core/class/extrafields.class.php');
 
 // Get parameters
 $myparam = isset($_GET["myparam"])?$_GET["myparam"]:'';
@@ -89,6 +90,20 @@ if(isset($_REQUEST['action'])) {
 	}	
 	
 }
+
+$action = GETPOST('action', 'alpha');
+
+if($action=='save') {
+    
+    foreach($_REQUEST['TDivers'] as $name=>$param) {
+        
+        dolibarr_set_const($db, $name, $param);
+        
+    }
+    
+    setEventMessage( $langs->trans('RegisterSuccess') );
+}
+
 
 //$form=new Form($db);
 
@@ -214,6 +229,28 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 }
 ?>
 
+<table width="100%" class="noborder" style="background-color: #fff;">
+        <tr class="liste_titre">
+            <td colspan="2"><?php echo $langs->trans('Parameters') ?></td>
+        </tr>
+        
+        <tr>
+            <td><?php echo $langs->trans('ReplaceStandardPDFonGenerationByLastCustom') ?></td><td><?php
+            
+                if($conf->global->ODTDOCS_REPLACE_BY_THE_LAST==0) {
+                    
+                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                    
+                }
+                else {
+                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                    
+                }
+            
+            ?></td>             
+        </tr>
+</table>
+<br /><br />
 <table width="100%" class="noborder">
 	<tr class="liste_titre">
 		<td>A propos</td>
@@ -222,7 +259,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 		<tr class="impair">
 			<td valign="top">Module développé par </td>
 			<td align="center">
-				<img src="<?=DOL_URL_ROOT?>/custom/asset/img/logo2-w-small.png" align="absmiddle"/>
+				<img src="<?php echo dol_buildpath('/odtdocs/img/logo2-w-small.png',1); ?>" align="absmiddle"/>
 				
 			</td>
 			
