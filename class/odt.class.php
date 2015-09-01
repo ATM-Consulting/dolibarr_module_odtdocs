@@ -401,7 +401,7 @@ class TODTDocs {
 				'ville' => $u->ville,
 				'pays' => $u->pays,
 				'email' => $u->email,
-				'phone' => $u->phone_pro,
+				'phone' => $u->office_phone,
 				'fax' => $u->fax
 				,'phone_mobile'=>$u->user_mobile
 			);
