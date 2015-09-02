@@ -98,12 +98,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$societe->pays = $contact['CUSTOMER']['pays'];
 		}
 	}
-	
+	$TVA = TODTDocs::getTVA($commande);
 	//print_r($tableau); exit;
 	TODTDocs::makeDocTBS(
 		'fournisseur'
 		, $_REQUEST['modele']
-		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact)
+		,array('doc'=>$commande, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'tva'=>$TVA)
 		, $conf->fournisseur->dir_output.'/commande/'. dol_sanitizeFileName($commande->ref).'/'.dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele']/*.TODTDocs::_ext( $_REQUEST['modele'])*/
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
