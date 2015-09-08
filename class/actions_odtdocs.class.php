@@ -28,7 +28,7 @@ class ActionsOdtdocs
         if (in_array('formmail', explode(':', $parameters['context'])))
         {
           
-            global $db, $user, $conf;
+           /* global $db, $user, $conf;
             if(!empty($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL)) {
                  dol_include_once('/core/lib/files.lib.php');       
                
@@ -41,7 +41,7 @@ class ActionsOdtdocs
                     $object->add_attached_files($file, basename($file), dol_mimetype($file));    
                 }
                 
-            }
+            }*/
         }
         
     }
