@@ -249,6 +249,24 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
             ?></td>             
         </tr>
+        <tr>
+            <td><?php echo $langs->trans('AddAllGeneratedFileInMail') ?></td><td><?php
+            
+                if($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL==0) {
+                    
+                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                    
+                }
+                else {
+                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                    
+                }
+            
+            ?></td>             
+        </tr>
+        
+        
+        
 </table>
 <br /><br />
 <table width="100%" class="noborder">

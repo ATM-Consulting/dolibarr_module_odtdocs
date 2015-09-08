@@ -28,20 +28,30 @@ class ActionsOdtdocs
         if (in_array('formmail', explode(':', $parameters['context'])))
         {
           
-           /* global $db, $user, $conf;
+            global $db, $user, $conf;
             if(!empty($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL)) {
                  dol_include_once('/core/lib/files.lib.php');       
-               
-                $object->clear_attached_files();
+               //var_dump($object);
+			   	 if(!empty($_SESSION["listofpaths"]) && GETPOST('mode') === 'init') {
+			   	 	$listofpaths=explode(';',$_SESSION["listofpaths"]);
+					$dir = dirname($listofpaths[0]);
+					
+					if(empty($dir)) return 0;
+					
+	                 $object->clear_attached_files();
+	                
+	                $tmparray=dol_dir_list($dir,'files',0);
+					foreach($tmparray as &$f) {
+	                    
+						$file = $f['fullname'];
+						
+	                    $object->add_attached_files($file, basename($file), dol_mimetype($file));    
+	                }
+
+			   	 }
+			   
                 
-                $tmparray=dol_dir_list($conf->{$objectPDF->element}->dir_output . '/' . $objectPDF->ref,'files',0);
-               // var_dump($tmparray);
-                foreach($tmparray as $file) {
-                    
-                    $object->add_attached_files($file, basename($file), dol_mimetype($file));    
-                }
-                
-            }*/
+            }
         }
         
     }
