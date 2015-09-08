@@ -21,6 +21,33 @@
 
 class ActionsOdtdocs
 {
+    
+    
+    function getFormMail($parameters, &$object, &$action, $hookmanager) {
+        
+        if (in_array('formmail', explode(':', $parameters['context'])))
+        {
+          
+            global $db, $user, $conf;
+            if(!empty($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL)) {
+                 dol_include_once('/core/lib/files.lib.php');       
+               
+                $object->clear_attached_files();
+                
+                $tmparray=dol_dir_list($conf->{$objectPDF->element}->dir_output . '/' . $objectPDF->ref,'files',0);
+               // var_dump($tmparray);
+                foreach($tmparray as $file) {
+                    
+                    $object->add_attached_files($file, basename($file), dol_mimetype($file));    
+                }
+                
+            }
+        }
+        
+    }
+    
+    
+    
     function afterPDFCreation($parameters, &$object, &$action, $hookmanager)
     {
         if (in_array('pdfgeneration', explode(':', $parameters['context'])))
