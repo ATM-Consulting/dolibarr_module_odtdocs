@@ -264,6 +264,21 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
             ?></td>             
         </tr>
+       <tr>
+            <td><?php echo $langs->trans('setODTDOCS_LOAD_PRODUCT_IN_LINES') ?></td><td><?php
+            
+                if($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES==0) {
+                    
+                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                    
+                }
+                else {
+                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                    
+                }
+            
+            ?></td>             
+        </tr>
         
         
         

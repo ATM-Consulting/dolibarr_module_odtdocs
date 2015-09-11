@@ -203,11 +203,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
 		
-		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
+		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES) && $ligne->fk_product>0) {
 			$prod = new Product($db);
 			$prod->fetch($ligne->fk_product);
 			$prod->fetch_optionals($ligne->fk_product);
 			$ligneArray['product'] = $prod;
+			//var_dump($prod);exit;
 		}
 		
 		$tableau[]=$ligneArray;

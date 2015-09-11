@@ -207,7 +207,7 @@ class TODTDocs {
 		if(isset($object['autre']))$TBS->MergeField('autre',TODTDocs::asArray($object['autre']));
 		if(isset($object['tva']))$TBS->MergeBlock('tva',$object['tva']);
 		//print_r($object['tableau'][0]);
-		if(isset($object['tableau'])) $TBS->MergeBlock('tab,tab2',TODTDocs::checkTableau($object['tableau']));
+		if(isset($object['tableau'])) $TBS->MergeBlock('tab,tab2',TODTDocs::checkTableau( TODTDocs::addUnits($object['tableau'])));
 		if(isset($object['contact'])) {
 			//print_r(TODTDocs::asArray($object['contact']));
 			
@@ -244,7 +244,7 @@ class TODTDocs {
 		$TBS->LoadTemplate('#styles.xml');
 		$TBS->MergeField('doc_linked',$TLinkedObjects);
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
-		if(isset($object['projet']))$TBS->MergeField('doc',TODTDocs::asArray($object['projet']));
+		if(isset($object['projet']))$TBS->MergeField('projet',TODTDocs::asArray($object['projet']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
 		$TBS->MergeField('langs', $outputlangs);
 		
@@ -276,6 +276,36 @@ class TODTDocs {
 		}
 
 	}
+
+    function addUnits($Tab) {
+        
+        dol_include_once('/core/lib/product.lib.php');
+        
+        foreach($Tab as &$row) {
+            
+            if(!empty($row['product'])) {
+                $p = & $row['product'];
+                
+                if(!empty($p->array_options['options_unite_vente'])) {
+                    
+                    $uv = $p->array_options['options_unite_vente'];
+                    if($uv == 'size')$uv = 'length';
+                    
+                    $p->conditionnement_vente = $p->{$uv};
+                    $p->unite_vente = measuring_units_string($p->{$uv.'_units'},$p->array_options['options_unite_vente']); // bah c'est size là ... $p->array_options['options_unite_vente']
+                }
+                
+                
+            }
+            
+            $row['amount_ht'] = $row['subprice'] * $row['qty'];
+            
+        }
+        
+        
+        return $Tab;
+    }
+
 	function arrayDecode(&$Tab) {
 		
 		foreach($Tab as $k=>&$v) {
