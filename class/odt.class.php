@@ -187,7 +187,9 @@ class TODTDocs {
 		global $projetPDP;
         $projetPDP = TODTDocs::asArray($object['projet']);
 		
-		
+		global $docPDP;
+		$docPDP = TODTDocs::asArray($object['doc']);
+	
 		$outputlangs = new Translate("",$conf);
 		//$outputlangs=$langs;
         $outputlangs->setDefaultLang($newlang);
