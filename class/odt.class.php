@@ -185,8 +185,7 @@ class TODTDocs {
 		}*/
 
 		global $projet;
-        $projet = &$object['projet'];
-        $projet = TODTDocs::asArray($object['projet']);
+        $projetPDP = TODTDocs::asArray($object['projet']);
 		
 		
 		$outputlangs = new Translate("",$conf);
