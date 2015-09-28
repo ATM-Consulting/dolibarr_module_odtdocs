@@ -206,8 +206,9 @@ class TODTDocs {
 		$object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);
 		
 		if(!empty($object['doc']->shipping_method_id)) {
-            $codeShipping=$langs->getLabelFromKey($db, $object['doc']->shipping_method_id, 'c_shipment_mode', 'rowid', 'code');
-            $object['doc']->shipping_method_label = $langs->trans("SendingMethod".strtoupper($codeShipping));
+	            $codeShipping=$langs->getLabelFromKey($db, $object['doc']->shipping_method_id, 'c_shipment_mode', 'rowid', 'code');
+        	    $object['doc']->shipping_method_label = $langs->trans("SendingMethod".strtoupper($codeShipping));
+//		var_dump($codeShipping, $object['doc']->shipping_method_label);exit;
 		}
         
         
