@@ -395,6 +395,9 @@ class TODTDocs {
 				}
 				
 			}
+            else {
+               $Tab[$k] = TODTDocs::asArray($object->{$k});
+            }
 			
 		}
 		//print_r($Tab);
