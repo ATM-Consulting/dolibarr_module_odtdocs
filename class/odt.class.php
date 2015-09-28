@@ -377,6 +377,16 @@ class TODTDocs {
             if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
         }
 
+        if(!empty($object->linkedObjects)) {
+            
+            foreach($object->linkedObjects as $type_object=>&$linked) {
+                
+                if(!empty($linked[0]->ref)) $object->{'linked_ref_'.$type_object} = $linked[0]->ref
+                
+            }
+            
+        }
+
 
 		foreach($object as $k=>$v) {
 			//if(is_int($v) || is_string($v) || is_float($v)) {
