@@ -42,6 +42,7 @@ if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class
 if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
 if ($conf->stock->enabled)    require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
 
+dol_include_once('/projet/class/project.class.php');
 
 global $db, $langs;
 $langs->load('orders');
@@ -79,7 +80,7 @@ if($exp->origin == 'commande') {
 }
 
 $projet=new Project($db);
-$projet->fetch($cde->fk_projet);
+$projet->fetch($cde->fk_project);
 
 $societe = new Societe($db);
 $societe->fetch($exp->socid);
