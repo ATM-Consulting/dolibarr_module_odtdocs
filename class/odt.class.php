@@ -381,7 +381,7 @@ class TODTDocs {
             
             foreach($object->linkedObjects as $type_object=>&$linked) {
                 
-                if(!empty($linked[0]->ref)) $object->{'linked_ref_'.$type_object} = $linked[0]->ref
+                if(!empty($linked[0]->ref)) $object->{'linked_ref_'.$type_object} = $linked[0]->ref;
                 
             }
             
@@ -437,7 +437,8 @@ class TODTDocs {
 				'phone' => $c->phone_pro,
 				'fax' => $c->fax,
 				'societe' => $c->societe->nom,
-				'phone_mobile'=>$c->phone_mobile
+				'phone_mobile'=>$c->phone_mobile,
+				'note_public'=>$c->note_public
 			);
 		}
 		
