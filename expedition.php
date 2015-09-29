@@ -75,7 +75,11 @@ $exp->fetchObjectLinked();
 if($exp->origin == 'commande') {
 	$cde = new Commande($db);
 	$cde->fetch($exp->origin_id);
+    
 }
+
+$projet=new Project($db);
+$projet->fetch($cde->fk_projet);
 
 $societe = new Societe($db);
 $societe->fetch($exp->socid);
@@ -196,7 +200,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	TODTDocs::makeDocTBS(
 		'expedition'
 		, $_REQUEST['modele']
-		,array('doc'=>$exp, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$exp, 'societe'=>$societe, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
