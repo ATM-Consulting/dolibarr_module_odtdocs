@@ -388,29 +388,32 @@ class TODTDocs {
             
         }
 
-
-		foreach($object as $k=>$v) {
-			//if(is_int($v) || is_string($v) || is_float($v)) {
-			if(!is_object($v) && !is_array($v)) {
-				//$Tab[$k] = utf8_decode( strtr($v, array('<br />'=>"\n")));
-				$Tab[$k] = utf8_decode( $v );
-				//$Tab[$k] = "!".$v;
-				
-				if(in_array($k, $TToDate)) {
-					$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
-					$Tab[$k.'_ns'] = (!empty($v))?date('W', (int)$v):'';
+		if (!empty($object))
+		{
+			foreach($object as $k=>$v) {
+				//if(is_int($v) || is_string($v) || is_float($v)) {
+				if(!is_object($v) && !is_array($v)) {
+					//$Tab[$k] = utf8_decode( strtr($v, array('<br />'=>"\n")));
+					$Tab[$k] = utf8_decode( $v );
+					//$Tab[$k] = "!".$v;
+					
+					if(in_array($k, $TToDate)) {
+						$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
+						$Tab[$k.'_ns'] = (!empty($v))?date('W', (int)$v):'';
+						
+					}
+					if(in_array($k, $TNoBR)) {
+						$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
+					}
 					
 				}
-				if(in_array($k, $TNoBR)) {
-					$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
-				}
+	            else {
+	               $Tab[$k] = TODTDocs::asArray($object->{$k});
+	            }
 				
 			}
-            else {
-               $Tab[$k] = TODTDocs::asArray($object->{$k});
-            }
-			
 		}
+
 		//print_r($Tab);
 		return $Tab;
 	}
