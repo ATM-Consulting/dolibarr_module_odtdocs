@@ -174,6 +174,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}*/
 		if(empty($ligneArray['desc']) && $ligne->product_type == 9){
 			if(!empty($milestone)) $ligneArray['desc'] = html_entity_decode(htmlentities($milestone->label,ENT_QUOTES,"UTF-8"));
+			else $ligneArray['desc'] = html_entity_decode(htmlentities($ligne->label,ENT_QUOTES,"UTF-8"));
 		}
 		elseif($ligne->fk_product != 0){
 			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
