@@ -199,7 +199,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			}
 		}
 		
-		//if(empty($ligneArray['desc'])) = $ligneArray['label'];
+		if(empty($ligneArray['desc'])) $ligneArray['desc'] = $ligneArray['label'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
