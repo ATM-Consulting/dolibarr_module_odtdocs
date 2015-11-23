@@ -42,6 +42,7 @@ if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class
 if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
 if ($conf->stock->enabled)    require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
 
+dol_include_once('/projet/class/project.class.php');
 
 global $db, $langs;
 $langs->load('orders');
@@ -75,7 +76,11 @@ $exp->fetchObjectLinked();
 if($exp->origin == 'commande') {
 	$cde = new Commande($db);
 	$cde->fetch($exp->origin_id);
+    
 }
+
+$projet=new Project($db);
+$projet->fetch($cde->fk_project);
 
 $societe = new Societe($db);
 $societe->fetch($exp->socid);
@@ -196,7 +201,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	TODTDocs::makeDocTBS(
 		'expedition'
 		, $_REQUEST['modele']
-		,array('doc'=>$exp, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$exp, 'societe'=>$societe, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'linkedObjects'=>$exp->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

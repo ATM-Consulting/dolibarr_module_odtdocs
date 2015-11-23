@@ -148,7 +148,7 @@ class TODTDocs {
 	 * 		,'tableau'=>tableau de donnée/ligne du document   
 	 * )	
 	 *  */	
-		global $conf, $langs;
+		global $conf, $langs, $db;
 	
 	 	if($type=='propal')$dir = 'propale/';
 		else $dir=$type.'/';
@@ -184,6 +184,12 @@ class TODTDocs {
 			$TPdp[$k] = strtr($v,array("\n"," - ","\r"=>''));
 		}*/
 
+		global $projetPDP;
+        $projetPDP = TODTDocs::asArray($object['projet']);
+		
+		global $docPDP;
+		$docPDP = TODTDocs::asArray($object['doc']);
+	
 		$outputlangs = new Translate("",$conf);
 		//$outputlangs=$langs;
         $outputlangs->setDefaultLang($newlang);
@@ -199,8 +205,15 @@ class TODTDocs {
 		$object['doc']->cond_reglement = $outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code)!=('PaymentCondition'.$object['doc']->cond_reglement_code)?$outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code):$outputlangs->convToOutputCharset($object['doc']->cond_reglement_doc);
 		$object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);
 		
+		if(!empty($object['doc']->shipping_method_id)) {
+	            $codeShipping=$langs->getLabelFromKey($db, $object['doc']->shipping_method_id, 'c_shipment_mode', 'rowid', 'code');
+        	    $object['doc']->shipping_method_label = $langs->trans("SendingMethod".strtoupper($codeShipping));
+//		var_dump($codeShipping, $object['doc']->shipping_method_label);exit;
+		}
+        
+        
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
-		if(isset($object['projet']))$TBS->MergeField('projet',TODTDocs::asArray($object['projet']));
+		if(isset($object['projet']))$TBS->MergeField('projet',$projet);
 		if(isset($object['extrafields']))$TBS->MergeField('extrafields',TODTDocs::asArray($object['extrafields']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
@@ -365,26 +378,42 @@ class TODTDocs {
             if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
         }
 
+        if(!empty($object->linkedObjects)) {
+            
+            foreach($object->linkedObjects as $type_object=>&$linked) {
+                
+                if(!empty($linked[0]->ref)) $object->{'linked_ref_'.$type_object} = $linked[0]->ref;
+                
+            }
+            
+        }
 
-		foreach($object as $k=>$v) {
-			//if(is_int($v) || is_string($v) || is_float($v)) {
-			if(!is_object($v) && !is_array($v)) {
-				//$Tab[$k] = utf8_decode( strtr($v, array('<br />'=>"\n")));
-				$Tab[$k] = utf8_decode( $v );
-				//$Tab[$k] = "!".$v;
-				
-				if(in_array($k, $TToDate)) {
-					$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
-					$Tab[$k.'_ns'] = (!empty($v))?date('W', (int)$v):'';
+		if (!empty($object))
+		{
+			foreach($object as $k=>$v) {
+				//if(is_int($v) || is_string($v) || is_float($v)) {
+				if(!is_object($v) && !is_array($v)) {
+					//$Tab[$k] = utf8_decode( strtr($v, array('<br />'=>"\n")));
+					$Tab[$k] = utf8_decode( $v );
+					//$Tab[$k] = "!".$v;
+					
+					if(in_array($k, $TToDate)) {
+						$Tab[$k.'_fr'] = (!empty($v))?date('d/m/Y', (int)$v):'';
+						$Tab[$k.'_ns'] = (!empty($v))?date('W', (int)$v):'';
+						
+					}
+					if(in_array($k, $TNoBR)) {
+						$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
+					}
 					
 				}
-				if(in_array($k, $TNoBR)) {
-					$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
-				}
+	            else {
+	               $Tab[$k] = TODTDocs::asArray($object->{$k});
+	            }
 				
 			}
-			
 		}
+
 		//print_r($Tab);
 		return $Tab;
 	}
@@ -412,7 +441,8 @@ class TODTDocs {
 				'phone' => $c->phone_pro,
 				'fax' => $c->fax,
 				'societe' => $c->societe->nom,
-				'phone_mobile'=>$c->phone_mobile
+				'phone_mobile'=>$c->phone_mobile,
+				'note_public'=>$c->note_public
 			);
 		}
 		

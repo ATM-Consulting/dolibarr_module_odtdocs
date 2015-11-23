@@ -69,7 +69,7 @@ $fac = new Facture($db);
 $fac->fetch($_REQUEST["id"]);
 $fac->info($_REQUEST["id"]);
 $fac->fetchObjectLinked();
-$fac->fetch_optionals();
+$fac->fetch_optionals($fac->id);
 
 $societe = new Societe($db, $fac->socid);
 $societe->fetch($fac->socid);
