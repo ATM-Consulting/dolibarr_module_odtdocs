@@ -102,7 +102,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$product->fetch($ligne->fk_product);
 			
 			// Chemin des photos du produit
-			$pdir = get_exdir($product->id,2) . $product->id ."/photos/";
+			$version = (float) DOL_VERSION;
+			if($version >= 3.8) {
+				$pdir = get_exdir($product->id,2,0,0,$product,'product').dol_sanitizeFileName($product->ref).'/';
+			} else {
+				$pdir = get_exdir($product->id,2) . $product->id ."/photos/";
+			}
 			$sdir = $conf->product->multidir_output[$product->entity];
 			$dir = $sdir . '/'. $pdir;
 			
@@ -263,6 +268,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
@@ -273,8 +279,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
-	
-	
 }
 
 function decode($FieldName, &$CurrVal)
@@ -287,17 +291,17 @@ function decode($FieldName, &$CurrVal)
 	<input type="hidden" name="id" value="<?=$id ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle à utiliser* <?
+?>Modèle à utiliser* <?php
 TODTDocs::combo('propal', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$propal, $langs);
 
@@ -306,7 +310,7 @@ TODTDocs::show_docs($db, $conf,$propal, $langs);
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 
