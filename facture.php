@@ -279,14 +279,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$generatedfilename = dol_sanitizeFileName($fac->ref);
 	}
 	$fOut = $conf->facture->dir_output.'/'. dol_sanitizeFileName($fac->ref).'/'.$generatedfilename;
-
-	$fac->note_public = TODTDocs::htmlToUTFAndPreOdf($fac->note_public);
 	
 	if(is_array($fac->linkedObjects['commande'])){
-		$fac->linkedObjects['commande']['0']->date_commande = date("d/m/Y",$fac->linkedObjects['commande']['0']->date_commande);
+		foreach($fac->linkedObjects['commande'] as $key => &$value) {
+			$value->date_commande = date("d/m/Y",$value->date_commande);
+		}
 	}
 	$societe->country = strtr($societe->country, array("'"=>' '));
-@	TODTDocs::makeDocTBS(
+	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
 		,array('doc'=>$fac, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)

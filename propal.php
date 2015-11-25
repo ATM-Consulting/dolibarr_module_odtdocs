@@ -271,7 +271,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
 		$generatedfilename = dol_sanitizeFileName($propal->ref);
 	}
-	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
+	$fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
 	TODTDocs::makeDocTBS(
