@@ -43,6 +43,7 @@ $langs->load('propal');
 $langs->load('deliveries');
 $langs->load('products');
 $langs->load('odtdocs@odtdocs');
+$dolversion = (float) DOL_VERSION;
 
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
 
@@ -102,8 +103,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$product->fetch($ligne->fk_product);
 			
 			// Chemin des photos du produit
-			$version = (float) DOL_VERSION;
-			if($version >= 3.8) {
+			if($dolversion >= 3.8) {
 				$pdir = get_exdir($product->id,2,0,0,$product,'product').dol_sanitizeFileName($product->ref).'/';
 			} else {
 				$pdir = get_exdir($product->id,2) . $product->id ."/photos/";
@@ -121,6 +121,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligne->product_photo = $photo_urlAbs;
 		}
 		
+		// Gestion label et description uniformise les donées
+		if($dolversion >= 3.8) {
+			$ligne->label = html_entity_decode($ligne->label);
+			$ligne->desc = html_entity_decode($ligne->desc);
+		}
 		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
@@ -269,7 +274,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
-	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
