@@ -126,9 +126,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$generatedfilename = dol_sanitizeFileName($projet->ref);
 	}
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($projet->ref).'/'.$generatedfilename;
-	
-	$projet->date_start = date('d/m/Y', $projet->date_start);
-	$projet->date_end = date('d/m/Y', $projet->date_end);
+	if(!empty($projet->date_start))
+		$projet->date_start = date('d/m/Y', $projet->date_start);
+	if(!empty($projet->date_end))
+		$projet->date_end = date('d/m/Y', $projet->date_end);
 
 	$societe->country = strtr($societe->country, array("'"=>' '));
 	
