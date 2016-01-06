@@ -131,7 +131,7 @@ class modOdtdocs extends DolibarrModules
         	,'invoice:+tabEditions2:Edition personnalisée:@odtdocs:/odtdocs/facture.php?id=__ID__'
         	,'order:+tabEditions3:Edition personnalisée:@odtdocs:/odtdocs/commande.php?id=__ID__'
         	,'supplier_order:+tabEditions4:Edition personnalisée:@odtdocs:/odtdocs/fournisseur.php?id=__ID__'
-        	//,'thirdparty:+tabEditions5:Edition personnalisée:@odtdocs:/odtdocs/societe.php?id=__ID__'
+        	,'thirdparty:+tabEditions5:Edition personnalisée:@odtdocs:/odtdocs/societe.php?id=__ID__'
         	,'delivery:+tabEditions6:Edition personnalisée:@odtdocs:/odtdocs/dispatch.php?id=__ID__'
         	,'project:+tabEditions7:Edition personnalisée:@odtdocs:/odtdocs/projet.php?id=__ID__'
         	
