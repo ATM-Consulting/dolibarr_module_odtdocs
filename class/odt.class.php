@@ -202,8 +202,8 @@ class TODTDocs {
 		$TBS->MergeField('langs', $outputlangs);
 		
 		// Traduction de certains éléments du doc
-		$object['doc']->cond_reglement = $outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code)!=('PaymentCondition'.$object['doc']->cond_reglement_code)?$outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code):$outputlangs->convToOutputCharset($object['doc']->cond_reglement_doc);
-		$object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);
+		if (!empty($object['doc']->cond_reglement)) $object['doc']->cond_reglement = $outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code)!=('PaymentCondition'.$object['doc']->cond_reglement_code)?$outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code):$outputlangs->convToOutputCharset($object['doc']->cond_reglement_doc);
+		if (!empty($object['doc']->mode_reglement)) $object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);
 		
 		if(!empty($object['doc']->shipping_method_id)) {
 	            $codeShipping=$langs->getLabelFromKey($db, $object['doc']->shipping_method_id, 'c_shipment_mode', 'rowid', 'code');
