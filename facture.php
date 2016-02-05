@@ -122,6 +122,64 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$TExtrafields = get_tab_extrafields($fac->array_options, 'facture');
 	}
 	
+	$TPaiement = array('lines' => array(), 'total' => 0);
+	// Payments already done (from payment on this invoice)
+	$sql = 'SELECT p.datep as dp, p.num_paiement, p.rowid, p.fk_bank,';
+	$sql .= ' c.code as payment_code, c.libelle as payment_label,';
+	$sql .= ' pf.amount,';
+	$sql .= ' ba.rowid as baid, ba.ref, ba.label';
+	$sql .= ' FROM ' . MAIN_DB_PREFIX . 'c_paiement as c, ' . MAIN_DB_PREFIX . 'paiement_facture as pf, ' . MAIN_DB_PREFIX . 'paiement as p';
+	$sql .= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'bank as b ON p.fk_bank = b.rowid';
+	$sql .= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'bank_account as ba ON b.fk_account = ba.rowid';
+	$sql .= ' WHERE pf.fk_facture = ' . $fac->id . ' AND p.fk_paiement = c.id AND pf.fk_paiement = p.rowid';
+	$sql .= ' ORDER BY p.datep, p.tms';
+	$resql = $db->query($sql);
+	if ($resql) {
+		$total = 0;
+		while($row = $db->fetch_object($resql))
+		{
+			$TPaiement['lines'][] = array(
+				'rowid' => $row->rowid
+				,'ref' => $row->ref
+				,'payment_code' => $row->payment_code
+				,'payment_label' => $row->payment_label
+				,'amount' => $row->amount
+			);
+			
+			$total += $row->amount;
+		}
+
+		$TPaiement['total'] = $total;
+	}
+
+	$TAcompte = array('lines' => array(), 'total' => array());
+	// Loop on each credit note or deposit amount applied
+	$sql = "SELECT re.rowid, re.amount_ht, re.amount_tva, re.amount_ttc,";
+	$sql .= " re.description, re.fk_facture_source";
+	$sql .= " FROM " . MAIN_DB_PREFIX . "societe_remise_except as re";
+	$sql .= " WHERE fk_facture = " . $fac->id;
+	$resql = $db->query($sql);
+	if ($resql) {
+		$total_ht = $total_tva = $total_ttc = 0;
+		while($row = $db->fetch_object($resql))
+		{
+			$TAcompte['lines'][] = array(
+				'rowid' => $row->rowid
+				,'amount_ht' => $row->amount_ht
+				,'amount_tva' => $row->amount_tva
+				,'amount_ttc' => $row->amount_ttc
+			);
+			
+			$total_ht += $row->amount_ht;
+			$total_ht += $row->amount_tva;
+			$total_ht += $row->amount_ttc;
+		}
+
+		$TAcompte['total']['ht'] = $total_ht;
+		$TAcompte['total']['tva'] = $total_tva;
+		$TAcompte['total']['ttc'] = $total_ttc;
+	}
+	
 	foreach($fac->lines as $ligne) {
 		
 		if(class_exists('DaoMilestone')) {
@@ -285,11 +343,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if(is_array($fac->linkedObjects['commande'])){
 		$fac->linkedObjects['commande']['0']->date_commande = date("d/m/Y",$fac->linkedObjects['commande']['0']->date_commande);
 	}
+	
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
-		,array('doc'=>$fac, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('TPaiement' => $TPaiement, 'TAcompte' => $TAcompte, 'doc'=>$fac, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
