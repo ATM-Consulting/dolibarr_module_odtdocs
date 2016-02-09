@@ -210,12 +210,14 @@ class TODTDocs {
         	    $object['doc']->shipping_method_label = $langs->trans("SendingMethod".strtoupper($codeShipping));
 //		var_dump($codeShipping, $object['doc']->shipping_method_label);exit;
 		}
-        
-        
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['projet']))$TBS->MergeField('projet',$projet);
 		if(isset($object['extrafields']))$TBS->MergeField('extrafields',TODTDocs::asArray($object['extrafields']));
 		if(isset($object['doc']))$TBS->MergeField('doc',TODTDocs::asArray($object['doc']));
+		if(isset($object['TAcompteLines']))$TBS->MergeBlock('TAcompteLines',$object['TAcompteLines']);
+		if(isset($object['TAcompteTot']))$TBS->MergeField('TAcompteTot',$object['TAcompteTot']);
+		if(isset($object['TPaiementLines']))$TBS->MergeBlock('TPaiementLines',$object['TPaiementLines']);
+		if(isset($object['TPaiementTot']))$TBS->MergeField('TPaiementTot',$object['TPaiementTot']);
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
 		if(isset($object['autre']))$TBS->MergeField('autre',TODTDocs::asArray($object['autre']));
 		if(isset($object['tva']))$TBS->MergeBlock('tva',$object['tva']);

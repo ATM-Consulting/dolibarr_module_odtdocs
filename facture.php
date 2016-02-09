@@ -122,7 +122,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$TExtrafields = get_tab_extrafields($fac->array_options, 'facture');
 	}
 	
-	$TPaiement = array('lines' => array(), 'total' => 0);
+	$TPaiement = array('lines' => array(), 'total' => array('total_ttc' => 0));
 	// Payments already done (from payment on this invoice)
 	$sql = 'SELECT p.datep as dp, p.num_paiement, p.rowid, p.fk_bank,';
 	$sql .= ' c.code as payment_code, c.libelle as payment_label,';
@@ -149,7 +149,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$total += $row->amount;
 		}
 
-		$TPaiement['total'] = $total;
+		$TPaiement['total']['total_ttc'] = $total;
 	}
 
 	$TAcompte = array('lines' => array(), 'total' => array());
@@ -171,8 +171,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			);
 			
 			$total_ht += $row->amount_ht;
-			$total_ht += $row->amount_tva;
-			$total_ht += $row->amount_ttc;
+			$total_tva += $row->amount_tva;
+			$total_ttc += $row->amount_ttc;
 		}
 
 		$TAcompte['total']['ht'] = $total_ht;
@@ -349,7 +349,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
-		,array('TPaiement' => $TPaiement, 'TAcompte' => $TAcompte, 'doc'=>$fac, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('TPaiementLines' => $TPaiement['lines'], 'TPaiementTot' => $TPaiement['total'], 'TAcompteLines' => $TAcompte['lines'], 'TAcompteTot' => $TAcompte['total'], 'doc'=>$fac, 'societe'=>$societe, 'extrafields'=>$TExtrafields, 'projet'=>$projet, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact, 'compte'=>$TCompte[$_REQUEST['account']] ,'linkedObjects'=>$fac->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
 		, $fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
