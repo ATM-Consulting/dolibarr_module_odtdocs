@@ -180,6 +180,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$TAcompte['total']['ttc'] = $total_ttc;
 	}
 	
+	// New : calcul du reste à payer sur la facture
+	$fac->remain_to_pay = $fac->total_ttc;
+	if(!empty($TPaiement['total']['total_ttc'])) $fac->remain_to_pay -= $TPaiement['total']['total_ttc'];
+	if(!empty($TAcompte['total']['ttc'])) $fac->remain_to_pay -= $TAcompte['total']['ttc'];
+	
 	foreach($fac->lines as $ligne) {
 		
 		if(class_exists('DaoMilestone')) {
