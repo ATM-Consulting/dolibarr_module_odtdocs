@@ -139,6 +139,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 	$societe->country = strtr($societe->country, array("'"=>' '));
 	
+	foreach($contact as $type=>$null) { // déclaration pour accès en global par entete
+		${strtolower($type)} = array();
+	}
+	
 	//pre($contact,true);//exit;
 	
 	TODTDocs::makeDocTBS(
