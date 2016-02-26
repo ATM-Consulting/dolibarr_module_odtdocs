@@ -102,7 +102,13 @@ function getMoreInfoContacts($contacts) {
 		
 	}
 	
-	return $TContacts;
+	$TRetour = array();
+	//reformattage du tableau pour avoir accès à chaque contact.
+	foreach ($TContacts as $key => $TValContact) {
+		$TRetour[$TValContact['source'].$TValContact['code']] = $TValContact;
+	}
+	
+	return $TRetour;
 	
 }
 
@@ -133,10 +139,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 	$societe->country = strtr($societe->country, array("'"=>' '));
 	
+	//pre($contact,true);//exit;
+	
 	TODTDocs::makeDocTBS(
 		'projet'
 		, $_REQUEST['modele']
-		,array('doc'=>$projet, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact_block'=>$contact,'autre'=>$autre)
+		,array('doc'=>$projet,'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact_block'=>$contact,'autre'=>$autre,'contact_detail'=>$contact)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
