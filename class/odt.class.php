@@ -74,6 +74,9 @@ class TODTDocs {
 		elseif($type=='expedition') {
 			$upload_dir = $conf->expedition->dir_output . '/sending/'.dol_sanitizeFileName($object->ref);
 		}
+		elseif($type=='contract'){
+			$upload_dir = $conf->contract->dir_output . '/'.dol_sanitizeFileName($object->ref);
+		}
 		
         global $conf;
         if(!empty($conf->global->ODTDOCS_REPLACE_BY_THE_LAST)) {
@@ -150,6 +153,7 @@ class TODTDocs {
 	 *  */	
 		global $conf, $langs, $db;
 	
+
 	 	if($type=='propal')$dir = 'propale/';
 		else $dir=$type.'/';
 		
@@ -286,6 +290,7 @@ class TODTDocs {
 			$outNamePDF = substr($outName,0, strrpos($outName,'/')).'/'.basename($fPDF);
 			
 			copy($fPDF, $outNamePDF);*/
+			
 			print "Création du fichier $pdfName (module ATM/ODT-PDF)<br>";
 			if(is_file($outName) && !$conf->global->ODTDOCS_NO_DELETE_ODT_FILE ) unlink($outName);
 		}
@@ -650,7 +655,6 @@ class TODTDocs {
 			return $filePDF;
 		}	
 		else {
-	
 	//		print "Conversion locale en PDF";
 			// Transformation en PDF
 			ob_start();

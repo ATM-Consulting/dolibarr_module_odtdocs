@@ -142,6 +142,8 @@ $form=new TFormCore;
 	showFormModel('company',$conf->entity);
 	showFormModel('expedition',$conf->entity);
 	showFormModel('projet',$conf->entity);
+	showFormModel('contract',$conf->entity);
+	
 
 
 function showFormModel($typeDoc='propal', $entity = 1) {
@@ -182,6 +184,10 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 					
 					case 'projet':
 						print 'Modèles pour les projets';
+						break;
+						
+					case 'contract':
+						print 'Modèles pour les contrats';
 						break;
 					
 					default:
