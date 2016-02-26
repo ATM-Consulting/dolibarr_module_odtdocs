@@ -230,7 +230,12 @@ class TODTDocs {
 			$TBS->MergeField('contact', $object['contact']);
 		}
 		
-		if(isset($object['contact_block'])) $TBS->MergeBlock('contact_block',TODTDocs::checkTableau($object['contact_block'])); 
+		if(isset($object['contact_block'])) $TBS->MergeBlock('contact_block',TODTDocs::checkTableau($object['contact_block']));
+		if(isset($object['contact_detail'])){
+			foreach ($object['contact_detail'] as $typeContact => $TContactValues) {
+				$TBS->MergeField($typeContact,TODTDocs::checkTableau($TContactValues));
+			}
+		}
 		
 		if(isset($object['compte'])) {
 			$TBS->MergeField('compte',TODTDocs::asArray($object['compte']));
