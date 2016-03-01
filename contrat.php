@@ -89,13 +89,12 @@ if(!empty($contrat->linkedObjects['propal'])){
 				// $titre =1 si c'est une ligne de titre, 2 si c'est un sous total, 0 si c'est une ligne normale
 				$titre=0;
 				$soustotal+=$line->total_ht;
-				if(empty($line->price) && empty($line->subprice)){
-					if(empty($line->desc)){
-						//var_dump('toto');
-						$line->desc = $line->label;
+				if($line->fk_product==null){
+					if(empty($line->desc))$line->desc = $line->label;
 						$line->qty = '';
 						$titre=1;
-					}else if ($line->desc=='Sous-total'){
+					}
+					if ($line->desc=='Sous-total'){
 						$line->qty = '';
 						$line->price = '';
 						$line->total_ht = $soustotal;
@@ -103,8 +102,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 						$line->remise_percent = '';
 						$titre=2;
 					}
-					
-				}	
+						
 				if(empty($line->desc)){
 					$line->desc = $line->label;
 				}
