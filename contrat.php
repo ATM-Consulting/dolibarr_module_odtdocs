@@ -86,22 +86,28 @@ if(!empty($contrat->linkedObjects['propal'])){
 			$soustotal=0;
 			foreach ($prop->lines as $line) {
 				$isst=0;
+				// $titre =1 si c'est une ligne de titre, 2 si c'est un sous total, 0 si c'est une ligne normale
+				$titre=0;
 				$soustotal+=$line->total_ht;
-				
+				if(empty($line->price) && empty($line->subprice)){
+					if(empty($line->desc)){
+						//var_dump('toto');
+						$line->desc = $line->label;
+						$line->qty = '';
+						$titre=1;
+					}else if ($line->desc=='Sous-total'){
+						$line->qty = '';
+						$line->price = '';
+						$line->total_ht = $soustotal;
+						$soustotal=0;
+						$line->remise_percent = '';
+						$titre=2;
+					}
+					
+				}	
 				if(empty($line->desc)){
-					//var_dump('toto');
 					$line->desc = $line->label;
-					$line->qty = '';
-				}else if ($line->desc=='Sous-total'){
-					$line->qty = '';
-					$line->price = '';
-					$line->total_ht = $soustotal;
-					$soustotal=0;
-					$line->remise_percent = '';
-					$isst=1;
-					
 				}
-					
 				if($line->total_ht==0){
 					$line->total_ht = '';
 				}
@@ -123,7 +129,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 						'qty'         => $line->qty,
 						'totalHT'     => $line->total_ht,
 						'remise'      => $line->remise_percent,
-						'soustotal'   => $isst
+						'titre'       => $titre
 						);
 				}else{
 					$lines[]=array(
@@ -133,7 +139,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 						'qty'         => $line->qty,
 						'totalHT'     => $line->total_ht,
 						'remise'      => $line->remise_percent,
-						'soustotal'   => $isst
+						'titre'       => $titre
 						);
 				}
 			}
