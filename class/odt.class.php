@@ -214,6 +214,7 @@ class TODTDocs {
         	    $object['doc']->shipping_method_label = $langs->trans("SendingMethod".strtoupper($codeShipping));
 //		var_dump($codeShipping, $object['doc']->shipping_method_label);exit;
 		}
+		if(isset($object['contrat']))$TBS->MergeField('contract',TODTDocs::asArray($object['contract']));
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['projet']))$TBS->MergeField('projet',$projet);
 		if(isset($object['extrafields']))$TBS->MergeField('extrafields',TODTDocs::asArray($object['extrafields']));
@@ -224,7 +225,9 @@ class TODTDocs {
 		if(isset($object['TPaiementTot']))$TBS->MergeField('TPaiementTot',$object['TPaiementTot']);
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
 		if(isset($object['autre']))$TBS->MergeField('autre',TODTDocs::asArray($object['autre']));
+		if(isset($object['propal']))$TBS->MergeField('propal',TODTDocs::asArray($object['propal']));
 		if(isset($object['tva']))$TBS->MergeBlock('tva',$object['tva']);
+		if(isset($object['propal_lines']))$TBS->MergeBlock('propal_lines',$object['propal_lines']);
 		//print_r($object['tableau'][0]);
 		if(isset($object['tableau'])) $TBS->MergeBlock('tab,tab2',TODTDocs::checkTableau( TODTDocs::addUnits($object['tableau'])));
 		if(isset($object['contact'])) {
@@ -234,7 +237,7 @@ class TODTDocs {
 			$TBS->MergeField('contact', $object['contact']);
 		}
 		
-		
+		//if(isset($object['propal_lines'])) $TBS->MergeBlock('propal_lines',TODTDocs::checkTableau($object['propal_lines']));
 		if(isset($object['contact_block'])) $TBS->MergeBlock('contact_block',TODTDocs::checkTableau($object['contact_block']));
 		if(isset($object['contact_detail'])){
 			foreach ($object['contact_detail'] as $typeContact => $TContactValues) {
@@ -480,8 +483,8 @@ class TODTDocs {
 				'pays' => $u->pays,
 				'email' => $u->email,
 				'phone' => $u->office_phone,
-				'fax' => $u->fax
-				,'phone_mobile'=>$u->user_mobile
+				'fax' => $u->fax,
+				'phone_mobile'=>$u->user_mobile
 			);
 		}
 		
