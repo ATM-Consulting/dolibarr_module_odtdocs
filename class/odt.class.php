@@ -381,6 +381,7 @@ class TODTDocs {
 		
 		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement', 'date_creation', 'date_delivery', 'date_start', 'date_end');
 		$TNoBR = array('address');
+		$TNoHTML = array('note_private','note_public','note');
 		
 		if(is_array($object)) {
 			if(isset($object['zip']))$object['cp']=$object['zip'];
@@ -426,6 +427,9 @@ class TODTDocs {
 					if(in_array($k, $TNoBR)) {
 						$Tab[$k.'_nobr'] = strtr($v,array("\n"=>' - ', "\r"=>''));
 					}
+					if(in_array($k, $TNoHTML)) {
+                                                $Tab[$k.'_nohtml'] = utf8_decode(html_entity_decode($v));
+                                        }
 					
 				}
 	            else {
