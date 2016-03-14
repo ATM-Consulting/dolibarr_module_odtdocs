@@ -169,7 +169,7 @@ class TODTDocs {
 		//$TBS->MergeBlock('societe',array(0=> TODTDocs::asArray($object['societe'])));
 		global $mysocPDP;
 		$mysocPDP = TODTDocs::asArray($object['mysoc']);
-		$mysoc = &$object['mysoc'];
+		$mysoc = $object['mysoc'];
 		$mysoc->address_nobr = strtr($mysoc->address,array("\n"=>' - ', "\r"=>''));
 		
 		require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
