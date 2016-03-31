@@ -96,7 +96,10 @@ function getMoreInfoContacts($contacts) {
 		$soc = new Societe($db);
 		if($soc->fetch($TDataContact['socid']) > 0) {
 			$TDataContact['nom_tiers'] = $soc->nom;
-		} else $TDataContact['nom_tiers'] = $mysoc->nom;
+		} 
+		else {
+			$TDataContact['nom_tiers'] = $mysoc->nom;
+		}
 		
 		$TContacts[] = $TDataContact;
 		

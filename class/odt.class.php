@@ -169,17 +169,15 @@ class TODTDocs {
 		//$TBS->MergeBlock('societe',array(0=> TODTDocs::asArray($object['societe'])));
 		global $mysocPDP;
 		$mysocPDP = TODTDocs::asArray($object['mysoc']);
-		$mysoc = $object['mysoc'];
-		$mysoc->address_nobr = strtr($mysoc->address,array("\n"=>' - ', "\r"=>''));
+		$mysocLocal = & $object['mysoc'];
+		$mysocLocal->address_nobr = strtr($mysocLocal->address,array("\n"=>' - ', "\r"=>''));
 		
 		require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-		$mysoc->forme_juridique = utf8_decode(getFormeJuridiqueLabel($conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE));
-		$mysoc->logo = DOL_DATA_ROOT.'/mycompany/logos/'.$mysoc->logo;
+		$mysocLocal->forme_juridique = utf8_decode(getFormeJuridiqueLabel($conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE));
+		$mysocLocal->logo = DOL_DATA_ROOT.'/mycompany/logos/'.$mysocLocal->logo;
 		
-		$conf = &$object['conf'];
 		$entity = $conf->entity;
-		
-		$mysoc->logo_path = DOL_DATA_ROOT.'/'.(($entity>1)?$entity.'/':'').'mycompany/logos/'.$mysoc->logo;
+		$mysocLocal->logo_path = DOL_DATA_ROOT.'/'.(($entity>1)?$entity.'/':'').'mycompany/logos/'.$mysocLocal->logo;
 		//$mysoc->logo_path = DOL_DATA_ROOT.'/mycompany/logos/'.$mysoc->logo;
 		
 		$TBS->MergeField('mysoc',TODTDocs::asArray($object['mysoc']));
@@ -538,7 +536,7 @@ class TODTDocs {
 		
 		
 		if(isset($object['mysoc'])) {
-			$mysoc = & $object['mysoc']; 
+			$mysocLocal = & $object['mysoc']; 
 			/*
 		mycompany_logo = {mycompany_logo}
 		mycompany_name = {mycompany_name}
@@ -560,27 +558,27 @@ class TODTDocs {
 		mycompany_vatnumber = {mycompany_vatnumber}
 		mycompany_note = {mycompany_note}*/
 			
-			$odf->setVars('mycompany_name', $mysoc->name);
+			$odf->setVars('mycompany_name', $mysocLocal->name);
 			
-			$odf->setImage('mycompany_logo', DOL_DATA_ROOT.'/mycompany/logos/'.$mysoc->logo,200);
+			$odf->setImage('mycompany_logo', DOL_DATA_ROOT.'/mycompany/logos/'.$mysocLocal->logo,200);
 			
-			$odf->setVars('mycompany_address', $mysoc->address);
-			$odf->setVars('mycompany_zip', $mysoc->zip);
-			$odf->setVars('mycompany_town', $mysoc->town );
-			$odf->setVars('mycompany_country', $mysoc->country );
-			$odf->setVars('mycompany_phone', $mysoc->phone );
-			$odf->setVars('mycompany_fax', $mysoc->fax);
-			$odf->setVars('mycompany_email', $mysoc->email);
-			$odf->setVars('mycompany_web', $mysoc->url);
-			$odf->setVars('mycompany_barcode', $mysoc->siret);
-			$odf->setVars('mycompany_capital', $mysoc->capital);
-			$odf->setVars('mycompany_juridicalstatus', $mysoc->forme_juridique);
-			$odf->setVars('mycompany_idprof1', $mysoc->idprof1);
-			$odf->setVars('mycompany_idprof2', $mysoc->idprof2);
-			$odf->setVars('mycompany_idprof3', $mysoc->idprof3);
-			$odf->setVars('mycompany_idprof4', $mysoc->idprof4);
-			$odf->setVars('mycompany_vatnumber', $mysoc->ape);
-			$odf->setVars('mycompany_note', $mysoc->note);
+			$odf->setVars('mycompany_address', $mysocLocal->address);
+			$odf->setVars('mycompany_zip', $mysocLocal->zip);
+			$odf->setVars('mycompany_town', $mysocLocal->town );
+			$odf->setVars('mycompany_country', $mysocLocal->country );
+			$odf->setVars('mycompany_phone', $mysocLocal->phone );
+			$odf->setVars('mycompany_fax', $mysocLocal->fax);
+			$odf->setVars('mycompany_email', $mysocLocal->email);
+			$odf->setVars('mycompany_web', $mysocLocal->url);
+			$odf->setVars('mycompany_barcode', $mysocLocal->siret);
+			$odf->setVars('mycompany_capital', $mysocLocal->capital);
+			$odf->setVars('mycompany_juridicalstatus', $mysocLocal->forme_juridique);
+			$odf->setVars('mycompany_idprof1', $mysocLocal->idprof1);
+			$odf->setVars('mycompany_idprof2', $mysocLocal->idprof2);
+			$odf->setVars('mycompany_idprof3', $mysocLocal->idprof3);
+			$odf->setVars('mycompany_idprof4', $mysocLocal->idprof4);
+			$odf->setVars('mycompany_vatnumber', $mysocLocal->ape);
+			$odf->setVars('mycompany_note', $mysocLocal->note);
 			
 		}
 	
