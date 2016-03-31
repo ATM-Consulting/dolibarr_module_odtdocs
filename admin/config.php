@@ -64,7 +64,7 @@ llxHeader('','Gestion des editions, à propos','');
 
 require('../class/odt.class.php');
 
-if(isset($_FILES['fichier'])) {
+if(isset($_FILES['fichier']) && !empty($_FILES['fichier']['name'])) {
 	print "Chargement du fichier : ".$_FILES['fichier']['name']."<br>";
 
 	if(TODTDocs::validFile($_FILES['fichier']['name'])) {
@@ -73,6 +73,12 @@ if(isset($_FILES['fichier'])) {
 	
 }
 
+if(!empty($_REQUEST['TDivers'])) {
+    
+    foreach($_REQUEST['TDivers'] as $name=>$param) {
+        dolibarr_set_const($db, $name, $param);
+    }
+}
 
 if(isset($_REQUEST['action'])) {
 	switch ($_REQUEST['action']) {
@@ -129,6 +135,10 @@ $form=new TFormCore;
 
 
 function showFormModel($typeDoc='propal', $entity = 1) {
+    global $langs;
+    
+    $form=new TFormCore;
+    
 	?><form action="<?=$_SERVER['PHP_SELF'] ?>" name="load-<?=$typeDoc ?>" method="POST" enctype="multipart/form-data">
 		<input type="hidden" name="typeDoc" value="<?=$typeDoc ?>" />
 	<table width="100%" class="noborder" style="background-color: #fff;">
@@ -189,16 +199,31 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 		if(count($TDocs)>0)  {
 			?>
 			<tr>
-				<td colspan="2"><strong>Liste des modèles chargés</strong></td>
+				<td colspan="2"><strong>Liste des modèles chargés</strong>
+				</td>
 			</tr>
 			<?
 			
 			foreach($TDocs as $fichier) {
+			    
+                $TFichier[$fichier] = $fichier;
+                
 				?><tr>
 					<td><a href="<?=dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?=$fichier ?></a></td>
 					<td><a href="<?=$_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?=urlencode($fichier) ?>&type=<?=$typeDoc ?>">Supprimer</a></td>
 				</tr><?
 			}
+            
+            ?><tr><td colspan="2"> 
+             <?php 
+                    echo $form->combo('Modèle par défaut', 'TDivers[ODTDOCS_MODELE_DEFAULT_'.$typeDoc.']', $TFichier, $conf->global->{'ODTDOCS_MODELE_DEFAULT_'.$typeDoc});
+                    
+                    echo $form->btsubmit($langs->trans('Save'), 'bt_default_modele');                    
+             ?>
+
+            </td></tr><?php 
+                    
+
 		}
 		?>
 		
