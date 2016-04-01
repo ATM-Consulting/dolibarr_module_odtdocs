@@ -107,6 +107,7 @@ class modOdtdocs extends DolibarrModules
 		$this->const = array(
 			0=>array('ODTDOCS_CAN_GENERATE_ODT', 'chaine', 1)
 			,1=>array('ODTDOCS_CAN_GENERATE_PDF', 'chaine', 1)
+			,2=>array('ODTDOCS_SHOW_MESSAGE_ON_GENERATION', 'chaine', 1)
 		);
 
 		// Array to add new pages in new tabs

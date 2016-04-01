@@ -290,7 +290,7 @@ class TODTDocs {
 			null; // au cas où
 		}
 		
-		print "Création du fichier $outName (module ATM/TBS)<br>";
+		if (!empty($conf->global->ODTDOCS_SHOW_MESSAGE_ON_GENERATION)) print "Création du fichier $outName (module ATM/TBS)<br>";
 		$TBS->Show(OPENTBS_FILE, $outName);
 
 		if($PDFconversion) {
@@ -303,7 +303,7 @@ class TODTDocs {
 			
 			copy($fPDF, $outNamePDF);*/
 			
-			print "Création du fichier $pdfName (module ATM/ODT-PDF)<br>";
+			if (!empty($conf->global->ODTDOCS_SHOW_MESSAGE_ON_GENERATION)) print "Création du fichier $pdfName (module ATM/ODT-PDF)<br>";
 			if(is_file($outName) && !$conf->global->ODTDOCS_NO_DELETE_ODT_FILE ) unlink($outName);
 		}
 

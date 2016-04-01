@@ -34,3 +34,4 @@ ReplaceStandardPDFonGenerationByLastCustom=Remplacer le PDF standard par le dern
 
 ODTDOCS_CAN_GENERATE_ODT=Afficher le bouton pour la génération ODT
 ODTDOCS_CAN_GENERATE_PDF=Afficher le bouton pour la génération PDF
+ODTDOCS_SHOW_MESSAGE_ON_GENERATION=Afficher le texte d'information sur génération du document

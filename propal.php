@@ -302,7 +302,15 @@ function decode($FieldName, &$CurrVal)
 ?>Modèle à utiliser* <?php
 TODTDocs::combo('propal', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
+
+if (!empty($conf->global->ODTDOCS_CAN_GENERATE_ODT))
+{
+	print '<input type="submit" value="Générer" class="button" name="btgen" />&nbsp;';
+}
+if (!empty($conf->global->ODTDOCS_CAN_GENERATE_PDF))
+{
+	print '<input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" />';
+}
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>

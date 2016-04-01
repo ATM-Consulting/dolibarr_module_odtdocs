@@ -166,6 +166,14 @@ print '<td align="center" width="20">&nbsp;</td>';
 print '<td align="center" width="300">';
 print ajax_constantonoff('ODTDOCS_CAN_GENERATE_PDF');
 print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ODTDOCS_SHOW_MESSAGE_ON_GENERATION").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print ajax_constantonoff('ODTDOCS_SHOW_MESSAGE_ON_GENERATION');
+print '</td></tr>';
 	
 print '</table><br /><br />';
 
