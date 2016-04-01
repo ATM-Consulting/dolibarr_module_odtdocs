@@ -41,6 +41,7 @@ include '../config.php';
 // Change this following line to use the correct relative path from htdocs (do not remove DOL_DOCUMENT_ROOT)
 dol_include_once('/core/lib/admin.lib.php');
 dol_include_once('/core/class/extrafields.class.php');
+$langs->load('odtdocs@odtdocs');
 
 // Get parameters
 $myparam = isset($_GET["myparam"])?$_GET["myparam"]:'';
@@ -104,6 +105,36 @@ if($action=='save') {
     setEventMessage( $langs->trans('RegisterSuccess') );
 }
 
+/*
+ * Actions
+ */
+if (preg_match('/set_(.*)/',$action,$reg))
+{
+	$code=$reg[1];
+	if (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
+	{
+		header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
+	
+if (preg_match('/del_(.*)/',$action,$reg))
+{
+	$code=$reg[1];
+	if (dolibarr_del_const($db, $code, 0) > 0)
+	{
+		Header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
 
 //$form=new Form($db);
 
@@ -113,27 +144,30 @@ print_fiche_titre('Gestion des modèles',$linkback,'setup');
 $form=new TFormCore;
 
 
-/*<form action="<?=$_SERVER['PHP_SELF'] ?>" name="livedocx-form" method="POST" enctype="multipart/form-data">
-	<input type="hidden" name="action" value="LIVEDOCX" />
-<table width="100%" class="noborder">
-	<tr class="liste_titre">
-		<td>Module LiveDocx</td>
-		<td align="center">&nbsp;</td>
-		</tr>
-		<tr class="impair">
-			<td valign="top">Login / Mot de passe</td>
-			<td align="center">
-				echo $form->combo('Utiliser le service <a href="http://www.livedocx.com/" target="_blank">LiveDocx</a>', 'livedocx_use', array(0=>'Non', 1=>'Oui'), $dTBS->livedocx_use);	
-			<input type="text" name="livedocx_login" value="<?=$dTBS->livedocx_login ?>" />		
-			<input type="password" name="livedocx_password" value="<?=$dTBS->livedocx_password ?>" />
-			<input type="submit" name="btvalid" value="Valider" />	
-			</td>
-			
-		</td>
-	</tr>
+$var=false;
+print '<table class="noborder" width="100%">';
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("Parameters").'</td>'."\n";
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
+// Example with a yes / no select
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ODTDOCS_CAN_GENERATE_ODT").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print ajax_constantonoff('ODTDOCS_CAN_GENERATE_ODT');
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ODTDOCS_CAN_GENERATE_PDF").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print ajax_constantonoff('ODTDOCS_CAN_GENERATE_PDF');
+print '</td></tr>';
 	
-</table>
-</form>*/
+print '</table><br /><br />';
 
 	showFormModel('propal',$conf->entity);
 	showFormModel('commande',$conf->entity);

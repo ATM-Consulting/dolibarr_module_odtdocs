@@ -104,7 +104,10 @@ class modOdtdocs extends DolibarrModules
             )
         );
 		
-		$this->const = array();
+		$this->const = array(
+			0=>array('ODTDOCS_CAN_GENERATE_ODT', 'chaine', 1)
+			,1=>array('ODTDOCS_CAN_GENERATE_PDF', 'chaine', 1)
+		);
 
 		// Array to add new pages in new tabs
 		// Example: $this->tabs = array('objecttype:+tabname1:Title1:@mymodule:$user->rights->mymodule->read:/mymodule/mynewtab1.php?id=__ID__',  // To add a new tab identified by code tabname1
