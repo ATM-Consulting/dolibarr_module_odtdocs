@@ -181,8 +181,8 @@ print '</table><br /><br />';
 
 
 function showFormModel($typeDoc='propal', $entity = 1) {
-	?><form action="<?=$_SERVER['PHP_SELF'] ?>" name="load-<?=$typeDoc ?>" method="POST" enctype="multipart/form-data">
-		<input type="hidden" name="typeDoc" value="<?=$typeDoc ?>" />
+	?><form action="<?php echo $_SERVER['PHP_SELF'] ?>" name="load-<?php echo $typeDoc ?>" method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="typeDoc" value="<?php echo $typeDoc ?>" />
 	<table width="100%" class="noborder" style="background-color: #fff;">
 		<tr class="liste_titre">
 			<td><? 
@@ -255,8 +255,8 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 			
 			foreach($TDocs as $fichier) {
 				?><tr>
-					<td><a href="<?=dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?=$fichier ?></a></td>
-					<td><a href="<?=$_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?=urlencode($fichier) ?>&type=<?=$typeDoc ?>" onClick="return confirm('Vouslez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
+					<td><a href="<?php echo dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?php echo $fichier ?></a></td>
+					<td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?php echo urlencode($fichier) ?>&type=<?php echo $typeDoc ?>" onClick="return confirm('Vouslez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
 				</tr><?
 			}
 		}
@@ -279,11 +279,11 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
                 if($conf->global->ODTDOCS_REPLACE_BY_THE_LAST==0) {
                     
-                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=1"><?php echo img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
                     
                 }
                 else {
-                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=0"><?php echo img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
                     
                 }
             
@@ -294,11 +294,11 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
                 if($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL==0) {
                     
-                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=1"><?php echo img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
                     
                 }
                 else {
-                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=0"><?php echo img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
                     
                 }
             
@@ -309,11 +309,11 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
                 if($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES==0) {
                     
-                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=1"><?php echo img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
                     
                 }
                 else {
-                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=0"><?php echo img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
                     
                 }
             
