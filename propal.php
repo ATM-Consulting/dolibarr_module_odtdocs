@@ -65,7 +65,7 @@ $ATMdb = new TPDOdb;
 
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
-$propal->fetch_optionals();
+$propal->fetch_optionals($propal->id); // Compatibility
 $propal->fetchObjectLinked();
 
 $societe = new Societe($db);
