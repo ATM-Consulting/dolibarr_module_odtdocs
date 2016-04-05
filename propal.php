@@ -274,6 +274,22 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	
+	$parameters = array(
+		'currentContext' => 'propalOdtDoc'
+		,'projet' => $projet
+		,'extrafields'=>$TExtrafields
+		,'societe'=>$societe
+		,'mysoc'=>$mysoc
+		,'conf'=>$conf
+		,'tableau'=>$tableau
+		,'contact'=>$contact
+		,'linkedObjects'=>$propal->linkedObjects
+		,'autre'=>$autre
+		,'tva'=>$TVA
+	);
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$propal,$action);
+	
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
@@ -284,6 +300,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
+	
+	$reshook=$hookmanager->executeHooks('afterGenerateOdtDoc',$parameters,$propal,$action);
 }
 
 function decode($FieldName, &$CurrVal)
