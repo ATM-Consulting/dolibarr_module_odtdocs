@@ -375,10 +375,10 @@ function decode($FieldName, &$CurrVal)
 	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle* à utiliser <?
+?>Modèle* à utiliser <?php
 
 TODTDocs::combo('facture', 'modele',GETPOST('modele'), $conf->entity);
 //print_r($societe);
@@ -387,22 +387,22 @@ TODTDocs::comboLang($db, $societe->default_lang);
 	if(!empty($TCompte)) {
 		
 		?>
-		- Rib du compte à afficher <select name="account" class="flat"><?
+		- Rib du compte à afficher <select name="account" class="flat"><?php
 		
 			foreach($TCompte as $compte) {
 				
-					?><option value="<?php echo $compte->rowid; ?>" <?php echo (isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : '' ; ?>><?php echo $compte->label; ?></option><?	
+					?><option value="<?php echo $compte->rowid; ?>" <?php echo (isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : '' ; ?>><?php echo $compte->label; ?></option><?php	
 				
 			}
 			
-			?></select><?
+			?></select><?php
 	}
 ?>
  <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" />
 
 <br/><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$fac, $langs,'facture');
 
@@ -411,7 +411,7 @@ TODTDocs::show_docs($db, $conf,$fac, $langs,'facture');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 

@@ -112,15 +112,15 @@ class TODTDocs {
 			$(document).ready(function() { showButtonPDF_<?php echo $nom; ?>(); });
 			
 		</script>
-		<select name="<?php echo $nom; ?>" id="<?php echo $nom; ?>" onchange="showButtonPDF_<?php echo $nom; ?>()" class="flat"><?
+		<select name="<?php echo $nom; ?>" id="<?php echo $nom; ?>" onchange="showButtonPDF_<?php echo $nom; ?>()" class="flat"><?php
 			
 		foreach($TDocs as $fichier) {
 			
-			?><option value="<?php echo $fichier; ?>" <?php echo ($defaut==$fichier)?'selected="selected"':''; ?> extension="<?php echo TODTDocs::_ext($fichier); ?>"><?php echo $fichier; ?></option><?
+			?><option value="<?php echo $fichier; ?>" <?php echo ($defaut==$fichier)?'selected="selected"':''; ?> extension="<?php echo TODTDocs::_ext($fichier); ?>"><?php echo $fichier; ?></option><?php
 			
 		}
 	
-		?></select><?
+		?></select><?php
 		
 	}
 	function comboLang(&$db, $codelang='fr_FR') {
@@ -130,7 +130,7 @@ class TODTDocs {
 		
 		?>
 		- Langue : 
-		<?
+		<?php
 		
 		$formadmin=new FormAdmin($db);
         $defaultlang=!empty($codelang) ? $codelang : $langs->getDefaultLang();

@@ -193,7 +193,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 		<input type="hidden" name="typeDoc" value="<?php echo $typeDoc ?>" />
 	<table width="100%" class="noborder" style="background-color: #fff;">
 		<tr class="liste_titre">
-			<td><? 
+			<td><?php
 				switch ($typeDoc) {
 					case 'propal':
 						print 'Modèles Propale';
@@ -250,7 +250,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 				
 			</td>
 		</tr>
-		<?
+		<?php
 		
 		$TDocs = TODTDocs::getListe($typeDoc, $entity);
 		
@@ -259,13 +259,13 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 			<tr>
 				<td colspan="2"><strong>Liste des modèles chargés</strong></td>
 			</tr>
-			<?
+			<?php
 			
 			foreach($TDocs as $fichier) {
 				?><tr>
 					<td><a href="<?php echo dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?php echo $fichier ?></a></td>
 					<td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?php echo urlencode($fichier) ?>&type=<?php echo $typeDoc ?>" onClick="return confirm('Vouslez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
-				</tr><?
+				</tr><?php
 			}
 		}
 		?>
@@ -273,7 +273,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 	</table>
 	</form>
 	<br /><br />
-	<?
+	<?php
 }
 ?>
 
@@ -347,7 +347,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 		</td>
 	</tr>
 </table>
-<?
+<?php
 
 // Put here content of your page
 // ...
