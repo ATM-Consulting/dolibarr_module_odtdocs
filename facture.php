@@ -371,8 +371,8 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
 <?
@@ -391,7 +391,7 @@ TODTDocs::comboLang($db, $societe->default_lang);
 		
 			foreach($TCompte as $compte) {
 				
-					?><option value="<?=$compte->rowid ?>" <?=(isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : ''  ?>><?=$compte->label ?></option><?	
+					?><option value="<?php echo $compte->rowid; ?>" <?php echo (isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : '' ; ?>><?php echo $compte->label; ?></option><?	
 				
 			}
 			

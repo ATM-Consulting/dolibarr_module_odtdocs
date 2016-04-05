@@ -102,21 +102,21 @@ class TODTDocs {
 		$TDocs = TODTDocs::getListe($type, $entity);
 		
 		?><script language="javascript">
-			function showButtonPDF_<?=$nom?>() {
-				if( $('#<?=$nom?> option:selected').attr('extension')=='.odt' ) { 
+			function showButtonPDF_<?php echo $nom; ?>() {
+				if( $('#<?php echo $nom; ?> option:selected').attr('extension')=='.odt' ) { 
 					$('#btgenPDF').show(); 
 				} else { 
 					$('#btgenPDF').hide();
 				}
 			}
-			$(document).ready(function() { showButtonPDF_<?=$nom?>(); });
+			$(document).ready(function() { showButtonPDF_<?php echo $nom; ?>(); });
 			
 		</script>
-		<select name="<?=$nom?>" id="<?=$nom?>" onchange="showButtonPDF_<?=$nom?>()" class="flat"><?
+		<select name="<?php echo $nom; ?>" id="<?php echo $nom; ?>" onchange="showButtonPDF_<?php echo $nom; ?>()" class="flat"><?
 			
 		foreach($TDocs as $fichier) {
 			
-			?><option value="<?=$fichier ?>" <?=($defaut==$fichier)?'selected="selected"':''?> extension="<?=TODTDocs::_ext($fichier)  ?>"><?=$fichier ?></option><?
+			?><option value="<?php echo $fichier; ?>" <?php echo ($defaut==$fichier)?'selected="selected"':''; ?> extension="<?php echo TODTDocs::_ext($fichier); ?>"><?php echo $fichier; ?></option><?
 			
 		}
 	
