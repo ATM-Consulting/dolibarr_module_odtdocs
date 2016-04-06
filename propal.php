@@ -275,25 +275,27 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
 	
+	$TAutre = array();
 	$parameters = array(
 		'currentContext' => 'propalOdtDoc'
-		,'projet' => $projet
-		,'extrafields'=>$TExtrafields
-		,'societe'=>$societe
-		,'mysoc'=>$mysoc
-		,'conf'=>$conf
-		,'tableau'=>$tableau
-		,'contact'=>$contact
-		,'linkedObjects'=>$propal->linkedObjects
-		,'autre'=>$autre
-		,'tva'=>$TVA
+		,'projet' => &$projet
+		,'extrafields'=>&$TExtrafields
+		,'societe'=>&$societe
+		,'mysoc'=>&$mysoc
+		,'conf'=>&$conf
+		,'tableau'=>&$tableau
+		,'contact'=>&$contact
+		,'linkedObjects'=>&$propal->linkedObjects
+		,'autre'=>&$autre
+		,'TAutre'=>&$TAutre
+		,'tva'=>&$TVA
 	);
-	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$propal,$action);
 	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$propal,$action);
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA, 'TAutre'=>$TAutre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])

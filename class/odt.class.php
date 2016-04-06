@@ -223,6 +223,7 @@ class TODTDocs {
 		if(isset($object['TPaiementTot']))$TBS->MergeField('TPaiementTot',$object['TPaiementTot']);
 		if(isset($object['dispatch']))$TBS->MergeField('dispatch',TODTDocs::asArray($object['dispatch']));
 		if(isset($object['autre']))$TBS->MergeField('autre',TODTDocs::asArray($object['autre']));
+		if(isset($object['TAutre']))$TBS->MergeBlock('TAutre', $object['TAutre']);
 		if(isset($object['propal']))$TBS->MergeField('propal',TODTDocs::asArray($object['propal']));
 		if(isset($object['tva']))$TBS->MergeBlock('tva',$object['tva']);
 		if(isset($object['propal_lines']))$TBS->MergeBlock('propal_lines',$object['propal_lines']);
