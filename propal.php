@@ -65,7 +65,7 @@ $ATMdb = new TPDOdb;
 
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
-$propal->fetch_optionals();
+$propal->fetch_optionals($propal->id); // Compatibility
 $propal->fetchObjectLinked();
 
 $societe = new Societe($db);
@@ -274,16 +274,36 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	
+	$TAutre = array();
+	$parameters = array(
+		'currentContext' => 'propalOdtDoc'
+		,'projet' => &$projet
+		,'extrafields'=>&$TExtrafields
+		,'societe'=>&$societe
+		,'mysoc'=>&$mysoc
+		,'conf'=>&$conf
+		,'tableau'=>&$tableau
+		,'contact'=>&$contact
+		,'linkedObjects'=>&$propal->linkedObjects
+		,'autre'=>&$autre
+		,'TAutre'=>&$TAutre
+		,'tva'=>&$TVA
+	);
+	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$propal,$action);
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA, 'TAutre'=>$TAutre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
+	
+	$reshook=$hookmanager->executeHooks('afterGenerateOdtDoc',$parameters,$propal,$action);
 }
 
 function decode($FieldName, &$CurrVal)
@@ -292,8 +312,8 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
 <?php
@@ -302,7 +322,15 @@ function decode($FieldName, &$CurrVal)
 ?>Modèle à utiliser* <?php
 TODTDocs::combo('propal', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
+
+if (!empty($conf->global->ODTDOCS_CAN_GENERATE_ODT))
+{
+	print '<input type="submit" value="Générer" class="button" name="btgen" />&nbsp;';
+}
+if (!empty($conf->global->ODTDOCS_CAN_GENERATE_PDF))
+{
+	print '<input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" />';
+}
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
