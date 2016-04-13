@@ -80,7 +80,6 @@ $projet->fetch($contrat->fk_project);
 $propal = new Propal($db);
 $lines=array();
 if(!empty($contrat->linkedObjects['propal'])){
-	
 		foreach ($contrat->linkedObjects['propal'] as $prop) {
 			$propal->fetch($prop->id);
 			$soustotal=0;
@@ -123,7 +122,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 					$lines[]=array(
 						'description' => utf8_decode($line->desc),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
-						'puHT'        => $line->price,
+						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
 						'totalHT'     => $line->total_ht,
 						'remise'      => $line->remise_percent,
@@ -133,9 +132,9 @@ if(!empty($contrat->linkedObjects['propal'])){
 					$lines[]=array(
 						'description' => utf8_decode($line->desc),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
-						'puHT'        => $line->subprice,
+						'puHT'        => price(intval($line->subprice)),
 						'qty'         => $line->qty,
-						'totalHT'     => $line->total_ht,
+						'totalHT'     => price(intval($line->total_ht)),
 						'remise'      => $line->remise_percent,
 						'titre'       => $titre
 						);
