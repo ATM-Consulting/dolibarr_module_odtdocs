@@ -213,6 +213,7 @@ class TODTDocs {
 //		var_dump($codeShipping, $object['doc']->shipping_method_label);exit;
 		}
 		if(isset($object['contrat']))$TBS->MergeField('contract',TODTDocs::asArray($object['contract']));
+		if(isset($object['conf']))$TBS->MergeField('conf',TODTDocs::asArray($object['conf']));
 		if(isset($object['societe']))$TBS->MergeField('societe',TODTDocs::asArray($object['societe']));
 		if(isset($object['projet']))$TBS->MergeField('projet',$projet);
 		if(isset($object['extrafields']))$TBS->MergeField('extrafields',TODTDocs::asArray($object['extrafields']));

@@ -71,14 +71,19 @@ $contrat->date_cloture=date('d/m/Y', $contrat->date_cloture);
 //pre($contrat, true);
 $societe = new Societe($db);
 $societe->fetch($contrat->socid);
-//var_dump($societe);
+
+//MET EN FORME LE CAPITAL DE LA SOCIÉTÉ CLIENTE ET DE MYSOC
+$societe->capital=price(intval($societe->capital));
+$mysoc->capital=price(intval($mysoc->capital));
+//var_dump($mysoc->capital);
 
 $projet = new Project($db);
 $projet->fetch($contrat->fk_project);
 
-
 $propal = new Propal($db);
 $lines=array();
+
+
 if(!empty($contrat->linkedObjects['propal'])){
 		foreach ($contrat->linkedObjects['propal'] as $prop) {
 			$propal->fetch($prop->id);
@@ -90,17 +95,18 @@ if(!empty($contrat->linkedObjects['propal'])){
 				$soustotal+=$line->total_ht;
 				if($line->fk_product==null){
 					if(empty($line->desc))$line->desc = $line->label;
-						$line->qty = '';
-						$titre=1;
-					}
-					if ($line->desc=='Sous-total'){
-						$line->qty = '';
-						$line->price = '';
-						$line->total_ht = $soustotal;
-						$soustotal=0;
-						$line->remise_percent = '';
-						$titre=2;
-					}
+					$line->qty = '';
+					$titre=1;
+				}
+				if ($line->desc=='Sous-total'){
+					$line->qty = '';
+					$line->price = '';
+					$line->total_ht = $soustotal;
+					$soustotal=0;
+					$line->remise_percent = '';
+					$titre=2;
+				}
+					
 						
 				if(empty($line->desc)){
 					$line->desc = $line->label;
@@ -117,34 +123,44 @@ if(!empty($contrat->linkedObjects['propal'])){
 				if($line->remise_percent==0){
 					$line->remise_percent = '';
 				}
-				//var_dump($line);
-				if(!empty($line->price)){
+				
+				//$list=get_html_translation_table(HTML_ENTITIES);
+				//pre($list, true);exit;
+				//var_dump($line->desc );
+					//	$line->desc = strip_tags($line->desc, '<br />');
+						//$line->desc = html_entity_decode($line->desc,ENT_COMPAT | ENT_QUOTES,'');
+					//$line->desc = str_replace(array('&lt;','&gt;'),array('<','>'), $line->desc);
+						//var_dump($line->desc ); utf8_decode(strip_tags($line->desc)),
+					 
+				if($titre==0){
 					$lines[]=array(
-						'description' => utf8_decode($line->desc),
+						'description' => html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, ''),
+						//'description' => strip_tags($line->desc),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
 						'totalHT'     => $line->total_ht,
 						'remise'      => $line->remise_percent,
 						'titre'       => $titre
-						);
+					);
 				}else{
 					$lines[]=array(
-						'description' => utf8_decode($line->desc),
+						'description' => utf8_decode(strip_tags($line->desc)),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
-						'puHT'        => price(intval($line->subprice)),
+						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
-						'totalHT'     => price(intval($line->total_ht)),
+						'totalHT'     => $line->total_ht,
 						'remise'      => $line->remise_percent,
 						'titre'       => $titre
-						);
+					);
 				}
+
 			}
 	}
 }
 //var_dump($lines);
 $head = contract_prepare_head($contrat);
-dol_fiche_head($head, 'tabEditions5', $langs->trans('ThirdParty'), 0, 'company');
+dol_fiche_head($head, 'tabEditions8', $langs->trans('Contract'), 0, 'contract');
 
 require('./class/odt.class.php');
 require('./class/atm.doctbs.class.php');
@@ -155,7 +171,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//var_dump($contrat->linkedObjects['propal']);
 //	print_r($tableau); exit;
 	$fOut =  $conf->contrat->dir_output.'/'. dol_sanitizeFileName($contrat->ref).'/'.dol_sanitizeFileName($contrat->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
-	TODTDocs::makeDocTBS(
+	$r = TODTDocs::makeDocTBS(
 		'contract'
 		, $_REQUEST['modele']
 		,array('mysoc'=>$mysoc, 'societe'=>$societe,'conf'=>$conf, 'contrat'=>$contrat, 'propal_lines'=>$lines, 'propal'=>$propal, 'tva'=>$TVA)
@@ -163,7 +179,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 	);
-	
 	
 }
 
