@@ -134,7 +134,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 					 
 				if($titre==0){
 					$lines[]=array(
-						'description' => html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, ''),
+						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
 						//'description' => strip_tags($line->desc),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->price)),
@@ -145,7 +145,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 					);
 				}else{
 					$lines[]=array(
-						'description' => utf8_decode(strip_tags($line->desc)),
+						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
