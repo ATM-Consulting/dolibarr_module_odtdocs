@@ -120,7 +120,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 				//var_dump($line);
 				if(!empty($line->price)){
 					$lines[]=array(
-						'description' => utf8_decode($line->desc),
+						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
@@ -130,7 +130,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 						);
 				}else{
 					$lines[]=array(
-						'description' => utf8_decode($line->desc),
+						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->subprice)),
 						'qty'         => $line->qty,
