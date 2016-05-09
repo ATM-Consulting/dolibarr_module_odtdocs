@@ -31,3 +31,7 @@ FooterLigne1=Nous retourner tamponné et signé TOUS LES VOLETS du présent devi
 pour le transporteur.
 FooterLigne2=Ne pas oublier de joindre le(s) contrat(s) de location de(s) matériel(s) et/ou d'assistance(s) technique(s) le cas échéant.
 ReplaceStandardPDFonGenerationByLastCustom=Remplacer le PDF standard par le dernier personnalisé généré
+
+ODTDOCS_CAN_GENERATE_ODT=Afficher le bouton pour la génération ODT
+ODTDOCS_CAN_GENERATE_PDF=Afficher le bouton pour la génération PDF
+ODTDOCS_SHOW_MESSAGE_ON_GENERATION=Afficher le texte d'information sur génération du document

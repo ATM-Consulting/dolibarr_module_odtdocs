@@ -96,7 +96,10 @@ function getMoreInfoContacts($contacts) {
 		$soc = new Societe($db);
 		if($soc->fetch($TDataContact['socid']) > 0) {
 			$TDataContact['nom_tiers'] = $soc->nom;
-		} else $TDataContact['nom_tiers'] = $mysoc->nom;
+		} 
+		else {
+			$TDataContact['nom_tiers'] = $mysoc->nom;
+		}
 		
 		$TContacts[] = $TDataContact;
 		
@@ -165,21 +168,21 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle à utiliser* <?
+?>Modèle à utiliser* <?php
 TODTDocs::combo('projet', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$projet, $langs);
 
@@ -188,11 +191,10 @@ TODTDocs::show_docs($db, $conf,$projet, $langs);
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 
 llxFooter('$Date: 2011/08/03 00:46:34 $ - $Revision: 1.34 $');
 
 
-?>
