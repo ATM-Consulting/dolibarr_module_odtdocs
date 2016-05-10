@@ -118,9 +118,12 @@ if(!empty($contrat->linkedObjects['propal'])){
 					$line->remise_percent = '';
 				}
 				//var_dump($line);
-				if(!empty($line->price)){
+				if($line->type == 9){
+					
+					$desc = dol_textishtml($line->desc) ? html_entity_decode(strip_tags($line->desc), ENT_QUOTES | ENT_HTML401) : $line->desc;
+					
 					$lines[]=array(
-						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
+						'description' => utf8_decode($desc),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
@@ -129,8 +132,11 @@ if(!empty($contrat->linkedObjects['propal'])){
 						'titre'       => $titre
 						);
 				}else{
+					
+					$desc = dol_textishtml($line->desc) ? html_entity_decode(strip_tags($line->desc), ENT_QUOTES | ENT_HTML401) : $line->desc;
+					
 					$lines[]=array(
-						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
+						'description' => utf8_decode($desc),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
 						'puHT'        => price(intval($line->subprice)),
 						'qty'         => $line->qty,
