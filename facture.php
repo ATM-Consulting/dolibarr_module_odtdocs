@@ -193,7 +193,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		$ligneArray = TODTDocs::asArray($ligne);
-		var_dump($ligneArray['desc']);
+		//var_dump($ligneArray['desc']);
 		if(class_exists('TTarifFacturedet')) {
 			
 			$TTarifFacturedet = new TTarifFacturedet;
