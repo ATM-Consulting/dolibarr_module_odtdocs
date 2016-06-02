@@ -278,7 +278,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$ligneArray['product'] = $prod;
 			}
 		}
-		
+		if(!empty($prod->customcode) && !empty($conf->global->ODTDOCS_ADD_CODE_DOUANE_ON_LINES) ) $ligneArray['product_label'] .= "\n(Code douane : ".$prod->customcode.")";
 		$tableau[]=$ligneArray;
 	}
 	
