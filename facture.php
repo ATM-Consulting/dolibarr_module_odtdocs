@@ -26,6 +26,7 @@
 
 
 //require("../../main.inc.php");
+if(!empty($_REQUEST['NOLOGIN']) && !defined('NOLOGIN')) define('NOLOGIN','1');
 include 'config.php';
 
 
