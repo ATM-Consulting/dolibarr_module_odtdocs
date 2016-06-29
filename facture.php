@@ -276,6 +276,43 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				$prod->fetch_optionals($ligne->fk_product);
+				
+				// Pays d'origine
+				if((float)DOL_VERSION > 3.6) {
+					dol_include_once('/core/class/ccountry.class.php');
+					$p = new Ccountry($db);
+					$p->fetch($prod->country_id);
+					$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+				} else {
+					dol_include_once('/core/class/cpays.class.php');
+					$p = new Cpays($db);
+					$p->fetch($prod->country_id);
+					$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+				}
+			
+				switch ($prod->weight_units) {
+					case -6:
+						$poids = "mg";
+						break;
+					case -3:
+						$poids = "g";
+						break;
+					case 0:
+						$poids = "kg";
+						break;
+					case 3:
+						$poids = "tonnes";
+						break;
+					case 99:
+						$poids = "livre";
+						break;
+					default:
+						$poids = "";
+						break;
+				}
+	
+				$prod->unite = utf8_decode($poids);
+				
 				$ligneArray['product'] = $prod;
 			}
 		}
