@@ -383,9 +383,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 	$fac->note_public = TODTDocs::htmlToUTFAndPreOdf($fac->note_public);
 	
+	// En 3.9, dolibarr met en clef de ces tableaux l'id de l'objet, or il nous faut l'indice 0 pour la fonction makeDocTBS
+	foreach($fac->linkedObjects as $type=>$TData) $fac->linkedObjects[$type] = &array_values($TData);
+	
 	if(is_array($fac->linkedObjects['commande'])){
 		$TKeys = array_keys($fac->linkedObjects['commande']);
-		$fac->linkedObjects['commande'][$TKeys['0']]->date_commande = date("d/m/Y",$fac->linkedObjects['commande']['0']->date_commande);
+		$fac->linkedObjects['commande'][0]->date_commande = date("d/m/Y",$fac->linkedObjects['commande'][0]->date_commande);
 	}
 	
 	$societe->country = strtr($societe->country, array("'"=>' '));
