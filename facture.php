@@ -388,7 +388,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	if(is_array($fac->linkedObjects['commande'])){
 		$TKeys = array_keys($fac->linkedObjects['commande']);
-		$fac->linkedObjects['commande'][0]->date_commande = date("d/m/Y",$fac->linkedObjects['commande'][0]->date_commande);
+		$fac->linkedObjects['commande'][0]->date_commande = date("Y-m-d",$fac->linkedObjects['commande'][0]->date_commande);
 	}
 	
 	$societe->country = strtr($societe->country, array("'"=>' '));
