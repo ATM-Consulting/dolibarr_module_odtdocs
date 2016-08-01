@@ -242,6 +242,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		//if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		
+		// On instancie le produit ici car si ligne libre on se retrouve avec les donnéees du porduit sur chaque ligne
+		$prod = new Product($db);
+		
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice']*(1-($ligneArray['remise_percent']/100));
@@ -262,7 +265,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					$outputlangs->setDefaultLang($newlang);
 				}
 				
-				$prod = new Product($db);
+				//$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				
 				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
@@ -273,7 +276,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			}
 
 			if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
-				$prod = new Product($db);
+				//$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				$prod->fetch_optionals($ligne->fk_product);
 				
@@ -316,6 +319,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$ligneArray['product'] = $prod;
 			}
 		}
+		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligne->desc; // Lignes libres
 		if(!empty($prod->customcode) && !empty($conf->global->ODTDOCS_ADD_CODE_DOUANE_ON_LINES) ) $ligneArray['product_label'] .= "\n(Code douane : ".$prod->customcode.")";
 		$tableau[]=$ligneArray;
 	}
