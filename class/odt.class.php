@@ -163,6 +163,8 @@ class TODTDocs {
 		$TBS->NoErr = true;
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 		
+		if (GETPOST('debug')) $TBS->PlugIn(OPENTBS_DEBUG_XML_CURRENT);
+		
 		$TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele));
 		//$TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele.'#styles.xml;content.xml;settings.xml');
 		
