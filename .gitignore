@@ -1,3 +1,4 @@
-config.php
+.buildpath
 .project
-.settings/*
+.settings/
+config.php
