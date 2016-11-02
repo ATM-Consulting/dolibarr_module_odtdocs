@@ -38,7 +38,7 @@ require_once DOL_DOCUMENT_ROOT."/core/lib/fourn.lib.php";
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 
 
 
