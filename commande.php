@@ -37,7 +37,7 @@ dol_include_once("/tarif/class/tarif.class.php");
 dol_include_once("/asset/class/asset.class.php");
 dol_include_once("/projet/class/project.class.php");
 dol_include_once("/odtdocs/lib/odtdocs.lib.php");
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 
 global $db, $langs, $user;
 $langs->load('orders');

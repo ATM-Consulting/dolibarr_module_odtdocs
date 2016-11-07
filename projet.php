@@ -30,7 +30,7 @@ require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
 dol_include_once("/tarif/class/tarif.class.php");
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 dol_include_once('/projet/class/project.class.php');
 dol_include_once('/projet/class/task.class.php');
 
