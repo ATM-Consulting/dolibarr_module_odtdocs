@@ -304,6 +304,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	$fOut = $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.$generatedfilename;
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	if($projet->title > 0) {
+		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
+	}
+
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
