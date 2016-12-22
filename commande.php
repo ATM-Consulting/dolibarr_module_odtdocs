@@ -66,6 +66,10 @@ $commande->fetch($_REQUEST["id"]);
 $commande->info($_REQUEST["id"]);
 $commande->fetchObjectLinked();
 
+foreach($commande as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
+
 if($commande->fk_project) {
 	$projet = new Project($db);
 	$projet->fetch($commande->fk_project);

@@ -72,6 +72,10 @@ $fac->info($_REQUEST["id"]);
 $fac->fetchObjectLinked();
 $fac->fetch_optionals($fac->id);
 
+foreach($fac as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
+
 $societe = new Societe($db, $fac->socid);
 $societe->fetch($fac->socid);
 

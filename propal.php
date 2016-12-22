@@ -68,6 +68,10 @@ $propal->fetch($_REQUEST["id"]);
 $propal->fetch_optionals($propal->id); // Compatibility
 $propal->fetchObjectLinked();
 
+foreach($propal as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
+
 $societe = new Societe($db);
 $societe->fetch($propal->socid);
 
