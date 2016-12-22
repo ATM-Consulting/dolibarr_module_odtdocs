@@ -72,6 +72,10 @@ $exp = new Expedition($db);
 $exp->fetch($_REQUEST["id"]);
 $exp->fetchObjectLinked();
 
+foreach($exp as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
+
 // Pour la gestion des contacts (les contacts liés à l'expedition sont les même que la commande)
 if($exp->origin == 'commande') {
 	$cde = new Commande($db);
