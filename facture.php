@@ -396,7 +396,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	
 	$societe->country = strtr($societe->country, array("'"=>' '));
-	if($projet->id > 0) {
+	if(!empty($projet->title)) {
 		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
 	}
 
