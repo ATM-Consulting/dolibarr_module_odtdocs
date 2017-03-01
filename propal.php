@@ -126,10 +126,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		// Gestion label et description uniformise les donées
-		if($dolversion >= 3.8) {
-			$ligne->label = html_entity_decode($ligne->label);
-			$ligne->desc = html_entity_decode($ligne->desc);
-		}
+		$ligne->label = html_entity_decode($ligne->label, ENT_QUOTES);
+		$ligne->desc = html_entity_decode($ligne->desc, ENT_QUOTES);
+		
+		$ligne->desc = dol_string_nohtmltag($ligne->desc);
 		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
