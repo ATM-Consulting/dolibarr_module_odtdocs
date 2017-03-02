@@ -95,7 +95,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$TExtrafields = array();
 	
 	if(!empty($commande->array_options)) {
-		$TExtrafields = get_tab_extrafields($commande->array_options, 'commande');
+		$TExtrafields = array_merge(get_tab_extrafields($commande->array_options, 'commande'), get_tab_extrafields_evo($commande));
 	}
 	
 	foreach($commande->lines as $ligne) {
