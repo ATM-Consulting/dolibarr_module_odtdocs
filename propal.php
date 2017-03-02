@@ -133,6 +133,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
 		if(class_exists('TTarifPropaldet')) {
 			$TTarifPropaldet = new TTarifPropaldet;
 			$TTarifPropaldet->load($ATMdb,$ligne->rowid);

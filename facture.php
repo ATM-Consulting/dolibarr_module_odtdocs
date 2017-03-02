@@ -198,6 +198,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		$ligneArray = TODTDocs::asArray($ligne);
+		
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
 		//var_dump($ligneArray['desc']);
 		if(class_exists('TTarifFacturedet')) {
 			

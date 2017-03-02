@@ -110,6 +110,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$milestone->fetch($ligne->rowid,"commande");
 		}
 	
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
 		if(class_exists('TTarifCommandedet')) {	
 			$TTarifCommandedet = new TTarifCommandedet;
 			$TTarifCommandedet->load($ATMdb,$ligne->rowid);
