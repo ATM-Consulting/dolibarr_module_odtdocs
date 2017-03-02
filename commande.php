@@ -95,7 +95,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$TExtrafields = array();
 	
 	if(!empty($commande->array_options)) {
-		$TExtrafields = get_tab_extrafields($commande->array_options, 'commande');
+		$TExtrafields = array_merge(get_tab_extrafields($commande->array_options, 'commande'), get_tab_extrafields_evo($commande));
 	}
 	
 	foreach($commande->lines as $ligne) {
@@ -110,6 +110,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$milestone->fetch($ligne->rowid,"commande");
 		}
 	
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
 		if(class_exists('TTarifCommandedet')) {	
 			$TTarifCommandedet = new TTarifCommandedet;
 			$TTarifCommandedet->load($ATMdb,$ligne->rowid);

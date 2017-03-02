@@ -124,7 +124,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$TExtrafields = array();
 	
 	if(!empty($fac->array_options)) {
-		$TExtrafields = get_tab_extrafields($fac->array_options, 'facture');
+		$TExtrafields =  array_merge(get_tab_extrafields($fac->array_options, 'facture'), get_tab_extrafields_evo($fac));
 	}
 	
 	$TPaiement = array('lines' => array(), 'total' => array('total_ttc' => 0));
@@ -198,6 +198,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		$ligneArray = TODTDocs::asArray($ligne);
+		
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
 		//var_dump($ligneArray['desc']);
 		if(class_exists('TTarifFacturedet')) {
 			

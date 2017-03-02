@@ -48,3 +48,25 @@ function get_tab_extrafields($array_options, $element_type) {
 	return $TExtrafields;
 
 }
+
+function get_tab_extrafields_evo($object)
+{
+	global $db;
+	
+	require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+	
+	$TExtrafields = array();
+	
+	$extrafields = new ExtraFields($db);
+	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
+	if (! empty($extrafields->attribute_label))
+	{
+		foreach ($extrafields->attribute_label as $key => $label)
+		{
+			$value = $object->array_options["options_" . $key];
+			if ($extrafields->attribute_type[$key] != 'separate') $TExtrafields['show_'.$key] = $extrafields->showOutputField($key, $value);
+		}
+	}
+	
+	return $TExtrafields;
+}
