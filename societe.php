@@ -34,7 +34,9 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
+require_once(DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php');
 
+dol_include_once('/odtdocs/lib/odtdocs.lib.php');
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -64,22 +66,64 @@ dol_fiche_head($head, 'tabEditions5', $langs->trans('ThirdParty'), 0, 'company')
 require('./class/odt.class.php');
 require('./class/atm.doctbs.class.php');
 
-if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
+$action=GETPOST('action');
+$hookmanager->initHooks(array('societecard'));
+$parameters=array();
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$societe,$action);    // Note that $action and $object may have been modified by some hooks
+
+
+if($action == 'GENODT') {
 	//print_r($propal);
 	
 	
 //	print_r($tableau); exit;
 	$fOut =  $conf->societe->dir_output.'/'. dol_sanitizeFileName($societe->ref).'/'.dol_sanitizeFileName($societe->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
 
+	$TExtrafields = array();
+	if(!empty($societe->array_options)) {
+		$TExtrafields = array_merge(get_tab_extrafields($societe->array_options, 'propal'), get_tab_extrafields_evo($societe));
+	}
 	
+	// Dsl, mais dolibarr gère encore l'affichage en dur dans le code
+	$societe->client_type = '';
+	if ($societe->client == 0) $societe->client_type = $langs->trans('NorProspectNorCustomer');
+	elseif ($societe->client == 1) $societe->client_type = $langs->trans('Customer');
+	elseif ($societe->client == 2) $societe->client_type = $langs->trans('Prospect');
+	elseif ($societe->client == 3) $societe->client_type = $langs->trans('ProspectCustomer');
+	
+	
+//	$societe->note_private = dol_string_nohtmltag($societe->note_private);
+	$societe->note_private = preg_replace('/<[^<>]+>/', '', $societe->note_private);
+	$societe->note_public = preg_replace('/<[^<>]+>/', '', $societe->note_public);
+
+	$TContact = $societe->contact_array_objects();
+	$TBlock = array('TContact' => $TContact);
+	
+	if (empty($societe->capital)) $societe->capital = 0;
+
+	$tableau=array();
+	$TAutre = array();
+	$parameters = array(
+		'currentContext' => 'propalOdtDoc'
+		,'extrafields'=>&$TExtrafields
+		,'societe'=>&$societe
+		,'mysoc'=>&$mysoc
+		,'conf'=>&$conf
+		,'autre'=>&$autre
+		,'TAutre'=>&$TAutre
+		,'TContact'=>&$TContact
+		,'TBlock'=>&$TBlock
+	);
+	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$societe,$action);
 	
 	TODTDocs::makeDocTBS(
 		'company'
 		, $_REQUEST['modele']
-		,array('societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf)
+		,array('societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'extrafields'=>$TExtrafields, 'TAutre' => $TAutre, 'autre' => $autre,  'TBlock' => $TBlock)
 		,$fOut
 		, $conf->entity
-		,isset($_REQUEST['btgenPDF'])
+		,isset($_REQUEST['btgenPDF'])	
 	);
 	
 	
