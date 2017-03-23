@@ -92,7 +92,7 @@ if($action == 'GENODT') {
 	elseif ($societe->client == 3) $societe->client_type = $langs->trans('ProspectCustomer');
 	
 	
-//	$societe->note_private = dol_string_nohtmltag($societe->note_private);
+	//$societe->note_private = dol_string_nohtmltag($societe->note_private);
 	$societe->note_private = preg_replace('/<[^<>]+>/', '', $societe->note_private);
 	$societe->note_public = preg_replace('/<[^<>]+>/', '', $societe->note_public);
 
@@ -128,7 +128,10 @@ if($action == 'GENODT') {
 	
 	
 }
-
+function decode($FieldName, &$CurrVal)
+{
+    return $CurrVal = html_entity_decode($CurrVal);
+}
 ?>
 <form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 	<input type="hidden" name="id" value="<?php echo $id; ?>" />
