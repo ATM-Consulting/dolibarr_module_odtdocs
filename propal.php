@@ -99,9 +99,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$TExtrafields = array_merge(get_tab_extrafields($propal->array_options, 'propal'), get_tab_extrafields_evo($propal));
 	}
 	
-	$soustotal=0;
 	foreach($propal->lines as $ligne) {
-		
 		
 		if(!empty($ligne->fk_product)) {
 			// Chargement du produit correspondant
@@ -133,11 +131,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		$ligne->desc = dol_string_nohtmltag($ligne->desc);
 		
-
-		
 		$ligneArray = TODTDocs::asArray($ligne);
-		
-
 		
 		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
 		
@@ -225,7 +219,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
-
 		
 		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES) && $ligne->fk_product>0) {
 			$prod = new Product($db);
@@ -275,15 +268,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		//$soustotal+=$ligne->total_ht;
 		if($ligne->product_type == 9){
 			if ($ligne->desc=='Sous-total'){
-		
-				//$ligneArray['total_ht'] = $soustotal;
 				$ligneArray['titre'] = 2;
-				$soustotal=0;
 			} else {
-		
 				$ligneArray['total_ht'] = '';
-			}
-				
+			}				
 		}
 		
 		
