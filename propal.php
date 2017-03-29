@@ -265,6 +265,16 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			
 		}
 		
+		//$soustotal+=$ligne->total_ht;
+		if($ligne->product_type == 9){
+			if ($ligne->desc=='Sous-total'){
+				$ligneArray['titre'] = 2;
+			} else {
+				$ligneArray['total_ht'] = '';
+			}				
+		}
+		
+		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
 		}

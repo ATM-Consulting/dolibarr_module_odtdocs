@@ -64,7 +64,12 @@ function get_tab_extrafields_evo($object)
 		foreach ($extrafields->attribute_label as $key => $label)
 		{
 			$value = $object->array_options["options_" . $key];
-			if ($extrafields->attribute_type[$key] != 'separate') $TExtrafields['show_'.$key] = $extrafields->showOutputField($key, $value);
+			if ($extrafields->attribute_type[$key] != 'separate')
+			{
+				$val = $extrafields->showOutputField($key, $value);
+				if ($extrafields->attribute_type[$key] == 'price') $val = str_replace('€', '', $val);
+				$TExtrafields['show_'.$key] = $val;
+			}
 		}
 	}
 	

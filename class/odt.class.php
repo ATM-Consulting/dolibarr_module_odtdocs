@@ -205,6 +205,24 @@ class TODTDocs {
 		
 		$TBS->MergeField('langs', $outputlangs);
 		
+		// TBlock est entre guillemets une poubelle de ce qu'on souhaite ajouter dans notre doc (un hook permet de d'ajouter des entrées dans ce tableau)
+		if (!empty($object['TBlock']))
+		{
+			foreach ($object['TBlock'] as $key => $Tab)
+			{
+				$TBS->MergeBlock($key, $Tab);
+			}
+		}
+		
+		// même commentaire que pour le TBlock (celui-ci est moins utile parce qu'on peut valoriser $autre
+		if (!empty($object['TField']))
+		{
+			foreach ($object['TField'] as $key => $Tab)
+			{
+				$TBS->MergeField($key, $Tab);
+			}
+		}
+		
 		// Traduction de certains éléments du doc
 		if (!empty($object['doc']->cond_reglement)) $object['doc']->cond_reglement = $outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code)!=('PaymentCondition'.$object['doc']->cond_reglement_code)?$outputlangs->transnoentities("PaymentCondition".$object['doc']->cond_reglement_code):$outputlangs->convToOutputCharset($object['doc']->cond_reglement_doc);
 		if (!empty($object['doc']->mode_reglement)) $object['doc']->mode_reglement = $outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code)!=('PaymentType'.$object['doc']->mode_reglement_code)?$outputlangs->transnoentities("PaymentType".$object['doc']->mode_reglement_code):$outputlangs->convToOutputCharset($object['doc']->mode_reglement);

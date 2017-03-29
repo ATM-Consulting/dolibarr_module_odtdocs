@@ -245,7 +245,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 				<td valign="top" width="40%">Charger un modèle de document</td>
 				<td align="left">
 				<input type="file" name="fichier" value="" />		
-				<input type="submit" name="btload" value="Charger" />	
+				<input type="submit" name="btload" value="Charger" class="butAction" />	
 				</td>
 				
 			</td>
