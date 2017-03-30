@@ -265,15 +265,18 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			
 		}
 		
-		//$soustotal+=$ligne->total_ht;
-		if($ligne->product_type == 9){
-			if ($ligne->desc=='Sous-total'){
+		// Check if line is subtotal or title
+		if ($conf->subtotal->enabled) {
+			if (! class_exists('TSubtotal')) {
+				dol_include_once('/subtotal/class/subtotal.class.php');
+			}
+			if (TSubtotal::isSubtotal($ligne)){
 				$ligneArray['titre'] = 2;
-			} else {
+			}
+			if (TSubtotal::isTitle($ligne)) {			
 				$ligneArray['total_ht'] = '';
-			}				
+			}	
 		}
-		
 		
 		$tableau[]=$ligneArray;
 		$Ttva[$ligneArray['tva_tx']] += $ligneArray['total_tva'];
