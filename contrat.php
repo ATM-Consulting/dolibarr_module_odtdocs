@@ -99,15 +99,20 @@ if(!empty($contrat->linkedObjects['propal'])){
 					$line->qty = '';
 					$titre=1;
 				}
-				if ($line->desc=='Sous-total'){
-					$line->qty = '';
-					$line->price = '';
-					$line->total_ht = $soustotal;
-					$soustotal=0;
-					$line->remise_percent = '';
-					$titre=2;
+				// Check if line is subtotal or title
+				if ($conf->subtotal->enabled) {
+					if (! class_exists('TSubtotal')) {
+						dol_include_once('/subtotal/class/subtotal.class.php');
+					}
+					if (TSubtotal::isSubtotal($line)){
+						$line->qty = '';
+						$line->price = '';
+						$line->total_ht = $soustotal;
+						$soustotal=0;
+						$line->remise_percent = '';
+						$titre=2;
+					}
 				}
-					
 						
 				if(empty($line->desc)){
 					$line->desc = $line->label;
