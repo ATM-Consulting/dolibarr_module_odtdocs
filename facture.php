@@ -197,6 +197,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$milestone->fetch($ligne->rowid,"facture");
 		}
 		
+		// Gestion label et description uniformise les donées
+		$ligne->label = html_entity_decode($ligne->label, ENT_QUOTES);
+		$ligne->desc = TODTDocs::htmlToUTFAndPreOdf($ligne->desc);
+		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
 		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');

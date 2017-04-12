@@ -127,9 +127,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		// Gestion label et description uniformise les donées
 		$ligne->label = html_entity_decode($ligne->label, ENT_QUOTES);
-		$ligne->desc = html_entity_decode($ligne->desc, ENT_QUOTES);
-		
-		$ligne->desc = dol_string_nohtmltag($ligne->desc);
+		$ligne->desc = TODTDocs::htmlToUTFAndPreOdf($ligne->desc);
 		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
@@ -206,7 +204,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
-				
+			
 				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
 				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
 				if(! empty($prod->multilangs[$outputlangs->defaultlang]["label"])) $ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
@@ -215,10 +213,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			}
 		}
 		
+		var_dump($ligneArray['desc']);
+		
 		if(empty($ligneArray['label'])) $ligneArray['label'] = $ligneArray['desc'];
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice'] * (1-($ligneArray['remise_percent']/100));
+		
+		
 		
 		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES) && $ligne->fk_product>0) {
 			$prod = new Product($db);
