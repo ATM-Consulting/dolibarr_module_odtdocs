@@ -387,9 +387,10 @@ class TODTDocs {
 			 	$row['desc']=strtr($row['desc'],$trans);
 				$row['product_label']=strtr($row['product_label'],$trans);
 				
-			 	if($row['desc']==$row['product_label']) {
+				//FHE : But WHY !!!! I Comment this... There no use of that
+			 	/*if($row['desc']==$row['product_label']) {
 			 		$row['desc']='';	
-			 	}
+			 	}*/
 			 } 
 		}
 		

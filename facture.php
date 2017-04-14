@@ -329,6 +329,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				
 				$ligneArray['product'] = $prod;
 			}
+		} else if ($ligneArray['desc']== '(DEPOSIT)' && $ligneArray['fk_remise_except'] > 0) {
+			require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			$discount=new DiscountAbsolute($db);
+			$discount->fetch($ligneArray['fk_remise_except']);
+			$ligneArray['desc']=$langs->trans("Deposit").'-'.$langs->transnoentities("DiscountFromDeposit",$discount->ref_facture_source);
+			// Add date of deposit
+			if (! empty($conf->global->INVOICE_ADD_DEPOSIT_DATE))
+				$ligneArray['desc'].' ('.dol_print_date($discount->datec).')';
 		}
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = ((mb_detect_encoding($ligne->desc) === 'UTF-8') ? utf8_decode($ligne->desc) : $ligne->desc); // Lignes libres
 		if(!empty($prod->customcode) && !empty($conf->global->ODTDOCS_ADD_CODE_DOUANE_ON_LINES) ) $ligneArray['product_label'] .= "\n(Code douane : ".$prod->customcode.")";
