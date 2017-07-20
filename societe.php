@@ -97,6 +97,9 @@ if($action == 'GENODT') {
 	$societe->note_public = preg_replace('/<[^<>]+>/', '', $societe->note_public);
 
 	$TContact = $societe->contact_array_objects();
+	foreach ($TContact as $key => $ObjectVal) {
+		$TContact[$key]->poste = utf8_decode($ObjectVal->poste);
+	}
 	$TBlock = array('TContact' => $TContact);
 	
 	if (empty($societe->capital)) $societe->capital = 0;
