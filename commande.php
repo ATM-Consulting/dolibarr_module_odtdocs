@@ -313,7 +313,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if(!empty($projet->title)) {
 		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
 	}
-
+	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$commande,$action);
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
@@ -324,7 +325,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
-
+	$reshook=$hookmanager->executeHooks('afterGenerateOdtDoc',$parameters,$commande,$action);
+	
 }
 
 
