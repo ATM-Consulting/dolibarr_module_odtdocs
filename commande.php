@@ -315,7 +315,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	
 	$TAutre = array();
-	$parameters = array(
+	$parameters = array_merge ( $parameters, array(
 			'currentContext' => 'orderOdtDoc'
 			,'projet' => &$projet
 			,'extrafields'=>&$TExtrafields
@@ -328,7 +328,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			,'autre'=>&$autre
 			,'TAutre'=>&$TAutre
 			,'tva'=>&$TVA
-	);
+	));
+	
 	
 	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$commande,$action);
 	TODTDocs::makeDocTBS(
