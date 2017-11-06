@@ -29,6 +29,7 @@ class ActionsOdtdocs
         {
           
             global $db, $user, $conf;
+//var_dump($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL);
             if(!empty($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL)) {
                  dol_include_once('/core/lib/files.lib.php');       
                //var_dump($object);
