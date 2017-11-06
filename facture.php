@@ -26,6 +26,7 @@
 
 
 //require("../../main.inc.php");
+if(!empty($_REQUEST['NOLOGIN']) && !defined('NOLOGIN')) define('NOLOGIN','1');
 include 'config.php';
 
 
@@ -38,7 +39,7 @@ require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 dol_include_once("/tarif/class/tarif.class.php");	
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 dol_include_once("/projet/class/project.class.php");
 dol_include_once("/odtdocs/lib/odtdocs.lib.php");
 dol_include_once('/includes/odtphp/odf.php');
@@ -70,6 +71,10 @@ $fac->fetch($_REQUEST["id"]);
 $fac->info($_REQUEST["id"]);
 $fac->fetchObjectLinked();
 $fac->fetch_optionals($fac->id);
+
+foreach($fac as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
 
 $societe = new Societe($db, $fac->socid);
 $societe->fetch($fac->socid);
@@ -119,7 +124,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$TExtrafields = array();
 	
 	if(!empty($fac->array_options)) {
-		$TExtrafields = get_tab_extrafields($fac->array_options, 'facture');
+		$TExtrafields =  array_merge(get_tab_extrafields($fac->array_options, 'facture'), get_tab_extrafields_evo($fac));
 	}
 	
 	$TPaiement = array('lines' => array(), 'total' => array('total_ttc' => 0));
@@ -192,8 +197,15 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$milestone->fetch($ligne->rowid,"facture");
 		}
 		
+		// Gestion label et description uniformise les donées
+		$ligne->label = html_entity_decode($ligne->label, ENT_QUOTES);
+		$ligne->desc = TODTDocs::htmlToUTFAndPreOdf($ligne->desc);
+		
 		$ligneArray = TODTDocs::asArray($ligne);
 		
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
+		//var_dump($ligneArray['desc']);
 		if(class_exists('TTarifFacturedet')) {
 			
 			$TTarifFacturedet = new TTarifFacturedet;
@@ -241,6 +253,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 		//if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['description'];
 		
+		// On instancie le produit ici car si ligne libre on se retrouve avec les donnéees du porduit sur chaque ligne
+		$prod = new Product($db);
+		
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['price'])) $ligneArray['price'] = $ligneArray['subprice']*(1-($ligneArray['remise_percent']/100));
@@ -261,7 +276,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 					$outputlangs->setDefaultLang($newlang);
 				}
 				
-				$prod = new Product($db);
+				//$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				
 				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
@@ -272,13 +287,59 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			}
 
 			if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
-				$prod = new Product($db);
+				//$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
 				$prod->fetch_optionals($ligne->fk_product);
+				
+				// Pays d'origine
+				if((float)DOL_VERSION > 3.6) {
+					dol_include_once('/core/class/ccountry.class.php');
+					$p = new Ccountry($db);
+					$p->fetch($prod->country_id);
+					$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+				} else {
+					dol_include_once('/core/class/cpays.class.php');
+					$p = new Cpays($db);
+					$p->fetch($prod->country_id);
+					$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+				}
+			
+				switch ($prod->weight_units) {
+					case -6:
+						$poids = "mg";
+						break;
+					case -3:
+						$poids = "g";
+						break;
+					case 0:
+						$poids = "kg";
+						break;
+					case 3:
+						$poids = "tonnes";
+						break;
+					case 99:
+						$poids = "livre";
+						break;
+					default:
+						$poids = "";
+						break;
+				}
+	
+				$prod->unite = utf8_decode($poids);
+				
 				$ligneArray['product'] = $prod;
 			}
+		} else if ($ligneArray['desc']== '(DEPOSIT)' && $ligneArray['fk_remise_except'] > 0) {
+			require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			$discount=new DiscountAbsolute($db);
+			$discount->fetch($ligneArray['fk_remise_except']);
+			$ligneArray['desc']=$langs->trans("Deposit").'-'.$langs->transnoentities("DiscountFromDeposit",$discount->ref_facture_source);
+			// Add date of deposit
+			if (! empty($conf->global->INVOICE_ADD_DEPOSIT_DATE))
+				$ligneArray['desc'].' ('.dol_print_date($discount->datec).')';
 		}
-		
+		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = ((mb_detect_encoding($ligne->desc) === 'UTF-8') ? utf8_decode($ligne->desc) : $ligne->desc); // Lignes libres
+		if(!empty($prod->customcode) && !empty($conf->global->ODTDOCS_ADD_CODE_DOUANE_ON_LINES) ) $ligneArray['product_label'] .= "\n(Code douane : ".$prod->customcode.")";
 		$tableau[]=$ligneArray;
 	}
 	
@@ -345,12 +406,19 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 
 	$fac->note_public = TODTDocs::htmlToUTFAndPreOdf($fac->note_public);
 	
+	// En 3.9, dolibarr met en clef de ces tableaux l'id de l'objet, or il nous faut l'indice 0 pour la fonction makeDocTBS
+	foreach($fac->linkedObjects as $type=>$TData) $fac->linkedObjects[$type] = &array_values($TData);
+	
 	if(is_array($fac->linkedObjects['commande'])){
-		$fac->linkedObjects['commande']['0']->date_commande = date("d/m/Y",$fac->linkedObjects['commande']['0']->date_commande);
+		$TKeys = array_keys($fac->linkedObjects['commande']);
+		$fac->linkedObjects['commande'][0]->date_commande = date("Y-m-d",$fac->linkedObjects['commande'][0]->date_commande);
 	}
 	
 	$societe->country = strtr($societe->country, array("'"=>' '));
-	
+	if(!empty($projet->title)) {
+		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
+	}
+
 @	TODTDocs::makeDocTBS(
 		'facture'
 		, $_REQUEST['modele']
@@ -371,14 +439,14 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle* à utiliser <?
+?>Modèle* à utiliser <?php
 
 TODTDocs::combo('facture', 'modele',GETPOST('modele'), $conf->entity);
 //print_r($societe);
@@ -387,22 +455,22 @@ TODTDocs::comboLang($db, $societe->default_lang);
 	if(!empty($TCompte)) {
 		
 		?>
-		- Rib du compte à afficher <select name="account" class="flat"><?
+		- Rib du compte à afficher <select name="account" class="flat"><?php
 		
 			foreach($TCompte as $compte) {
 				
-					?><option value="<?=$compte->rowid ?>" <?=(isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : ''  ?>><?=$compte->label ?></option><?	
+					?><option value="<?php echo $compte->rowid; ?>" <?php echo (isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : '' ; ?>><?php echo $compte->label; ?></option><?php	
 				
 			}
 			
-			?></select><?
+			?></select><?php
 	}
 ?>
  <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" />
 
 <br/><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$fac, $langs,'facture');
 
@@ -411,7 +479,7 @@ TODTDocs::show_docs($db, $conf,$fac, $langs,'facture');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 

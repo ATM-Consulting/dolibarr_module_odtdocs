@@ -41,6 +41,7 @@ include '../config.php';
 // Change this following line to use the correct relative path from htdocs (do not remove DOL_DOCUMENT_ROOT)
 dol_include_once('/core/lib/admin.lib.php');
 dol_include_once('/core/class/extrafields.class.php');
+$langs->load('odtdocs@odtdocs');
 
 // Get parameters
 $myparam = isset($_GET["myparam"])?$_GET["myparam"]:'';
@@ -104,6 +105,36 @@ if($action=='save') {
     setEventMessage( $langs->trans('RegisterSuccess') );
 }
 
+/*
+ * Actions
+ */
+if (preg_match('/set_(.*)/',$action,$reg))
+{
+	$code=$reg[1];
+	if (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
+	{
+		header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
+	
+if (preg_match('/del_(.*)/',$action,$reg))
+{
+	$code=$reg[1];
+	if (dolibarr_del_const($db, $code, 0) > 0)
+	{
+		Header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
 
 //$form=new Form($db);
 
@@ -113,27 +144,38 @@ print_fiche_titre('Gestion des modèles',$linkback,'setup');
 $form=new TFormCore;
 
 
-/*<form action="<?=$_SERVER['PHP_SELF'] ?>" name="livedocx-form" method="POST" enctype="multipart/form-data">
-	<input type="hidden" name="action" value="LIVEDOCX" />
-<table width="100%" class="noborder">
-	<tr class="liste_titre">
-		<td>Module LiveDocx</td>
-		<td align="center">&nbsp;</td>
-		</tr>
-		<tr class="impair">
-			<td valign="top">Login / Mot de passe</td>
-			<td align="center">
-				echo $form->combo('Utiliser le service <a href="http://www.livedocx.com/" target="_blank">LiveDocx</a>', 'livedocx_use', array(0=>'Non', 1=>'Oui'), $dTBS->livedocx_use);	
-			<input type="text" name="livedocx_login" value="<?=$dTBS->livedocx_login ?>" />		
-			<input type="password" name="livedocx_password" value="<?=$dTBS->livedocx_password ?>" />
-			<input type="submit" name="btvalid" value="Valider" />	
-			</td>
-			
-		</td>
-	</tr>
+$var=false;
+print '<table class="noborder" width="100%">';
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("Parameters").'</td>'."\n";
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
+// Example with a yes / no select
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ODTDOCS_CAN_GENERATE_ODT").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print ajax_constantonoff('ODTDOCS_CAN_GENERATE_ODT');
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ODTDOCS_CAN_GENERATE_PDF").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print ajax_constantonoff('ODTDOCS_CAN_GENERATE_PDF');
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ODTDOCS_SHOW_MESSAGE_ON_GENERATION").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print ajax_constantonoff('ODTDOCS_SHOW_MESSAGE_ON_GENERATION');
+print '</td></tr>';
 	
-</table>
-</form>*/
+print '</table><br /><br />';
 
 	showFormModel('propal',$conf->entity);
 	showFormModel('commande',$conf->entity);
@@ -147,11 +189,11 @@ $form=new TFormCore;
 
 
 function showFormModel($typeDoc='propal', $entity = 1) {
-	?><form action="<?=$_SERVER['PHP_SELF'] ?>" name="load-<?=$typeDoc ?>" method="POST" enctype="multipart/form-data">
-		<input type="hidden" name="typeDoc" value="<?=$typeDoc ?>" />
+	?><form action="<?php echo $_SERVER['PHP_SELF'] ?>" name="load-<?php echo $typeDoc ?>" method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="typeDoc" value="<?php echo $typeDoc ?>" />
 	<table width="100%" class="noborder" style="background-color: #fff;">
 		<tr class="liste_titre">
-			<td><? 
+			<td><?php
 				switch ($typeDoc) {
 					case 'propal':
 						print 'Modèles Propale';
@@ -203,12 +245,12 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 				<td valign="top" width="40%">Charger un modèle de document</td>
 				<td align="left">
 				<input type="file" name="fichier" value="" />		
-				<input type="submit" name="btload" value="Charger" />	
+				<input type="submit" name="btload" value="Charger" class="butAction" />	
 				</td>
 				
 			</td>
 		</tr>
-		<?
+		<?php
 		
 		$TDocs = TODTDocs::getListe($typeDoc, $entity);
 		
@@ -217,13 +259,13 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 			<tr>
 				<td colspan="2"><strong>Liste des modèles chargés</strong></td>
 			</tr>
-			<?
+			<?php
 			
 			foreach($TDocs as $fichier) {
 				?><tr>
-					<td><a href="<?=dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?=$fichier ?></a></td>
-					<td><a href="<?=$_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?=urlencode($fichier) ?>&type=<?=$typeDoc ?>" onClick="return confirm('Vouslez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
-				</tr><?
+					<td><a href="<?php echo dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?php echo $fichier ?></a></td>
+					<td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?php echo urlencode($fichier) ?>&type=<?php echo $typeDoc ?>" onClick="return confirm('Vouslez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
+				</tr><?php
 			}
 		}
 		?>
@@ -231,7 +273,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 	</table>
 	</form>
 	<br /><br />
-	<?
+	<?php
 }
 ?>
 
@@ -245,11 +287,11 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
                 if($conf->global->ODTDOCS_REPLACE_BY_THE_LAST==0) {
                     
-                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=1"><?php echo img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
                     
                 }
                 else {
-                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_REPLACE_BY_THE_LAST]=0"><?php echo img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
                     
                 }
             
@@ -260,11 +302,11 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
                 if($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL==0) {
                     
-                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=1"><?php echo img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
                     
                 }
                 else {
-                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_ADD_ALL_FILES_IN_MAIL]=0"><?php echo img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
                     
                 }
             
@@ -275,11 +317,11 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             
                 if($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES==0) {
                     
-                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=1"><?php echo img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
                     
                 }
                 else {
-                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+                     ?><a href="?action=save&TDivers[ODTDOCS_LOAD_PRODUCT_IN_LINES]=0"><?php echo img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
                     
                 }
             
@@ -305,7 +347,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 		</td>
 	</tr>
 </table>
-<?
+<?php
 
 // Put here content of your page
 // ...

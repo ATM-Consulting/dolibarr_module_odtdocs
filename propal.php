@@ -31,7 +31,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
 dol_include_once("/tarif/class/tarif.class.php");
 dol_include_once('/odtdocs/lib/odtdocs.lib.php');
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 dol_include_once('/projet/class/project.class.php');
 
 global $db, $langs;
@@ -65,8 +65,12 @@ $ATMdb = new TPDOdb;
 
 $propal = new Propal($db);
 $propal->fetch($_REQUEST["id"]);
-$propal->fetch_optionals();
+$propal->fetch_optionals($propal->id); // Compatibility
 $propal->fetchObjectLinked();
+
+foreach($propal as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
 
 $societe = new Societe($db);
 $societe->fetch($propal->socid);
@@ -92,7 +96,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if($propal->fk_project) $projet->fetch($propal->fk_project);
 	
 	if(!empty($propal->array_options)) {
-		$TExtrafields = get_tab_extrafields($propal->array_options, 'propal');
+		$TExtrafields = array_merge(get_tab_extrafields($propal->array_options, 'propal'), get_tab_extrafields_evo($propal));
 	}
 	
 	foreach($propal->lines as $ligne) {
@@ -122,12 +126,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 		
 		// Gestion label et description uniformise les donées
-		if($dolversion >= 3.8) {
-			$ligne->label = html_entity_decode($ligne->label);
-			$ligne->desc = html_entity_decode($ligne->desc);
-		}
+		$ligne->label = html_entity_decode($ligne->label, ENT_QUOTES);
+		$ligne->desc = TODTDocs::htmlToUTFAndPreOdf($ligne->desc);
 		
 		$ligneArray = TODTDocs::asArray($ligne);
+		
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
 		
 		if(class_exists('TTarifPropaldet')) {
 			$TTarifPropaldet = new TTarifPropaldet;
@@ -200,7 +204,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				
 				$prod = new Product($db);
 				$prod->fetch($ligne->fk_product);
-				
+			
 				$ligneArray['desc'] = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? str_replace($prod->multilangs[$langs->defaultlang]["description"],$prod->multilangs[$outputlangs->defaultlang]["description"],$ligne->desc) : $ligne->desc;
 				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
 				if(! empty($prod->multilangs[$outputlangs->defaultlang]["label"])) $ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
@@ -218,8 +222,58 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$prod = new Product($db);
 			$prod->fetch($ligne->fk_product);
 			$prod->fetch_optionals($ligne->fk_product);
+			
+			// Pays d'origine
+			if((float)DOL_VERSION > 3.6) {
+				dol_include_once('/core/class/ccountry.class.php');
+				$p = new Ccountry($db);
+				$p->fetch($prod->country_id);
+				$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+			} else {
+				dol_include_once('/core/class/cpays.class.php');
+				$p = new Cpays($db);
+				$p->fetch($prod->country_id);
+				$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+			}
+			
+			switch ($prod->weight_units) {
+				case -6:
+					$poids = "mg";
+					break;
+				case -3:
+					$poids = "g";
+					break;
+				case 0:
+					$poids = "kg";
+					break;
+				case 3:
+					$poids = "tonnes";
+					break;
+				case 99:
+					$poids = "livre";
+					break;
+				default:
+					$poids = "";
+					break;
+			}
+
+			$prod->unite = utf8_decode($poids);
+
 			$ligneArray['product'] = $prod;
-			//var_dump($prod);exit;
+			
+		}
+		
+		// Check if line is subtotal or title
+		if ($conf->subtotal->enabled) {
+			if (! class_exists('TSubtotal')) {
+				dol_include_once('/subtotal/class/subtotal.class.php');
+			}
+			if (TSubtotal::isSubtotal($ligne)){
+				$ligneArray['titre'] = 2;
+			}
+			if (TSubtotal::isTitle($ligne)) {			
+				$ligneArray['total_ht'] = '';
+			}	
 		}
 		
 		$tableau[]=$ligneArray;
@@ -274,16 +328,39 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	if(!empty($projet->title)) {
+		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
+	}
+
+	$TAutre = array();
+	$parameters = array(
+		'currentContext' => 'propalOdtDoc'
+		,'projet' => &$projet
+		,'extrafields'=>&$TExtrafields
+		,'societe'=>&$societe
+		,'mysoc'=>&$mysoc
+		,'conf'=>&$conf
+		,'tableau'=>&$tableau
+		,'contact'=>&$contact
+		,'linkedObjects'=>&$propal->linkedObjects
+		,'autre'=>&$autre
+		,'TAutre'=>&$TAutre
+		,'tva'=>&$TVA
+	);
+	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$propal,$action);
 	TODTDocs::makeDocTBS(
 		'propal'
 		, $_REQUEST['modele']
-		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA)
+		,array('doc'=>$propal, 'projet'=>$projet, 'extrafields'=>$TExtrafields, 'societe'=>$societe, 'mysoc'=>$mysoc, 'conf'=>$conf, 'tableau'=>$tableau, 'contact'=>$contact,'linkedObjects'=>$propal->linkedObjects,'autre'=>$autre,'tva'=>$TVA, 'TAutre'=>$TAutre)
 		,$fOut
 		, $conf->entity
 		,isset($_REQUEST['btgenPDF'])
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
+	
+	$reshook=$hookmanager->executeHooks('afterGenerateOdtDoc',$parameters,$propal,$action);
 }
 
 function decode($FieldName, &$CurrVal)
@@ -292,8 +369,8 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
 <?php
@@ -302,7 +379,15 @@ function decode($FieldName, &$CurrVal)
 ?>Modèle à utiliser* <?php
 TODTDocs::combo('propal', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
+
+if (!empty($conf->global->ODTDOCS_CAN_GENERATE_ODT))
+{
+	print '<input type="submit" value="Générer" class="button" name="btgen" />&nbsp;';
+}
+if (!empty($conf->global->ODTDOCS_CAN_GENERATE_PDF))
+{
+	print '<input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" />';
+}
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>

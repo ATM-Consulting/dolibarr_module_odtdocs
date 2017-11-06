@@ -36,9 +36,9 @@ require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
-dol_include_once("/custom/dispatch/class/dispatchdetail.class.php");
+dol_include_once("/dispatch/class/dispatchdetail.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/modules/expedition/modules_expedition.php");
-dol_include_once("/custom/asset/class/asset.class.php");
+dol_include_once("/asset/class/asset.class.php");
 if ($conf->product->enabled || $conf->service->enabled)  require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
@@ -258,23 +258,23 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
-	<input type="hidden" name="fk_commande" value="<?=$commande->id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
+	<input type="hidden" name="fk_commande" value="<?php echo $commande->id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle à utiliser* <?
+?>Modèle à utiliser* <?php
 TODTDocs::combo('expedition', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
 
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$expedition, $langs, 'expedition');
 
@@ -283,11 +283,9 @@ TODTDocs::show_docs($db, $conf,$expedition, $langs, 'expedition');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 
 llxFooter('$Date: 2011/08/03 00:46:34 $ - $Revision: 1.34 $');
 
-
-?>

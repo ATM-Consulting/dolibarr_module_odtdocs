@@ -72,6 +72,10 @@ $exp = new Expedition($db);
 $exp->fetch($_REQUEST["id"]);
 $exp->fetchObjectLinked();
 
+foreach($exp as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
+
 // Pour la gestion des contacts (les contacts liés à l'expedition sont les même que la commande)
 if($exp->origin == 'commande') {
 	$cde = new Commande($db);
@@ -218,23 +222,23 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle à utiliser* <?
+?>Modèle à utiliser* <?php
 
 TODTDocs::combo('expedition', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
 
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$exp, $langs, 'expedition');
 
@@ -243,11 +247,9 @@ TODTDocs::show_docs($db, $conf,$exp, $langs, 'expedition');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 
 llxFooter('$Date: 2011/08/03 00:46:34 $ - $Revision: 1.34 $');
 
-
-?>

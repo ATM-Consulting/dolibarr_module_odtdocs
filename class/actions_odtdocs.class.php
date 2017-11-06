@@ -33,8 +33,16 @@ class ActionsOdtdocs
             if(!empty($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL)) {
                  dol_include_once('/core/lib/files.lib.php');       
                //var_dump($object);
-			   	 if(!empty($_SESSION["listofpaths"]) && GETPOST('mode') === 'init') {
-			   	 	$listofpaths=explode(';',$_SESSION["listofpaths"]);
+               
+                 $keytoavoidconflict = empty($object->trackid)?'':'-'.$object->trackid;   // this->trackid must be defined
+                 
+                 if (! empty($_SESSION["listofpaths".$keytoavoidconflict])) $listofpaths=explode(';',$_SESSION["listofpaths".$keytoavoidconflict]);
+                 if (! empty($_SESSION["listofnames".$keytoavoidconflict])) $listofnames=explode(';',$_SESSION["listofnames".$keytoavoidconflict]);
+                 if (! empty($_SESSION["listofmimes".$keytoavoidconflict])) $listofmimes=explode(';',$_SESSION["listofmimes".$keytoavoidconflict]);
+                  
+                 
+			   	 if (!empty($listofpaths) && GETPOST('mode') === 'init') {
+			   	 	$listofpaths=explode(';', $listofpaths);
 					$dir = dirname($listofpaths[0]);
 					
 					if(empty($dir)) return 0;

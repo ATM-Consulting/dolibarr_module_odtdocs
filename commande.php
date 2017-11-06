@@ -37,7 +37,7 @@ dol_include_once("/tarif/class/tarif.class.php");
 dol_include_once("/asset/class/asset.class.php");
 dol_include_once("/projet/class/project.class.php");
 dol_include_once("/odtdocs/lib/odtdocs.lib.php");
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 
 global $db, $langs, $user;
 $langs->load('orders');
@@ -66,6 +66,10 @@ $commande->fetch($_REQUEST["id"]);
 $commande->info($_REQUEST["id"]);
 $commande->fetchObjectLinked();
 
+foreach($commande as $k=>&$v) {
+	if(!is_object($v) && !is_array($v)) $v = dol_string_nohtmltag($v);
+}
+
 if($commande->fk_project) {
 	$projet = new Project($db);
 	$projet->fetch($commande->fk_project);
@@ -91,7 +95,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$TExtrafields = array();
 	
 	if(!empty($commande->array_options)) {
-		$TExtrafields = get_tab_extrafields($commande->array_options, 'commande');
+		$TExtrafields = array_merge(get_tab_extrafields($commande->array_options, 'commande'), get_tab_extrafields_evo($commande));
 	}
 	
 	foreach($commande->lines as $ligne) {
@@ -106,6 +110,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$milestone->fetch($ligne->rowid,"commande");
 		}
 	
+		if (!empty($ligne->fk_unit) && method_exists($ligne, 'getLabelOfUnit')) $ligneArray['unit_label'] = $ligne->getLabelOfUnit('short');
+		
 		if(class_exists('TTarifCommandedet')) {	
 			$TTarifCommandedet = new TTarifCommandedet;
 			$TTarifCommandedet->load($ATMdb,$ligne->rowid);
@@ -200,7 +206,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		//echo $prod->multilangs[$outputlangs->defaultlang]["label"]; exit;
 		
 		/*print_r($ligneArray);*/
-		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = $ligneArray['desc'];
+		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = ((mb_detect_encoding($ligneArray['desc']) === 'UTF-8') ? utf8_decode($ligneArray['desc']) : $ligneArray['desc']);
 		if(empty($ligneArray['product_ref'])) $ligneArray['product_ref'] = '';
 		if($ligneArray['remise_percent'] == 0) $ligneArray['remise_percent'] = '';
 		if(empty($ligneArray['subprice'])) $ligneArray['subprice'] = 0;
@@ -213,6 +219,43 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$prod = new Product($db);
 			$prod->fetch($ligne->fk_product);
 			$prod->fetch_optionals($ligne->fk_product);
+			
+			// Pays d'origine
+			if((float)DOL_VERSION > 3.6) {
+				dol_include_once('/core/class/ccountry.class.php');
+				$p = new Ccountry($db);
+				$p->fetch($prod->country_id);
+				$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+			} else {
+				dol_include_once('/core/class/cpays.class.php');
+				$p = new Cpays($db);
+				$p->fetch($prod->country_id);
+				$prod->pays_origine = ($p->code && $langs->transnoentitiesnoconv("Country".$p->code)!="Country".$p->code?$langs->transnoentitiesnoconv("Country".$p->code):($p->label!='-'?$p->label:''));
+			}
+			
+			switch ($prod->weight_units) {
+				case -6:
+					$poids = "mg";
+					break;
+				case -3:
+					$poids = "g";
+					break;
+				case 0:
+					$poids = "kg";
+					break;
+				case 3:
+					$poids = "tonnes";
+					break;
+				case 99:
+					$poids = "livre";
+					break;
+				default:
+					$poids = "";
+					break;
+			}
+
+			$prod->unite = utf8_decode($poids);
+			
 			$ligneArray['product'] = $prod;
 		}
 		
@@ -267,6 +310,28 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	}
 	$fOut = $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.$generatedfilename;
 	$societe->country = strtr($societe->country, array("'"=>' '));
+	if(!empty($projet->title)) {
+		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
+	}
+	
+	$TAutre = array();
+	$parameters = array_merge ( $parameters, array(
+			'currentContext' => 'orderOdtDoc'
+			,'projet' => &$projet
+			,'extrafields'=>&$TExtrafields
+			,'societe'=>&$societe
+			,'mysoc'=>&$mysoc
+			,'conf'=>&$conf
+			,'tableau'=>&$tableau
+			,'contact'=>&$contact
+			,'linkedObjects'=>&$commande->linkedObjects
+			,'autre'=>&$autre
+			,'TAutre'=>&$TAutre
+			,'tva'=>&$TVA
+	));
+	
+	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$commande,$action);
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
@@ -277,7 +342,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
-
+	$reshook=$hookmanager->executeHooks('afterGenerateOdtDoc',$parameters,$commande,$action);
+	
 }
 
 
@@ -287,22 +353,22 @@ function decode($FieldName, &$CurrVal)
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle* à utiliser <?
+?>Modèle* à utiliser <?php
 TODTDocs::combo('commande', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
 
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" /><?php
 ?>
 <br/><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$commande, $langs,'commande');
 
@@ -311,7 +377,7 @@ TODTDocs::show_docs($db, $conf,$commande, $langs,'commande');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 

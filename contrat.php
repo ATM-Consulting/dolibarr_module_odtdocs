@@ -71,7 +71,11 @@ $contrat->date_cloture=date('d/m/Y', $contrat->date_cloture);
 //pre($contrat, true);
 $societe = new Societe($db);
 $societe->fetch($contrat->socid);
-//var_dump($societe);
+
+//MET EN FORME LE CAPITAL DE LA SOCIÉTÉ CLIENTE ET DE MYSOC
+$societe->capital=price(intval($societe->capital));
+$mysoc->capital=price(intval($mysoc->capital));
+//var_dump($mysoc->capital);
 
 $projet = new Project($db);
 $projet->fetch($contrat->fk_project);
@@ -79,8 +83,9 @@ $projet->fetch($contrat->fk_project);
 
 $propal = new Propal($db);
 $lines=array();
+
+
 if(!empty($contrat->linkedObjects['propal'])){
-	
 		foreach ($contrat->linkedObjects['propal'] as $prop) {
 			$propal->fetch($prop->id);
 			$soustotal=0;
@@ -91,10 +96,15 @@ if(!empty($contrat->linkedObjects['propal'])){
 				$soustotal+=$line->total_ht;
 				if($line->fk_product==null){
 					if(empty($line->desc))$line->desc = $line->label;
-						$line->qty = '';
-						$titre=1;
+					$line->qty = '';
+					$titre=1;
+				}
+				// Check if line is subtotal or title
+				if ($conf->subtotal->enabled) {
+					if (! class_exists('TSubtotal')) {
+						dol_include_once('/subtotal/class/subtotal.class.php');
 					}
-					if ($line->desc=='Sous-total'){
+					if (TSubtotal::isSubtotal($line)){
 						$line->qty = '';
 						$line->price = '';
 						$line->total_ht = $soustotal;
@@ -102,6 +112,7 @@ if(!empty($contrat->linkedObjects['propal'])){
 						$line->remise_percent = '';
 						$titre=2;
 					}
+				}
 						
 				if(empty($line->desc)){
 					$line->desc = $line->label;
@@ -119,33 +130,40 @@ if(!empty($contrat->linkedObjects['propal'])){
 					$line->remise_percent = '';
 				}
 				//var_dump($line);
-				if(!empty($line->price)){
+				if($line->type == 9){
+					
+					$desc = dol_textishtml($line->desc) ? html_entity_decode(strip_tags($line->desc), ENT_QUOTES | ENT_HTML401) : $line->desc;
+					
 					$lines[]=array(
-						'description' => utf8_decode($line->desc),
+						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
-						'puHT'        => $line->price,
+						'puHT'        => price(intval($line->price)),
 						'qty'         => $line->qty,
 						'totalHT'     => $line->total_ht,
 						'remise'      => $line->remise_percent,
 						'titre'       => $titre
-						);
+					);
 				}else{
+					
+					$desc = dol_textishtml($line->desc) ? html_entity_decode(strip_tags($line->desc), ENT_QUOTES | ENT_HTML401) : $line->desc;
+					
 					$lines[]=array(
-						'description' => utf8_decode($line->desc),
+						'description' => utf8_decode(html_entity_decode(strip_tags($line->desc), ENT_COMPAT | ENT_QUOTES, '')),
 						'tva'         => mb_strimwidth($line->tva_tx, 0, 4),
-						'puHT'        => $line->subprice,
+						'puHT'        => price((double) $line->subprice),
 						'qty'         => $line->qty,
-						'totalHT'     => $line->total_ht,
+						'totalHT'     => price((double) $line->total_ht),
 						'remise'      => $line->remise_percent,
 						'titre'       => $titre
-						);
+					);
 				}
+
 			}
 	}
 }
 //var_dump($lines);
 $head = contract_prepare_head($contrat);
-dol_fiche_head($head, 'tabEditions5', $langs->trans('ThirdParty'), 0, 'company');
+dol_fiche_head($head, 'tabEditions8', $langs->trans('Contract'), 0, 'contract');
 
 require('./class/odt.class.php');
 require('./class/atm.doctbs.class.php');
@@ -156,7 +174,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//var_dump($contrat->linkedObjects['propal']);
 //	print_r($tableau); exit;
 	$fOut =  $conf->contrat->dir_output.'/'. dol_sanitizeFileName($contrat->ref).'/'.dol_sanitizeFileName($contrat->ref).'-'.$_REQUEST['modele']/*. TODTDocs::_ext( $_REQUEST['modele'])*/;
-	TODTDocs::makeDocTBS(
+	$r = TODTDocs::makeDocTBS(
 		'contract'
 		, $_REQUEST['modele']
 		,array('mysoc'=>$mysoc, 'societe'=>$societe,'conf'=>$conf, 'contrat'=>$contrat, 'propal_lines'=>$lines, 'propal'=>$propal, 'tva'=>$TVA)
@@ -169,21 +187,21 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 }
 
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle à utiliser* <?
+?>Modèle à utiliser* <?php
 TODTDocs::combo('contract', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $contrat->default_lang);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" id="btgenPDF"  name="btgenPDF" value="Générer en PDF" class="button" /><?php
 
 ?><br><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$contrat, $langs, 'contract');
 
@@ -192,7 +210,7 @@ TODTDocs::show_docs($db, $conf,$contrat, $langs, 'contract');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 

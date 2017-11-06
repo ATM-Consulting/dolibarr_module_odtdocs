@@ -38,7 +38,7 @@ require_once DOL_DOCUMENT_ROOT."/core/lib/fourn.lib.php";
 require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
-dol_include_once("/milestone/class/dao_milestone.class.php");
+if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 
 
 
@@ -113,20 +113,20 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 }
 //print_r($commande);
 ?>
-<form name="genfile" method="get" action="<?=$_SERVER['PHP_SELF'] ?>">
-	<input type="hidden" name="id" value="<?=$id ?>" />
+<form name="genfile" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<input type="hidden" name="id" value="<?php echo $id; ?>" />
 	<input type="hidden" name="action" value="GENODT" />
 <table width="100%"><tr><td>
-<?
+<?php
 
 
-?>Modèle* à utiliser <?
+?>Modèle* à utiliser <?php
 TODTDocs::combo('fournisseur', 'modele',GETPOST('modele'), $conf->entity);
-?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" /><?
+?> <input type="submit" value="Générer" class="button" name="btgen" /> <input type="submit" name="btgenPDF" id="btgenPDF" value="Générer en PDF" class="button" /><?php
 ?>
 <br/><small>* parmis les formats OpenDocument (odt, ods) et Microsoft&reg; office xml (docx, xlsx)</small>
 	<p><hr></p>
-	<?
+	<?php
 	
 TODTDocs::show_docs($db, $conf,$commande, $langs,'commande_fournisseur');
 
@@ -135,11 +135,10 @@ TODTDocs::show_docs($db, $conf,$commande, $langs,'commande_fournisseur');
 </td></tr></table>
 </form>
 
-<?
+<?php
 print '</div>';
 $db->close();
 
 llxFooter('$Date: 2011/08/03 00:46:34 $ - $Revision: 1.34 $');
 
 
-?>
