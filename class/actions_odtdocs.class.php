@@ -29,7 +29,7 @@ class ActionsOdtdocs
         {
           
             global $db, $user, $conf;
-//var_dump($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL);
+
             if(!empty($conf->global->ODTDOCS_ADD_ALL_FILES_IN_MAIL)) {
                  dol_include_once('/core/lib/files.lib.php');       
                //var_dump($object);
@@ -39,12 +39,10 @@ class ActionsOdtdocs
                  if (! empty($_SESSION["listofpaths".$keytoavoidconflict])) $listofpaths=explode(';',$_SESSION["listofpaths".$keytoavoidconflict]);
                  if (! empty($_SESSION["listofnames".$keytoavoidconflict])) $listofnames=explode(';',$_SESSION["listofnames".$keytoavoidconflict]);
                  if (! empty($_SESSION["listofmimes".$keytoavoidconflict])) $listofmimes=explode(';',$_SESSION["listofmimes".$keytoavoidconflict]);
-                  
-                 
+                  var_dump($_SESSION["listofpaths".$keytoavoidconflict],$listofpaths);
 			   	 if (!empty($listofpaths) && GETPOST('mode') === 'init') {
-			   	 	$listofpaths=explode(';', $listofpaths);
+//			   	 	$listofpaths=explode(';', $listofpaths);
 					$dir = dirname($listofpaths[0]);
-					
 					if(empty($dir)) return 0;
 					
 	                 $object->clear_attached_files();

@@ -93,7 +93,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$societe->name = $contact['CUSTOMER']['societe'];
 		if($contact['CUSTOMER']['address'] != '') {
 			$societe->address = $contact['CUSTOMER']['address'];
-			$societe->cp = $contact['CUSTOMER']['cp'];
+			$societe->cp = empty($contact['CUSTOMER']['zip']) ? $contact['CUSTOMER']['cp']: $contact['CUSTOMER']['zip'];
 			$societe->ville = $contact['CUSTOMER']['ville'];
 			$societe->pays = $contact['CUSTOMER']['pays'];
 		}
