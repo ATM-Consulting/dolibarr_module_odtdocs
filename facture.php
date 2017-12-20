@@ -453,13 +453,13 @@ TODTDocs::combo('facture', 'modele',GETPOST('modele'), $conf->entity);
 TODTDocs::comboLang($db, $societe->default_lang);
 
 	if(!empty($TCompte)) {
-		
+		$default_compte = isset($_REQUEST['account']) ? $_REQUEST['account'] : $fac->fk_account;
 		?>
 		- Rib du compte à afficher <select name="account" class="flat"><?php
 		
 			foreach($TCompte as $compte) {
 				
-					?><option value="<?php echo $compte->rowid; ?>" <?php echo (isset($_REQUEST['account']) && $_REQUEST['account']==$compte->rowid) ? 'SELECTED' : '' ; ?>><?php echo $compte->label; ?></option><?php	
+					?><option value="<?php echo $compte->rowid; ?>" <?php echo ($default_compte==$compte->rowid) ? 'SELECTED' : '' ; ?>><?php echo $compte->label; ?></option><?php	
 				
 			}
 			
