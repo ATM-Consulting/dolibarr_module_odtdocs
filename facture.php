@@ -481,8 +481,8 @@ TODTDocs::show_docs($db, $conf,$fac, $langs,'facture');
 
 <?php
 print '</div>';
-$db->close();
 
 llxFooter('$Date: 2011/08/03 00:46:34 $ - $Revision: 1.34 $');
+$db->close();
 
 

@@ -157,8 +157,7 @@ TODTDocs::show_docs($db, $conf,$societe, $langs, 'company');
 
 <?php
 print '</div>';
+
+llxFooter();
+
 $db->close();
-
-llxFooter('$Date: 2011/08/03 00:46:34 $ - $Revision: 1.34 $');
-
-
