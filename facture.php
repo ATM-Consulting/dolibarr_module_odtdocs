@@ -339,7 +339,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				$ligneArray['desc'].' ('.dol_print_date($discount->datec).')';
 		}
 		if(empty($ligneArray['product_label'])) $ligneArray['product_label'] = ((mb_detect_encoding($ligne->desc) === 'UTF-8') ? utf8_decode($ligne->desc) : $ligne->desc); // Lignes libres
-		if(!empty($prod->customcode) && !empty($conf->global->ODTDOCS_ADD_CODE_DOUANE_ON_LINES) ) $ligneArray['product_label'] .= "\n(Code douane : ".$prod->customcode.")";
+		if(!empty($prod->customcode) && !empty($conf->global->ODTDOCS_ADD_CODE_DOUANE_ON_LINES) ) 
+		{
+			$ligneArray['product_label'] .= "\n(Code douane : ".$prod->customcode.")";
+			$ligneArray['code_douane'] = $prod->customcode;
+		}
+		
 		$tableau[]=$ligneArray;
 	}
 	
