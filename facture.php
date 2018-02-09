@@ -363,6 +363,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		}
 	}
 	
+	if($fac->type == Facture::TYPE_CREDIT_NOTE){
+		$facture_source = new Facture($db);
+		$facture_source->fetch($fac->fk_facture_source);
+		$fac->facture_source = $facture_source;
+	}
+	
 	/*
 	 * Ajout des objets lié :
 	 * [fk_facture_source] => [origin] => [origin_id] => [linked_objects
