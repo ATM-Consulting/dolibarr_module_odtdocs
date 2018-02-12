@@ -313,7 +313,25 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	if(!empty($projet->title)) {
 		$projet->title = ((mb_detect_encoding($projet->title) === 'UTF-8') ? utf8_decode($projet->title) : $projet->title);
 	}
-
+	
+	$TAutre = array();
+	$parameters = array_merge ( $parameters, array(
+			'currentContext' => 'orderOdtDoc'
+			,'projet' => &$projet
+			,'extrafields'=>&$TExtrafields
+			,'societe'=>&$societe
+			,'mysoc'=>&$mysoc
+			,'conf'=>&$conf
+			,'tableau'=>&$tableau
+			,'contact'=>&$contact
+			,'linkedObjects'=>&$commande->linkedObjects
+			,'autre'=>&$autre
+			,'TAutre'=>&$TAutre
+			,'tva'=>&$TVA
+	));
+	
+	
+	$reshook=$hookmanager->executeHooks('beforeGenerateOdtDoc',$parameters,$commande,$action);
 	TODTDocs::makeDocTBS(
 		'commande'
 		, $_REQUEST['modele']
@@ -324,7 +342,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		,$_REQUEST['lang_id']
 		,array('orders', 'odtdocs@odtdocs','main','dict','products','sendings','bills','companies','propal','deliveries')
 	);
-
+	$reshook=$hookmanager->executeHooks('afterGenerateOdtDoc',$parameters,$commande,$action);
+	
 }
 
 
