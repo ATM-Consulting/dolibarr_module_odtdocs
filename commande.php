@@ -215,7 +215,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		print_r($ligneArray);
 		echo '</pre>';*/
 		
-		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
+		if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES) && !empty($ligne->fk_product)) {
 			$prod = new Product($db);
 			$prod->fetch($ligne->fk_product);
 			$prod->fetch_optionals($ligne->fk_product);
