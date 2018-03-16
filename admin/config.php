@@ -328,7 +328,22 @@ function showFormModel($typeDoc='propal', $entity = 1) {
             ?></td>             
         </tr>
 </table>        
-<br /><br />   
+<br /><br /> 
+<?php 
+
+dol_include_once('abricot/includes/class/class.template.tbs.php');
+// test abricot module compatibility
+$TTemplateTBS = new TTemplateTBS();
+if (method_exists($TTemplateTBS, 'convertToPDF'))
+{
+    $reflection = new ReflectionMethod($TTemplateTBS, 'convertToPDF');
+    if (!$reflection->isPublic()) {
+        print '<div class="error" >'.$langs->trans('ODTDOCS_needAbricotUpdate').'</div>';
+    }
+}
+unset($TTemplateTBS);
+
+?>
 <table width="100%" class="noborder" style="background-color: #fff;">
         <tr class="liste_titre">
             <td colspan="2"><?php echo $langs->trans('DefaultDolibarrODT') ?></td>

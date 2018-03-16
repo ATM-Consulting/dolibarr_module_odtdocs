@@ -38,3 +38,4 @@ ODTDOCS_SHOW_MESSAGE_ON_GENERATION=Afficher le texte d'information sur générat
 DefaultDolibarrODT=Comportement pour les fichiers ODT standard de Dolibarr
 setODTDOCS_REPLACE_ADD_PDF_CONV_TO_STD_ODT=Lorsque cela est possible, convertir les odt générés en PDF
 setODTDOCS_KEEP_ONLY_PDF=Après la génération du PDF, ne pas conserver le fichier .odt
+ODTDOCS_needAbricotUpdate=Vous devez mettre à jour le module Abricot pour utiliser les options suivantes :
