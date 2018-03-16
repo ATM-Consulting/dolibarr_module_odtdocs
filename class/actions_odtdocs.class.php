@@ -71,7 +71,7 @@ class ActionsOdtdocs
         
         if(!empty($conf->global->ODTDOCS_REPLACE_ADD_PDF_CONV_TO_STD_ODT))
         {
-            dol_include_once('odtdocs/define.php');
+            //dol_include_once('odtdocs/define.php');
             dol_include_once('odtdocs/class/odt.class.php');
             
             $res = TODTDocs::convertToPDF($parameters['file']);

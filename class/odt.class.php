@@ -662,50 +662,9 @@ class TODTDocs {
 	}
 
 	static function convertToPDF($file) {
-		$infos = pathinfo($file);
-		$filepath = $infos['dirname'];
-			
-		if(defined('USE_ONLINE_SERVICE')) {
-			
-			//print USE_ONLINE_SERVICE;				
-			$postdata = http_build_query(
-			    array(
-			        'f1Data' => file_get_contents($file)
-					,'f1'=>basename($file)
-			    )
-			);
-			
-			$opts = array('http' =>
-			    array(
-			        'method'  => 'POST',
-			        'header'  => 'Content-type: application/x-www-form-urlencoded',
-			        'content' => $postdata
-			    )
-			);
-			
-			$context  = stream_context_create($opts);
-			//print USE_ONLINE_SERVICE;
-			$result = file_get_contents(USE_ONLINE_SERVICE, false, $context);
-			//exit($result);
-			$filePDF = $filepath.'/'.basename($result);
-			
-			copy(strtr($result, array(' '=>'%20')), $filePDF); 
-			//exit($result.', '.$filePDF);
-			return $filePDF;
-		}	
-		else {
-	//		print "Conversion locale en PDF";
-			// Transformation en PDF
-			ob_start();
-
-			 $cmd = 'export HOME=/tmp'."\n";
-			$cmd.=CMD_CONVERT_TO_PDF.' "'.$filepath.'" "'.$file.'"';
-
-			system($cmd);
-			$res = ob_get_clean();
-			return $res;
-
-		}	
+	    
+	    dol_include_once('abricot/includes/class/class.template.tbs.php');
+	    return TTemplateTBS::convertToPDF($file);
 	}
 
 	function getTVA(&$object) {
