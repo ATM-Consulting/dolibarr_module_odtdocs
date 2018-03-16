@@ -27,9 +27,4 @@
 
 define('DOL_ADMIN_USER','admin');
 
-//define('USE_ONLINE_SERVICE','http://pdfservice.atm-consulting.fr/pdf.php');
-
-define('PATH_TO_LIBREOFFICE', 'libreoffice');
-//define('PATH_TO_LIBREOFFICE', '"C:\Program Files (x86)\LibreOffice 4.0\program\soffice.exe"');
-
-define('CMD_CONVERT_TO_PDF', PATH_TO_LIBREOFFICE.' --invisible --norestore --headless --convert-to pdf --outdir');
+include_once __DIR__ . '/define.php'; // use for odt to PDF conversion

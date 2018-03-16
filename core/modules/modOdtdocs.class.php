@@ -100,7 +100,7 @@ class modOdtdocs extends DolibarrModules
 		
 		$this->module_parts = array(
             'hooks' => array(
-                'pdfgeneration','formmail'
+                'pdfgeneration','formmail','odtgeneration'
             )
         );
 		
