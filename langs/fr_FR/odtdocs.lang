@@ -35,3 +35,6 @@ ReplaceStandardPDFonGenerationByLastCustom=Remplacer le PDF standard par le dern
 ODTDOCS_CAN_GENERATE_ODT=Afficher le bouton pour la génération ODT
 ODTDOCS_CAN_GENERATE_PDF=Afficher le bouton pour la génération PDF
 ODTDOCS_SHOW_MESSAGE_ON_GENERATION=Afficher le texte d'information sur génération du document
+DefaultDolibarrODT=Comportement pour les fichiers ODT standard de Dolibarr
+setODTDOCS_REPLACE_ADD_PDF_CONV_TO_STD_ODT=Lorsque cela est possible, convertir les odt générés en PDF
+setODTDOCS_KEEP_ONLY_PDF=Après la génération du PDF, ne pas conserver le fichier .odt
