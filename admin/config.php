@@ -264,7 +264,7 @@ function showFormModel($typeDoc='propal', $entity = 1) {
 			foreach($TDocs as $fichier) {
 				?><tr>
 					<td><a href="<?php echo dol_buildpath('/odtdocs/modele/'.$entity.'/'.$typeDoc.'/'.$fichier,1) ?>" target="_blank" style="font-weight:normal;"><?php echo $fichier ?></a></td>
-					<td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?php echo urlencode($fichier) ?>&type=<?php echo $typeDoc ?>" onClick="return confirm('Vouslez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
+					<td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?action=DELETE&fichier=<?php echo urlencode($fichier) ?>&type=<?php echo $typeDoc ?>" onClick="return confirm('Voulez-vous vraiment supprimer ce modèle?');">Supprimer</a></td>
 				</tr><?php
 			}
 		}
