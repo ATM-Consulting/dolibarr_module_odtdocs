@@ -284,12 +284,13 @@ class TODTDocs {
 							$TLinkedObjects['propal'] = array(TODTDocs::asArray($obj->linkedObjects['propal'][0]));
 						}
 					}
-					$TLinkedObjects[$typeObj][$i] = TODTDocs::asArray($obj);
+					if(! empty($conf->global->ODTDOCS_NUMERIC_KEYS_START_FROM_ZERO)) $TLinkedObjects[$typeObj][] = TODTDocs::asArray($obj);
+					else $TLinkedObjects[$typeObj][$i] = TODTDocs::asArray($obj);
 				}
 			}
 			$TBS->MergeField('doc_linked',$TLinkedObjects);
-		} 
-		
+		}
+
 		/*echo '<pre>';
 		print_r($object);
 		echo '</pre>';*/
