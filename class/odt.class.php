@@ -404,13 +404,13 @@ class TODTDocs {
 		$TToDate = array('date', 'datec', 'datev', 'datep', 'date_livraison', 'fin_validite', 'date_delivery', 'date_commande', 'date_validation', 'date_lim_reglement', 'date_creation', 'date_delivery', 'date_start', 'date_end');
 		$TNoBR = array('address');
 		$TNoHTML = array('note_private','note_public','note');
-		
 		if(is_array($object)) {
 			if(isset($object['zip']))$object['cp']=$object['zip'];
 			if(isset($object['name']))$object['nom']=$object['name'];
             if(isset($object['town']))$object['ville']=$object['town'];
             if(!empty($object['label']) && empty($object['product_label'])) $object['product_label'] = $object['label'];
             if(!empty($object['desc']) && !empty($object['product_label']) && $object['desc']==$object['product_label'])  $object['desc']='';
+			if(!empty($object['desc']) && empty($object['libelle'])) $object['libelle']=$object['desc']; //pour ligne libre
 
 	
 		}
@@ -420,6 +420,7 @@ class TODTDocs {
             if(isset($object->town))$object->ville=$object->town;
             if(!empty($object->label) && empty($object->product_label)) $object->product_label = $object->label;
             if(!empty($object->desc) && !empty($object->product_label) && $object->desc==$object->product_label)          $object->desc='';
+			if(!empty($object->desc) && empty($object->libelle)) $object->libelle=$object->desc; //pour ligne libre
         }
 
         if(!empty($object->linkedObjects)) {
