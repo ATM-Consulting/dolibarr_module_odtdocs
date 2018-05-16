@@ -187,6 +187,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		$autre = array();
 	}
 	
+	// TK 7660 : Permet d'afficher la date de livraison de la commande liée à l'expédition
+	// Dans le modèle, il faut utiliser le tag [autre.cde_date_livraison]
+	if(! empty($cde->id) && $cde->date_livraison > 0) {
+		$autre['cde_date_livraison'] = date('d/m/Y', $cde->date_livraison);
+	}
+
 	$TVA = TODTDocs::getTVA($exp);
 	
 	if($exp->shipping_method_id > 0) {
