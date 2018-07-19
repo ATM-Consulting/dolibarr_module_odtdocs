@@ -64,10 +64,10 @@ $contrat = new Contrat($db);
 $contrat->fetch($_REQUEST["id"]);
 $contrat->fetchObjectLinked();
 
-$contrat->date_contrat=date('d/m/Y', $contrat->date_contrat);
-$contrat->date_modification=date('d/m/Y', $contrat->date_modification);
-$contrat->date_validation=date('d/m/Y', $contrat->date_validation);
-$contrat->date_cloture=date('d/m/Y', $contrat->date_cloture);
+if(! empty($contrat->date_contrat)) $contrat->date_contrat=date('d/m/Y', $contrat->date_contrat);
+if(! empty($contrat->date_modification)) $contrat->date_modification=date('d/m/Y', $contrat->date_modification);
+if(! empty($contrat->date_validation)) $contrat->date_validation=date('d/m/Y', $contrat->date_validation);
+if(! empty($contrat->date_cloture)) $contrat->date_cloture=date('d/m/Y', $contrat->date_cloture);
 //pre($contrat, true);
 $societe = new Societe($db);
 $societe->fetch($contrat->socid);
