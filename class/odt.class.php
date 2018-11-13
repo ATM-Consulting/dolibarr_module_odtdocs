@@ -140,7 +140,7 @@ class TODTDocs {
 	function langs() {
 		
 	}
-	function makeDocTBS($type, $modele, $object, $outName, $entity=1, $PDFconversion = false, $newlang='fr_FR', $langsToLoad=array()) {
+	function makeDocTBS($type, $modele, $object, $outName, $entity=1, $PDFconversion = false, $newlang='fr_FR', $langsToLoad=array(), $pathToModele='') {
 	/* Création du fichier à proprement parler
 	 * $objet aura la forme d'un tableau 
 	 * Array( 
@@ -165,7 +165,8 @@ class TODTDocs {
 		
 		if (GETPOST('debug')) $TBS->PlugIn(OPENTBS_DEBUG_XML_CURRENT);
 		
-		$TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele));
+		if(empty($pathToModele)) $TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele));
+		else $TBS->LoadTemplate($pathToModele.'/'.$modele);
 		//$TBS->LoadTemplate(dol_buildpath('/odtdocs/modele/'.$entity.'/'.$type.'/'.$modele.'#styles.xml;content.xml;settings.xml');
 		
 		//$TBS->MergeBlock('societe',array(0=> TODTDocs::asArray($object['societe'])));
