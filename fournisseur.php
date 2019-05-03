@@ -40,7 +40,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
 if (!empty($conf->milestone->enabled)) dol_include_once("/milestone/class/dao_milestone.class.php");
 
-
+$hookmanager->initHooks(array('odtdocs_supplierordercard'));
 
 $langs->load('orders');
 
@@ -64,6 +64,11 @@ $head = ordersupplier_prepare_head($commande);
 dol_fiche_head($head, 'tabEditions4', $langs->trans("SupplierOrder"), 0, 'order');
 
 require('./class/odt.class.php');
+
+$parameters = array('societe' => $societe);
+// Note that $action and $object may be modified by some hooks
+$reshook = $hookmanager->executeHooks('doActions', $parameters, $commande, $action);
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	//print_r($propal);

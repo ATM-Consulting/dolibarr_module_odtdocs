@@ -39,7 +39,7 @@ class ActionsOdtdocs
                  if (! empty($_SESSION["listofpaths".$keytoavoidconflict])) $listofpaths=explode(';',$_SESSION["listofpaths".$keytoavoidconflict]);
                  if (! empty($_SESSION["listofnames".$keytoavoidconflict])) $listofnames=explode(';',$_SESSION["listofnames".$keytoavoidconflict]);
                  if (! empty($_SESSION["listofmimes".$keytoavoidconflict])) $listofmimes=explode(';',$_SESSION["listofmimes".$keytoavoidconflict]);
-                  var_dump($_SESSION["listofpaths".$keytoavoidconflict],$listofpaths);
+//                  var_dump($_SESSION["listofpaths".$keytoavoidconflict],$listofpaths);
 			   	 if (!empty($listofpaths) && GETPOST('mode') === 'init') {
 //			   	 	$listofpaths=explode(';', $listofpaths);
 					$dir = dirname($listofpaths[0]);
