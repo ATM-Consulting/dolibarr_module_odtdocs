@@ -52,6 +52,7 @@ $langs->load('orders');
 llxHeader();
 
 $id = isset($_REQUEST["id"])?$_REQUEST["id"]:'';
+$action = GETPOST('action');
 
 $commande = new CommandeFournisseur($db);
 $commande->fetch($_REQUEST["id"]);
