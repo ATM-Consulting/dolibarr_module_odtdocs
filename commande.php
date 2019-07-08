@@ -306,7 +306,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	$generatedfilename = dol_sanitizeFileName($commande->ref).'-'.$_REQUEST['modele'];
 	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
-		$generatedfilename = dol_sanitizeFileName($commande->ref);
+		$generatedfilename = dol_sanitizeFileName($commande->ref).'.odt';
 	}
 	$fOut = $conf->commande->dir_output.'/'. dol_sanitizeFileName($commande->ref).'/'.$generatedfilename;
 	$societe->country = strtr($societe->country, array("'"=>' '));

@@ -323,7 +323,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	
 	$generatedfilename = dol_sanitizeFileName($propal->ref).'-'.$_REQUEST['modele'];
 	if($conf->global->ODTDOCS_FILE_NAME_AS_OBJECT_REF) {
-		$generatedfilename = dol_sanitizeFileName($propal->ref);
+		$generatedfilename = dol_sanitizeFileName($propal->ref).'.odt';
 	}
 	$fOut = $fOut =  $conf->propal->dir_output.'/'. dol_sanitizeFileName($propal->ref).'/'.$generatedfilename;
 //var_dump($propal->projet->ref,$propal->projet);
