@@ -1,9 +1,13 @@
 <?php
 
-define('ROOT','/var/www/dolibarr/htdocs/');
-define('COREROOT','/var/www/ATM/atm-core/');
-define('COREHTTP','http://127.0.0.1/ATM/atm-core/');
-define('HTTP','http://localhost/dolibarr/');
+//define('ROOT','/var/www/dolibarr/htdocs/');
+define('ROOT','/var/www/html/client/latoxan/dolibarr/htdocs/');
+//define('COREROOT','/var/www/ATM/atm-core/');
+define('COREROOT','/var/www/html/client/latoxan/dolibarr/htdocs/custom/core/');
+//define('COREHTTP','http://127.0.0.1/ATM/atm-core/');
+define('COREHTTP','https://latoxan.srv40.atm-consulting.fr/custom/core/');
+//define('HTTP','http://localhost/dolibarr/');
+define('HTTP','https://latoxan.srv40.atm-consulting.fr');
 
 if(!defined('INC_FROM_DOLIBARR') && defined('INC_FROM_CRON_SCRIPT')) {
 	include(ROOT."master.inc.php");
