@@ -173,10 +173,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				if(!empty($prod->multilangs[$outputlangs->defaultlang]["label"]))
 					$ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
 				$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
-				$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
+				$ligneArray['desc'] = utf8_decode(html_entity_decode($ligneArray['desc']));
 			}
 		}
 		
+        $ligneArray['desc'] = preg_replace('/<br(?:\s+[^>])?>/', PHP_EOL, $ligneArray['desc']);
+
 		//echo $prod->multilangs[$outputlangs->defaultlang]["label"]; exit;
 		
 		/*print_r($ligneArray);*/
