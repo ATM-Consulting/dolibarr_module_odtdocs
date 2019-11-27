@@ -235,7 +235,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 		
 	$code = $langs->getLabelFromKey($db,$expedition->shipping_method_id,'c_shipment_mode','rowid','code');
 	$expedition->shipping_method_label = $langs->trans("SendingMethod".strtoupper($code));
-	
+	$expedition->date_delivery_fr = date('d/m/Y', $expedition->date_delivery);
 	/*echo '<pre>';
 	print_r($expedition);
 	echo '</pre>';*/

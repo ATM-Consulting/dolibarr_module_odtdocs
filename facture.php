@@ -283,7 +283,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 				if($ligneArray['desc'] == $ligneArray['product_label']) $ligneArray['desc'] = '';
 				if(! empty($prod->multilangs[$outputlangs->defaultlang]["label"])) $ligneArray['product_label'] = $prod->multilangs[$outputlangs->defaultlang]["label"];
 				$ligneArray['product_label'] = utf8_decode($ligneArray['product_label']);
-				$ligneArray['desc'] = utf8_decode($ligneArray['desc']);
+				$ligneArray['desc'] = utf8_decode(html_entity_decode($ligneArray['desc']));
 			}
 
 			if(!empty($conf->global->ODTDOCS_LOAD_PRODUCT_IN_LINES)) {
@@ -345,6 +345,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$ligneArray['code_douane'] = $prod->customcode;
 		}
 		
+        $ligneArray['desc'] = preg_replace('/<br(?:\s+[^>])?>/', PHP_EOL, $ligneArray['desc']);
+		
 		$tableau[]=$ligneArray;
 	}
 	
@@ -405,6 +407,25 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 	$res = $db->fetch_object($resql);
 	$contact['mode_reglement'] = $res->libelle;
 	
+	if($conf->incoterm->enabled){
+		//Ajout des Incoterms dans la note public
+		$resl = $db->query('SELECT ci.code, te.location_incoterms
+				FROM '.MAIN_DB_PREFIX.'c_incoterms as ci
+					LEFT JOIN '.MAIN_DB_PREFIX.$fac->table_element.' as te ON (te.fk_incoterms = ci.rowid)
+				WHERE te.rowid = '.$fac->id);
+		if($resl) 
+			$res = $db->fetch_object($resl);
+		
+		$txt = '';
+		if($res && strpos($fac->note_public, 'Incoterm') === FALSE){
+			$txt .= "\nIncoterm : ".$res->code;
+			if(!empty($res->location_incoterms)) $txt .= ' - '.$res->location_incoterms;
+		}
+		
+		// Gestion des sauts de lignes si la note était en HTML de base
+		if(dol_textishtml($fac->note_public)) $fac->note_public .= dol_nl2br($txt);
+		else $fac->note_public .= $txt;
+	}
 	
 	/*echo '<pre>';
 	print_r($societe);
