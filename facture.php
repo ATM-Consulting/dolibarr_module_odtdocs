@@ -362,8 +362,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='GENODT') {
 			$societe->country = $contact['BILLING']['pays'];
 		}
 	}
-	
-	if($fac->type == Facture::TYPE_CREDIT_NOTE){
+
+	if((float)DOL_VERSION < 3.6) $type_credit_note_val = 2;
+	else $type_credit_note_val = Facture::TYPE_CREDIT_NOTE;
+
+	if($fac->type == $type_credit_note_val){
 		$facture_source = new Facture($db);
 		$facture_source->fetch($fac->fk_facture_source);
 		$fac->facture_source = $facture_source;
