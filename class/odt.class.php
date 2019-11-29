@@ -673,12 +673,12 @@ class TODTDocs {
 	function getTVA(&$object) {
 		$TTVA = array();
 		foreach($object->lines as $ligne) {
-			if($ligne->total_tva != 0) {
+//			if($ligne->total_tva != 0) {
 				if(empty($TTVA[$ligne->tva_tx])) $TTVA[$ligne->tva_tx] = array('baseht'=>0,'montant'=>0);
 				$TTVA[$ligne->tva_tx]['label'] = $ligne->tva_tx;
 				$TTVA[$ligne->tva_tx]['baseht'] += $ligne->total_ht;
 				$TTVA[$ligne->tva_tx]['montant'] += $ligne->total_tva;
-			}
+//			}
 		}
 
 		return $TTVA;
