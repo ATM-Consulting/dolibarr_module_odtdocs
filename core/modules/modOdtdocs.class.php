@@ -179,7 +179,7 @@ class modOdtdocs extends DolibarrModules
 		$this->rights[$r][0] = 10020;
 		$this->rights[$r][1] = 'Exporter en ODT';
 		$this->rights[$r][2] = 'a';
-		$this->rights[$r][3] = 1;
+		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'Ecrire';
 
 		// Main menu entries
