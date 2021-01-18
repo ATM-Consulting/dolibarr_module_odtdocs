@@ -465,7 +465,10 @@ TODTDocs::comboLang($db, $societe->default_lang);
 
 	if(!empty($TCompte)) {
 		$default_compte = isset($_REQUEST['account']) ? $_REQUEST['account'] : $fac->fk_account;
-		?>
+        if ($user->id == 1) {
+            //var_dump($default_compte);
+        }
+        ?>
 		- Rib du compte à afficher <select name="account" class="flat"><?php
 		
 			foreach($TCompte as $compte) {
