@@ -78,6 +78,7 @@ class ActionsOdtdocs
                 
                 if($objectPDF->element=='propal' || $objectPDF->element == 'expedition' || $objectPDF->element == 'facture'
                 || $objectPDF->element == 'commande') {
+					/* DA021590 - Factures PRO FORMA */
 					dol_include_once('/core/lib/files.lib.php');
 					$fileparams = dol_most_recent_file($conf->{$objectPDF->element}->dir_output . '/' . $objectPDF->ref);
 					$file = $fileparams['fullname'];
@@ -87,6 +88,7 @@ class ActionsOdtdocs
 
 						copy($file, $parameters['file']);
 					}
+					/* FIN - DA021590 - Factures PRO FORMA */
 
                 }
                 
