@@ -78,14 +78,16 @@ class ActionsOdtdocs
                 
                 if($objectPDF->element=='propal' || $objectPDF->element == 'expedition' || $objectPDF->element == 'facture'
                 || $objectPDF->element == 'commande') {
-                    @unlink($parameters['file']);   
-                    
-                    
-                    dol_include_once('/core/lib/files.lib.php');
-                    $fileparams = dol_most_recent_file($conf->{$objectPDF->element}->dir_output . '/' . $objectPDF->ref);
-                    $file = $fileparams['fullname'];
-                     
-                    copy($file, $parameters['file']);
+					dol_include_once('/core/lib/files.lib.php');
+					$fileparams = dol_most_recent_file($conf->{$objectPDF->element}->dir_output . '/' . $objectPDF->ref);
+					$file = $fileparams['fullname'];
+
+					if(!empty($file) && $file != $parameters['file']){
+						@unlink($parameters['file']);
+
+						copy($file, $parameters['file']);
+					}
+
                 }
                 
                 
